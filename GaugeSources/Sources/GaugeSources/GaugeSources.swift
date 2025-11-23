@@ -41,13 +41,13 @@ public enum GaugeSources {
     public static func loadDWR() async throws -> [GaugeSourceItem] {
         try await load(file: .dwr)
     }
-    
+
     /// Loads gauges for a specific New Zealand region
     public static func loadNZRegion(_ region: NZRegion) async throws -> [GaugeSourceItem] {
         let file = GaugeSourceFile.newZealand(region)
         return try await load(file: file)
     }
-    
+
     /// Loads all gauges for New Zealand (all regions)
     public static func loadAllNZ() async throws -> [GaugeSourceItem] {
         try await withThrowingTaskGroup(of: [GaugeSourceItem].self) { group in
@@ -56,7 +56,7 @@ public enum GaugeSources {
                     try await loadNZRegion(region)
                 }
             }
-            
+
             var allItems: [GaugeSourceItem] = []
             for try await items in group {
                 allItems.append(contentsOf: items)
@@ -210,7 +210,7 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable, Sendable {
         latitude = try container.decode(Float.self, forKey: .latitude)
         longitude = try container.decode(Float.self, forKey: .longitude)
         state = try container.decode(String.self, forKey: .state)
-        
+
         // Handle both string and integer IDs
         if let stringId = try? container.decode(String.self, forKey: .id) {
             id = stringId

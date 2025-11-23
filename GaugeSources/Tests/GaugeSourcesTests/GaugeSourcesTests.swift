@@ -40,21 +40,21 @@ struct GaugeSourcesTests {
         #expect(sources.allSatisfy { $0.source == .lawa })
         #expect(sources.allSatisfy { $0.country == "NZ" })
     }
-    
+
     @Test
     func loadNZRegion_bayOfPlenty() async throws {
         let sources = try await GaugeSources.loadNZRegion(.bayOfPlenty)
         #expect(sources.count == 5)
         #expect(sources.allSatisfy { $0.source == .lawa })
     }
-    
+
     @Test
     func loadNZRegion_westCoast() async throws {
         let sources = try await GaugeSources.loadNZRegion(.westCoast)
         #expect(sources.count == 5)
         #expect(sources.allSatisfy { $0.source == .lawa })
     }
-    
+
     @Test
     func loadAllNZ_happy() async throws {
         let sources = try await GaugeSources.loadAllNZ()
