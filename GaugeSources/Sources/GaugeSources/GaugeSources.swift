@@ -41,10 +41,28 @@ public enum GaugeSources {
     public static func loadDWR() async throws -> [GaugeSourceItem] {
         try await load(file: .dwr)
     }
-
-    /// Loads gauges for New Zealand LAWA
-    public static func loadLAWA() async throws -> [GaugeSourceItem] {
-        try await load(file: .nz)
+    
+    /// Loads gauges for a specific New Zealand region
+    public static func loadNZRegion(_ region: NZRegion) async throws -> [GaugeSourceItem] {
+        let file = GaugeSourceFile.newZealand(region)
+        return try await load(file: file)
+    }
+    
+    /// Loads all gauges for New Zealand (all regions)
+    public static func loadAllNZ() async throws -> [GaugeSourceItem] {
+        try await withThrowingTaskGroup(of: [GaugeSourceItem].self) { group in
+            for region in NZRegion.allCases {
+                group.addTask {
+                    try await loadNZRegion(region)
+                }
+            }
+            
+            var allItems: [GaugeSourceItem] = []
+            for try await items in group {
+                allItems.append(contentsOf: items)
+            }
+            return allItems
+        }
     }
 
     // MARK: Private
@@ -105,7 +123,7 @@ public enum GaugeSourceError: LocalizedError {
 enum GaugeSourceFile: CaseIterable {
     case canadian(CanadianProvince)
     case dwr
-    case nz
+    case newZealand(NZRegion)
     case usgs
 
     // MARK: Internal
@@ -116,8 +134,10 @@ enum GaugeSourceFile: CaseIterable {
             .canadian(.ontario),
             .canadian(.quebec),
             .dwr,
+            .newZealand(.wellington),
+            .newZealand(.bayOfPlenty),
+            .newZealand(.westCoast),
             .usgs
-            // Note: .nz excluded from allCases until nz-gauges.json is available
         ]
     }
 
@@ -127,8 +147,15 @@ enum GaugeSourceFile: CaseIterable {
             return "canada-\(province.rawValue.lowercased())"
         case .dwr:
             return "dwr-gauges"
-        case .nz:
-            return "nz-gauges"
+        case .newZealand(let region):
+            switch region {
+            case .wellington:
+                return "nz-wellington"
+            case .bayOfPlenty:
+                return "nz-bay-of-plenty"
+            case .westCoast:
+                return "nz-west-coast"
+            }
         case .usgs:
             return "usgs-gages"
         }
@@ -140,7 +167,7 @@ enum GaugeSourceFile: CaseIterable {
             return .environmentCanada
         case .dwr:
             return .dwr
-        case .nz:
+        case .newZealand:
             return .lawa
         case .usgs:
             return .usgs
@@ -183,7 +210,15 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable, Sendable {
         latitude = try container.decode(Float.self, forKey: .latitude)
         longitude = try container.decode(Float.self, forKey: .longitude)
         state = try container.decode(String.self, forKey: .state)
-        id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+        
+        // Handle both string and integer IDs
+        if let stringId = try? container.decode(String.self, forKey: .id) {
+            id = stringId
+        } else if let intId = try? container.decode(Int.self, forKey: .id) {
+            id = String(intId)
+        } else {
+            id = UUID().uuidString
+        }
 
         let country = try container.decode(String.self, forKey: .country)
         let defaultMetric = country == "CA" ? GaugeSourceMetric.cms : GaugeSourceMetric.cfs
