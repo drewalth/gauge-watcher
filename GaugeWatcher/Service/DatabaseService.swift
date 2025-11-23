@@ -35,7 +35,8 @@ extension DatabaseService: DependencyKey {
             // implement the query options
             var query = Gauge.all
             if let name = options.name {
-                query = query.where { $0.name == name }
+                // where name contains the query string
+                query = query.where { $0.name.lower().contains(name.lowercased()) }
             }
             if let country = options.country {
                 query = query.where { $0.country == country }

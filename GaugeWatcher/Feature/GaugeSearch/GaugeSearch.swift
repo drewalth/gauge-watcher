@@ -6,29 +6,40 @@
 //
 
 import ComposableArchitecture
-import Loadable
 import SwiftUI
+import Loadable
 
 struct GaugeSearch: View {
-    var store: StoreOf<GaugeSearchFeature>
+    @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
         NavigationStack {
-            List {
-                switch store.results {
-                case .loading, .initial:
-                    ProgressView()
-                case .loaded(let gauges), .reloading(let gauges):
-                    ForEach(gauges, id: \.id) { gauge in
-                        Text(gauge.name)
-                    }
-                case .error(let err):
-                    Text(String(describing: err.localizedDescription))
+            content()
+                .task {
+                    store.send(.initialize)
                 }
-            }.gaugeWatcherList()
-            .task {
-                store.send(.query)
+        }
+    }
+    
+    @ViewBuilder
+    private func content() -> some View {
+        switch store.initialized {
+        case .initial, .loading:
+            ProgressView()
+        case .loaded(let isInitialized), .reloading(let isInitialized):
+            if isInitialized {
+                Group {
+                    if store.mode == .list {
+                        GaugeSearchList(store: store)
+                    } else {
+                        GaugeSearchMap(store: store)
+                    }
+                }
+            } else {
+                ProgressView()
             }
-        }.navigationTitle("Gauges")
+        case .error(let error):
+            Text(error.localizedDescription)
+        }
     }
 }
