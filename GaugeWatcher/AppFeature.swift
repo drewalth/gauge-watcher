@@ -6,37 +6,37 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import Loadable
 import os
 import SQLiteData
-import Foundation
 
 @Reducer
 struct AppFeature {
-    
+
     private let logger = Logger(category: "AppFeature")
-    
+
     @ObservableState
     struct State {
         var initialized: Loadable<Bool>
-        @Shared(.appStorage(LocalStorageKey.gaugesSeeded.rawValue)) var gaugesSeeded: Bool = false
-        
+        @Shared(.appStorage(LocalStorageKey.gaugesSeeded.rawValue)) var gaugesSeeded = false
+
         init(initialized: Loadable<Bool> = .initial) {
             self.initialized = initialized
         }
     }
-    
+
     enum Action {
         case initialize
         case setInitialized(Loadable<Bool>)
         case setGaugesSeeded(Bool)
     }
-    
+
     @Dependency(\.defaultDatabase)
     var database
-    
+
     @Dependency(\.gaugeSourceService) var gaugeSourceService: GaugeSourceService
-    
+
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -44,7 +44,7 @@ struct AppFeature {
                 state.initialized = newValue
                 return .none
             case .setGaugesSeeded(let newValue):
-                state.$gaugesSeeded.withLock {  $0 = newValue }
+                state.$gaugesSeeded.withLock { $0 = newValue }
                 return .none
             case .initialize:
                 // TODO: update this so that we can easily add new gauge sources and update existing gauge sources

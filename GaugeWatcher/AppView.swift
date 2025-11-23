@@ -6,12 +6,14 @@
 //
 
 import ComposableArchitecture
-import SwiftUI
 import Loadable
+import SwiftUI
 
 // MARK: - AppView
 
 struct AppView: View {
+
+    // MARK: Internal
 
     @Bindable var store: StoreOf<AppFeature>
 
@@ -19,10 +21,12 @@ struct AppView: View {
         Group {
             content()
         }
-            .task {
-                store.send(.initialize)
-            }
+        .task {
+            store.send(.initialize)
+        }
     }
+
+    // MARK: Private
 
     @ViewBuilder
     private func content() -> some View {
@@ -37,7 +41,6 @@ struct AppView: View {
                     .multilineTextAlignment(.leading)
             }
         case .loaded(let isInitialized):
-            
             TabView {
                 GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
                     GaugeSearchFeature()

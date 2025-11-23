@@ -5,10 +5,10 @@
 //  Created by Andrew Althage on 9/17/25.
 //
 
+import ComposableArchitecture
 import GaugeSources
 import SQLiteData
 import SwiftUI
-import ComposableArchitecture
 
 // MARK: - GaugeWatcherApp
 

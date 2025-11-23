@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
-import SQLiteData
 import ComposableArchitecture
 import os
+import SQLiteData
 
 extension DependencyValues {
     mutating func bootstrapDatabase() throws {

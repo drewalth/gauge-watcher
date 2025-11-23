@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
-import SQLiteData
-import GaugeSources
 import Foundation
+import GaugeSources
+import SQLiteData
 
 extension Database {
     func seedGaugeData(_ gaugeData: [GaugeSourceItem]) throws {
@@ -33,4 +33,3 @@ extension Database {
         }
     }
 }
-
