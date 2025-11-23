@@ -27,6 +27,7 @@ struct GaugeSearchFeature {
         var mode: Mode = .list
         var initialized: Loadable<Bool> = .initial
         @Shared(.appStorage(LocalStorageKey.currentLocation.rawValue)) var currentLocation: CurrentLocation?
+        var path = StackState<Path.State>()
     }
 
     enum Action {
@@ -38,11 +39,19 @@ struct GaugeSearchFeature {
         case setInitialized(Loadable<Bool>)
         case setCurrentLocation(CurrentLocation?)
         case setSearchText(String)
+        case path(StackActionOf<Path>)
+        case goToGaugeDetail(Int)
     }
 
     @Dependency(\.databaseService) var databaseService: DatabaseService
     @Dependency(\.locationService) var locationService: LocationService
 
+    
+    @Reducer
+    enum Path {
+        case gaugeDetail(GaugeDetailFeature)
+    }
+    
     nonisolated enum CancelID {
         case query
     }
@@ -50,6 +59,15 @@ struct GaugeSearchFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .goToGaugeDetail(let gaugeID):
+                state.path.append(.gaugeDetail(GaugeDetailFeature.State(gaugeID)))
+                return .none
+            case let .path(action):
+                switch action {
+                default:
+                    print(action)
+                }
+                return .none
             case .setSearchText(let newValue):
                 var opt = state.queryOptions
                 if !newValue.isEmpty {
@@ -63,52 +81,58 @@ struct GaugeSearchFeature {
                 state.$currentLocation.withLock { $0 = newValue }
                 return .none
             case .initialize:
+                state.initialized = .loading
                 locationService.requestWhenInUseAuthorization()
                 return .run { send in
                     for await delegateAction in await locationService.delegate() {
                         switch delegateAction {
                         case .didChangeAuthorization(let status):
-                            // handle authorization changes with other effects
-                            logger.info("did change authorization status \(status.customDumpDescription)")
-                            await send(.setInitialized(.loaded(true)))
+                            switch status {
+                            case .authorizedAlways, .authorizedWhenInUse:
+                                logger.info("Starting location updates")
+                                await locationService.startUpdatingLocation()
+                            default: break
+                            }
                         case .didUpdateLocations(let locations):
-                            // handle location updates with other effects
-                            logger.info("did update locations \(locations.count)")
-                            print(locations)
-                            guard let location = locations.last else {
-                                logger.error("cound not determine location")
-                                return
+                            do {
+                                // handle location updates with other effects
+                                logger.info("did update locations \(locations.count)")
+                                print(locations)
+                                guard let location = locations.last else {
+                                    throw GaugeSearchFeatureError.couldNotDetermineLocation
+                                }
+
+                                let currentLocation = CurrentLocation(
+                                    latitude: location.coordinate.latitude,
+                                    longitude: location.coordinate.longitude)
+
+                                await send(.setCurrentLocation(currentLocation))
+
+                                // Using CLGeocoder - deprecated in iOS 26 but havent gotten MapKit replacement working yet
+                                let geocoder = CLGeocoder()
+                                guard let placemark = try await geocoder.reverseGeocodeLocation(currentLocation.loc).first else {
+                                    throw GaugeSearchFeatureError.couldNotGetMapItemFromGeocoding
+                                }
+                                
+                                guard let stateArea = placemark.administrativeArea else {
+                                    throw GaugeSearchFeatureError.couldNotGetRegionName
+                                }
+
+                                guard let currentState = StatesProvinces.state(from: stateArea) else {
+                                    throw GaugeSearchFeatureError.couldNotGetCurrentState
+                                }
+
+                                logger.info("got current state")
+
+                                await locationService.stopUpdatingLocation()
+
+                                // TODO: get country based on current state abbreviation
+                                await send(.setQueryOptions(.init(state: currentState.abbreviation)))
+                                await send(.query)
+                            } catch {
+                                print(error)
+                                await send(.setInitialized(.error(error)))
                             }
-
-                            let currentLocation = CurrentLocation(
-                                latitude: location.coordinate.latitude,
-                                longitude: location.coordinate.longitude)
-
-                            await send(.setCurrentLocation(currentLocation))
-
-                            let geocoder = CLGeocoder()
-                            guard let placemark = try await geocoder.reverseGeocodeLocation(currentLocation.loc).first else {
-                                logger.error("could not get placemark")
-                                return
-                            }
-
-                            guard let stateArea = placemark.administrativeArea else {
-                                logger.error("could not get state area")
-                                return
-                            }
-
-                            guard let currentState = StatesProvinces.state(from: stateArea) else {
-                                logger.error("could not get current state")
-                                return
-                            }
-
-                            logger.info("got current state")
-
-                            await locationService.stopUpdatingLocation()
-
-                            // TODO: get country based on current state abbreviation
-                            await send(.setQueryOptions(.init(state: currentState.abbreviation)))
-                            await send(.query)
 
                         case .didFailWithError(let error):
                             logger.error("\(error.localizedDescription)")
@@ -149,7 +173,7 @@ struct GaugeSearchFeature {
                 state.results = results
                 return .none
             }
-        }
+        }.forEach(\.path, action: \.path)
     }
 
     enum Mode {
@@ -182,3 +206,10 @@ nonisolated struct CurrentLocation: Equatable, Sendable, Codable {
 // state.currentLocation = .init(
 //                        latitude: Double(location.coordinate.latitude),
 //                        longitude: Double(location.coordinate.longitude))
+
+enum GaugeSearchFeatureError: Error {
+    case couldNotDetermineLocation
+    case couldNotGetMapItemFromGeocoding
+    case couldNotGetRegionName
+    case couldNotGetCurrentState
+}

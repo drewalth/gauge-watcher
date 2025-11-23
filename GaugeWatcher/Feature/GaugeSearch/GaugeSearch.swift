@@ -16,11 +16,14 @@ struct GaugeSearch: View {
     @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             content()
-                .task {
-                    store.send(.initialize)
-                }
+                
+        } destination: { store in
+            switch store.case {
+            case .gaugeDetail(let gaugeDetailStore):
+                GaugeDetail(store: gaugeDetailStore)
+            }
         }
     }
 
@@ -31,6 +34,9 @@ struct GaugeSearch: View {
         switch store.initialized {
         case .initial, .loading:
             ProgressView()
+                .task {
+                    store.send(.initialize)
+                }
         case .loaded(let isInitialized), .reloading(let isInitialized):
             if isInitialized {
                 Group {

@@ -12,7 +12,12 @@ import Loadable
 struct GaugeDetailFeature {
     @ObservableState
     struct State {
-        var gauge: Loadable<GaugeRef>
+        var gaugeID: Int
+        var gauge: Loadable<GaugeRef> = .initial
+        
+        init(_ gaugeID: Int) {
+            self.gaugeID = gaugeID
+        }
     }
 
     enum Action {

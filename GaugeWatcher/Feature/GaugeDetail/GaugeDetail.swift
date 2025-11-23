@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct GaugeDetail: View {
+    @Bindable var store: StoreOf<GaugeDetailFeature>
+    
     var body: some View {
         Text("GaugeDeatil")
+            .task {
+                store.send(.load)
+            }
     }
 }
 
-#Preview {
-    GaugeDetail()
-}

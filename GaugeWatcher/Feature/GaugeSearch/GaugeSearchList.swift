@@ -20,6 +20,9 @@ struct GaugeSearchList: View {
             case .loaded(let gauges), .reloading(let gauges):
                 ForEach(gauges, id: \.id) { gauge in
                     Text(gauge.name)
+                        .onTapGesture {
+                            store.send(.goToGaugeDetail(gauge.id))
+                        }
                 }
             case .error(let err):
                 Text(String(describing: err.localizedDescription))
