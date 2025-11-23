@@ -5,13 +5,13 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
-import SwiftUI
 import ComposableArchitecture
 import Loadable
+import SwiftUI
 
 struct GaugeSearchList: View {
     @Bindable var store: StoreOf<GaugeSearchFeature>
-    
+
     var body: some View {
         List {
             switch store.results {
@@ -25,26 +25,23 @@ struct GaugeSearchList: View {
                 Text(String(describing: err.localizedDescription))
             }
         }.gaugeWatcherList()
-            .searchable(text: Binding<String>(
-                get: {
-                    store.queryOptions.name ?? ""
-                },
-                set: { newValue in
-                    store.send(.setSearchText(newValue))
-                }
-            ))
-            .navigationTitle("Gauges")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        store.send(.toggleMode)
-                    } label: {
-                        Label("Mode", systemImage: store.mode == .list ? "list.bullet" : "map")
-                            .labelStyle(.iconOnly)
-                    }
-
+        .searchable(text: Binding<String>(
+                        get: {
+                            store.queryOptions.name ?? ""
+                        },
+                        set: { newValue in
+                            store.send(.setSearchText(newValue))
+                        }))
+        .navigationTitle("Gauges")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    store.send(.toggleMode)
+                } label: {
+                    Label("Mode", systemImage: store.mode == .list ? "list.bullet" : "map")
+                        .labelStyle(.iconOnly)
                 }
             }
+        }
     }
 }
-

@@ -6,10 +6,13 @@
 //
 
 import ComposableArchitecture
-import SwiftUI
 import Loadable
+import SwiftUI
 
 struct GaugeSearch: View {
+
+    // MARK: Internal
+
     @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
@@ -20,7 +23,9 @@ struct GaugeSearch: View {
                 }
         }
     }
-    
+
+    // MARK: Private
+
     @ViewBuilder
     private func content() -> some View {
         switch store.initialized {

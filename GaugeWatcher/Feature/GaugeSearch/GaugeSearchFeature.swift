@@ -6,12 +6,14 @@
 //
 
 import ComposableArchitecture
+import CoreLocation
+import Foundation
+import GaugeSources
 import Loadable
 import os
 import SQLiteData
-import Foundation
-import CoreLocation
-import GaugeSources
+
+// MARK: - GaugeSearchFeature
 
 @Reducer
 struct GaugeSearchFeature {
@@ -41,11 +43,10 @@ struct GaugeSearchFeature {
     @Dependency(\.databaseService) var databaseService: DatabaseService
     @Dependency(\.locationService) var locationService: LocationService
 
-    
     nonisolated enum CancelID {
         case query
     }
-    
+
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -64,60 +65,62 @@ struct GaugeSearchFeature {
             case .initialize:
                 locationService.requestWhenInUseAuthorization()
                 return .run { send in
-                                    for await delegateAction in await locationService.delegate() {
-                                        switch delegateAction {
-                                        case .didChangeAuthorization(let status):
-                                            // handle authorization changes with other effects
-                                            logger.info("did change authorization status \(status.customDumpDescription)")
-                                            await send(.setInitialized(.loaded(true)))
-                                        case .didUpdateLocations(let locations):
-                                            // handle location updates with other effects
-                                            logger.info("did update locations \(locations.count)")
-                                            print(locations)
-                                            guard let location = locations.last else {
-                                                logger.error("cound not determine location")
-                                                return
-                                            }
-                                            let currentLocation = CurrentLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-                                            
-                                            await send(.setCurrentLocation(currentLocation))
-                                            
-                                            let geocoder = CLGeocoder()
-                                            guard let placemark = try await geocoder.reverseGeocodeLocation(currentLocation.loc).first else {
-                                                logger.error("could not get placemark")
-                                                return
-                                            }
-                                            
-                                            guard let stateArea = placemark.administrativeArea else {
-                                                logger.error("could not get state area")
-                                                return
-                                            }
-                                            
-                                            guard let currentState = StatesProvinces.state(from: stateArea) else {
-                                                logger.error("could not get current state")
-                                                return
-                                            }
-                                            
-                                            logger.info("got current state")
-                                            print(currentState)
-                                            
-                                            // todo: get country based on current state abbreviation
-                                            
-                                            await send(.setQueryOptions(.init(state: currentState.abbreviation)))
-                                            await send(.query)
-                                            
-                                        case .didFailWithError(let error):
-                                            logger.error("\(error.localizedDescription)")
-                                            await send(.setInitialized(.loaded(true)))
-                                        case .didDetermineState(let state, let region):
-                                            logger.info("did determine state")
-                                            print(state)
-                                            print(region)
-                                        case .didStartMonitoringFor(_):
-                                            logger.info("did start monitoring for ")
-                                        }
-                                    }
-                                }
+                    for await delegateAction in await locationService.delegate() {
+                        switch delegateAction {
+                        case .didChangeAuthorization(let status):
+                            // handle authorization changes with other effects
+                            logger.info("did change authorization status \(status.customDumpDescription)")
+                            await send(.setInitialized(.loaded(true)))
+                        case .didUpdateLocations(let locations):
+                            // handle location updates with other effects
+                            logger.info("did update locations \(locations.count)")
+                            print(locations)
+                            guard let location = locations.last else {
+                                logger.error("cound not determine location")
+                                return
+                            }
+                            let currentLocation = CurrentLocation(
+                                latitude: location.coordinate.latitude,
+                                longitude: location.coordinate.longitude)
+
+                            await send(.setCurrentLocation(currentLocation))
+
+                            let geocoder = CLGeocoder()
+                            guard let placemark = try await geocoder.reverseGeocodeLocation(currentLocation.loc).first else {
+                                logger.error("could not get placemark")
+                                return
+                            }
+
+                            guard let stateArea = placemark.administrativeArea else {
+                                logger.error("could not get state area")
+                                return
+                            }
+
+                            guard let currentState = StatesProvinces.state(from: stateArea) else {
+                                logger.error("could not get current state")
+                                return
+                            }
+
+                            logger.info("got current state")
+                            print(currentState)
+
+                            // todo: get country based on current state abbreviation
+
+                            await send(.setQueryOptions(.init(state: currentState.abbreviation)))
+                            await send(.query)
+
+                        case .didFailWithError(let error):
+                            logger.error("\(error.localizedDescription)")
+                            await send(.setInitialized(.loaded(true)))
+                        case .didDetermineState(let state, let region):
+                            logger.info("did determine state")
+                            print(state)
+                            print(region)
+                        case .didStartMonitoringFor:
+                            logger.info("did start monitoring for ")
+                        }
+                    }
+                }
             case .setInitialized(let newValue):
                 state.initialized = newValue
                 return .none
@@ -147,34 +150,34 @@ struct GaugeSearchFeature {
             }
         }
     }
-    
+
     enum Mode {
         case map, list
     }
 }
 
+// MARK: - CurrentLocation
+
 nonisolated struct CurrentLocation: Equatable, Sendable, Codable {
-     init(latitude: Double, longitude: Double) {
+    init(latitude: Double, longitude: Double) {
         self.latitude = latitude
         self.longitude = longitude
     }
 
-     var latitude: Double
-     var longitude: Double
-    
+    var latitude: Double
+    var longitude: Double
+
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.latitude = try container.decode(Double.self, forKey: .latitude)
-        self.longitude = try container.decode(Double.self, forKey: .longitude)
+        latitude = try container.decode(Double.self, forKey: .latitude)
+        longitude = try container.decode(Double.self, forKey: .longitude)
     }
-    
+
     var loc: CLLocation {
-        .init(latitude: self.latitude, longitude: self.longitude)
+        .init(latitude: latitude, longitude: longitude)
     }
 }
 
-/*
- state.currentLocation = .init(
-                         latitude: Double(location.coordinate.latitude),
-                         longitude: Double(location.coordinate.longitude))
- */
+// state.currentLocation = .init(
+//                        latitude: Double(location.coordinate.latitude),
+//                        longitude: Double(location.coordinate.longitude))

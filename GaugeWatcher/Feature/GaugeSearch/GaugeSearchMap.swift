@@ -5,12 +5,12 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
-import SwiftUI
 import ComposableArchitecture
+import SwiftUI
 
 struct GaugeSearchMap: View {
     @Bindable var store: StoreOf<GaugeSearchFeature>
-    
+
     var body: some View {
         VStack {
             Text("map")
@@ -22,7 +22,6 @@ struct GaugeSearchMap: View {
                     Label("Mode", systemImage: store.mode == .list ? "list.bullet" : "map")
                         .labelStyle(.iconOnly)
                 }
-
             }
         }
     }

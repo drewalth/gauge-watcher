@@ -6,8 +6,8 @@
 //
 
 import ComposableArchitecture
-import Loadable
 import CoreLocation
+import Loadable
 
 @Reducer
 struct GaugeSearchMapFeature {
