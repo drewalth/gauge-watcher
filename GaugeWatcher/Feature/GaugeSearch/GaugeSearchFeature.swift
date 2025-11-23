@@ -79,6 +79,7 @@ struct GaugeSearchFeature {
                                 logger.error("cound not determine location")
                                 return
                             }
+
                             let currentLocation = CurrentLocation(
                                 latitude: location.coordinate.latitude,
                                 longitude: location.coordinate.longitude)
@@ -102,10 +103,10 @@ struct GaugeSearchFeature {
                             }
 
                             logger.info("got current state")
-                            print(currentState)
 
-                            // todo: get country based on current state abbreviation
+                            await locationService.stopUpdatingLocation()
 
+                            // TODO: get country based on current state abbreviation
                             await send(.setQueryOptions(.init(state: currentState.abbreviation)))
                             await send(.query)
 
