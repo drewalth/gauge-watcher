@@ -1,0 +1,3892 @@
+[
+  {
+    "id": "0101794A",
+    "siteId": "0101794A",
+    "name": "ANTELOPE BEACH RECHARGE AREA",
+    "latitude": 40.638801,
+    "longitude": -104.655907,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "0203007A",
+    "siteId": "0203007A",
+    "name": "UNITED #3 PUMP OUTLET TO RIVER",
+    "latitude": 39.932225,
+    "longitude": -104.856513,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "0203358A",
+    "siteId": "0203358A",
+    "name": "WALKER RESERVOIR OUTLET",
+    "latitude": 40.007249,
+    "longitude": -104.829748,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "0203700A",
+    "siteId": "0203700A",
+    "name": "TANI LAKES INLET FROM BURLINGTON",
+    "latitude": 39.833962,
+    "longitude": -104.938923,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "0803405B",
+    "siteId": "0803405B",
+    "name": "MAIN RESERVOIR OUTLET TO EAST RESERVOIR",
+    "latitude": 39.693995,
+    "longitude": -105.113715,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "0803406A",
+    "siteId": "0803406A",
+    "name": "EAST RESERVOIR OUTLET",
+    "latitude": 39.693142,
+    "longitude": -105.110436,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "0803407A",
+    "siteId": "0803407A",
+    "name": "SMITH RESERVOIR OUTLET TO EAST RESERVOIR",
+    "latitude": 39.686733,
+    "longitude": -105.113108,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "124OUTCO",
+    "siteId": "124OUTCO",
+    "name": "124TH AVE RESERVOIR RESLEASE",
+    "latitude": 39.918029,
+    "longitude": -104.859479,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "1400627A",
+    "siteId": "1400627A",
+    "name": "EXCELSIOR RECHARGE POND",
+    "latitude": 38.266733,
+    "longitude": -104.3812,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "1403593B",
+    "siteId": "1403593B",
+    "name": "STONEWALL SPRINGS SOUTH RESERVOIR OUTFLOW",
+    "latitude": 38.257738,
+    "longitude": -104.408293,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "1403593C",
+    "siteId": "1403593C",
+    "name": "STONEWALL SPRINGS RESERVOIR INFLOW",
+    "latitude": 38.260386,
+    "longitude": -104.411074,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "8003522A",
+    "siteId": "8003522A",
+    "name": "DOZIER # 3 RES OUTLET BELOW",
+    "latitude": 39.455368,
+    "longitude": -105.437813,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "8003526A",
+    "siteId": "8003526A",
+    "name": "DOZIER # 7 RES INLET ABOVE",
+    "latitude": 39.472802,
+    "longitude": -105.445491,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ABRJPOCO",
+    "siteId": "ABRJPOCO",
+    "name": "ABRAMS CREEK ABOVE JPO",
+    "latitude": 39.586535,
+    "longitude": -106.860548,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ADOAARCO",
+    "siteId": "ADOAARCO",
+    "name": "ADOBE CREEK ABOVE ADOBE RESERVOIR",
+    "latitude": 38.268565,
+    "longitude": -103.292861,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ADOBARCO",
+    "siteId": "ADOBARCO",
+    "name": "ADOBE CREEK BELOW ADOBE RESERVOIR",
+    "latitude": 38.173484,
+    "longitude": -103.3324,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ALABELCO",
+    "siteId": "ALABELCO",
+    "name": "ALAMOSA RIVER BELOW TERRACE RESERVOIR, CO.",
+    "latitude": 37.353833,
+    "longitude": -106.278317,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ALARANCO",
+    "siteId": "ALARANCO",
+    "name": "ALAMOSA RIVER BELOW RANGER CREEK NEAR JASPER",
+    "latitude": 37.389624,
+    "longitude": -106.378601,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ALATERCO",
+    "siteId": "ALATERCO",
+    "name": "ALAMOSA RIVER ABOVE TERRACE RESERVOIR, CO.",
+    "latitude": 37.374474,
+    "longitude": -106.332877,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ALAWIGCO",
+    "siteId": "ALAWIGCO",
+    "name": "ALAMOSA RIVER ABOVE WIGHTMAN FORK NEAR JASPER, CO",
+    "latitude": 37.404014,
+    "longitude": -106.521503,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ALFFRUCO",
+    "siteId": "ALFFRUCO",
+    "name": "ALFALFA RUN BELOW FRUIT GROWERS RESERVOIR, CO",
+    "latitude": 38.826671,
+    "longitude": -107.955283,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ALSOUTCO",
+    "siteId": "ALSOUTCO",
+    "name": "ALSBURY RESERVOIR (OUTFLOW)",
+    "latitude": 39.333127,
+    "longitude": -107.481899,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ANIHOWCO",
+    "siteId": "ANIHOWCO",
+    "name": "ANIMAS RIVER AT HOWARDSVILLE, CO",
+    "latitude": 37.832855,
+    "longitude": -107.599581,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "APHW10CO",
+    "siteId": "APHW10CO",
+    "name": "APISHIPA RIVER AT HWY 10 NR ROCK CROSSING, CO",
+    "latitude": 37.909724,
+    "longitude": -104.005505,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKAMCCO",
+    "siteId": "ARKAMCCO",
+    "name": "ARKANSAS RIVER ABOVE AMITY CANAL",
+    "latitude": 38.093479,
+    "longitude": -102.768369,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKCANCO",
+    "siteId": "ARKCANCO",
+    "name": "ARKANSAS RIVER AT CANON CITY",
+    "latitude": 38.433624,
+    "longitude": -105.257784,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKCATCO",
+    "siteId": "ARKCATCO",
+    "name": "ARKANSAS RIVER AT CATLIN DAM NEAR FOWLER",
+    "latitude": 38.126012,
+    "longitude": -103.944402,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKGRNCO",
+    "siteId": "ARKGRNCO",
+    "name": "ARKANSAS RIVER AT GRANITE, CO.",
+    "latitude": 39.043002,
+    "longitude": -106.265702,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKLAJCO",
+    "siteId": "ARKLAJCO",
+    "name": "ARKANSAS RIVER AT LA JUNTA, CO",
+    "latitude": 37.990787,
+    "longitude": -103.531828,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKNEPCO",
+    "siteId": "ARKNEPCO",
+    "name": "ARKANSAS RIVER AT NEPESTA BRIDGE NEAR NEPESTA, CO",
+    "latitude": 38.179388,
+    "longitude": -104.139428,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKOXFCO",
+    "siteId": "ARKOXFCO",
+    "name": "ARKANSAS RIVER ABOVE OXFORD DITCH NEAR NEPESTA, CO",
+    "latitude": 38.184174,
+    "longitude": -104.173307,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKPORCO",
+    "siteId": "ARKPORCO",
+    "name": "ARKANSAS RIVER AT PORTLAND, CO.",
+    "latitude": 38.388178,
+    "longitude": -105.01572,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKPUECO",
+    "siteId": "ARKPUECO",
+    "name": "ARKANSAS RIVER ABOVE PUEBLO",
+    "latitude": 38.271437,
+    "longitude": -104.718551,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKROCCO",
+    "siteId": "ARKROCCO",
+    "name": "ARKANSAS RIVER NEAR ROCKY FORD",
+    "latitude": 38.064604,
+    "longitude": -103.685472,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKSALCO",
+    "siteId": "ARKSALCO",
+    "name": "ARKANSAS RIVER AT SALIDA, CO.",
+    "latitude": 38.545972,
+    "longitude": -106.010746,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARKWELCO",
+    "siteId": "ARKWELCO",
+    "name": "ARKANSAS RIVER NEAR WELLSVILLE, CO.",
+    "latitude": 38.502775,
+    "longitude": -105.93975,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARVINLCO",
+    "siteId": "ARVINLCO",
+    "name": "ARVADA (BLUNN) RESERVOIR INLET FROM RALSTON CREEK",
+    "latitude": 39.826261,
+    "longitude": -105.221767,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ARVRCKCO",
+    "siteId": "ARVRCKCO",
+    "name": "ARVADA (BLUNN) RESERVOIR RELEASE TO RALSTON CREEK",
+    "latitude": 39.821068,
+    "longitude": -105.198463,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "AURAPWCO",
+    "siteId": "AURAPWCO",
+    "name": "AURORA PRAIRIE WATER WELL FIELD TOTAL",
+    "latitude": 40.007704,
+    "longitude": -104.819943,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "AZOTUNNM",
+    "siteId": "AZOTUNNM",
+    "name": "AZOTEA TUNNEL OUTLET NEAR CHAMA, NM",
+    "latitude": 36.850604,
+    "longitude": -106.671723,
+    "state": "NM",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BASMOUCO",
+    "siteId": "BASMOUCO",
+    "name": "BASIN CREEK AT THE MOUTH NEAR DURANGO, CO",
+    "latitude": 37.186429,
+    "longitude": -107.879803,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BASOUTCO",
+    "siteId": "BASOUTCO",
+    "name": "BASELINE RESERVOIR OUTLET",
+    "latitude": 39.998601,
+    "longitude": -105.197875,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BCACOACO",
+    "siteId": "BCACOACO",
+    "name": "BROWNS CREEK ABOVE CONFLUENCE OF ARKANSAS",
+    "latitude": 38.691887,
+    "longitude": -106.072541,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BCRMORCO",
+    "siteId": "BCRMORCO",
+    "name": "BEAR CREEK AT MORRISON",
+    "latitude": 39.652952,
+    "longitude": -105.195603,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BCROUTCO",
+    "siteId": "BCROUTCO",
+    "name": "BEAR CREEK RESERVOIR (OUTFLOW)",
+    "latitude": 39.657347,
+    "longitude": -105.133693,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BCRSHECO",
+    "siteId": "BCRSHECO",
+    "name": "BEAR CREEK AT SHERIDAN",
+    "latitude": 39.652346,
+    "longitude": -105.032997,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BERBBLCO",
+    "siteId": "BERBBLCO",
+    "name": "BEAR RIVER BELOW BEAR LAKE",
+    "latitude": 40.044177,
+    "longitude": -107.071753,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BERBXKCO",
+    "siteId": "BERBXKCO",
+    "name": "BEAR RIVER AT BOX K RANCH",
+    "latitude": 40.086917,
+    "longitude": -106.9769,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BERCR7CO",
+    "siteId": "BERCR7CO",
+    "name": "BEAR RIVER AT CR7 NEAR YAMPA, CO",
+    "latitude": 40.125836,
+    "longitude": -106.923183,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BEROUTCO",
+    "siteId": "BEROUTCO",
+    "name": "BEERS SISTER RESERVOIR OUTLET",
+    "latitude": 39.615678,
+    "longitude": -105.121835,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BERSOUCO",
+    "siteId": "BERSOUCO",
+    "name": "BEAR CREEK NEAR SOUTH FORK",
+    "latitude": 37.679809,
+    "longitude": -106.608073,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BEVBEVCO",
+    "siteId": "BEVBEVCO",
+    "name": "BEAVER CREEK BELOW BEAVER CREEK RESERVOIR",
+    "latitude": 37.599247,
+    "longitude": -106.669657,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BIGDAFCO",
+    "siteId": "BIGDAFCO",
+    "name": "BIG DRY CREEK AT MOUTH NEAR FORT LUPTON",
+    "latitude": 40.048662,
+    "longitude": -104.845425,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BIGHILCO",
+    "siteId": "BIGHILCO",
+    "name": "BIG THOMPSON RIVER BELOW HILLSBOROUGH DIVERSION",
+    "latitude": 40.385854,
+    "longitude": -105.014549,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BIGLASCO",
+    "siteId": "BIGLASCO",
+    "name": "BIG THOMPSON RIVER AT MOUTH NEAR LA SALLE",
+    "latitude": 40.35066,
+    "longitude": -104.783657,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BIGSPGCO",
+    "siteId": "BIGSPGCO",
+    "name": "BIG SPRING CREEK AT MEDANO RANCH NEAR MOSCA",
+    "latitude": 37.734378,
+    "longitude": -105.663676,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BIGUPPCO",
+    "siteId": "BIGUPPCO",
+    "name": "BIG CREEK AT UPPER STATION NEAR COLLBRAN",
+    "latitude": 39.177785,
+    "longitude": -107.950206,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BKIOUTCO",
+    "siteId": "BKIOUTCO",
+    "name": "BUCKEYE RESERVOIR (OUTFLOW)",
+    "latitude": 38.435951,
+    "longitude": -109.044957,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BLUNINCO",
+    "siteId": "BLUNINCO",
+    "name": "BLUE RIVER AT HIGHWAY 9 BRIDGE BELOW BRECKENRIDGE",
+    "latitude": 39.539337,
+    "longitude": -106.042213,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOBCRKCO",
+    "siteId": "BOBCRKCO",
+    "name": "BOB CREEK AT COLORADO CANAL",
+    "latitude": 38.183062,
+    "longitude": -103.766273,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOC109CO",
+    "siteId": "BOC109CO",
+    "name": "BOULDER CREEK AT 109 ST NEAR ERIE, CO",
+    "latitude": 40.059815,
+    "longitude": -105.097882,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCBBRCO",
+    "siteId": "BOCBBRCO",
+    "name": "MIDDLE BOULDER CREEK BELOW BARKER MEADOW RESERVOIR",
+    "latitude": 39.967224,
+    "longitude": -105.479948,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCBGRCO",
+    "siteId": "BOCBGRCO",
+    "name": "SOUTH BOULDER CREEK BELOW GROSS RESERVOIR",
+    "latitude": 39.938324,
+    "longitude": -105.347953,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCBROCO",
+    "siteId": "BOCBROCO",
+    "name": "BOULDER CREEK BELOW BROADWAY STREET",
+    "latitude": 40.014863,
+    "longitude": -105.278541,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCELSCO",
+    "siteId": "BOCELSCO",
+    "name": "SOUTH BOULDER CREEK NEAR ELDORADO SPRINGS, CO.",
+    "latitude": 39.931597,
+    "longitude": -105.30499,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCMIDCO",
+    "siteId": "BOCMIDCO",
+    "name": "MIDDLE BOULDER CREEK AT NEDERLAND, CO.",
+    "latitude": 39.96166,
+    "longitude": -105.50445,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCOROCO",
+    "siteId": "BOCOROCO",
+    "name": "BOULDER CREEK NEAR ORODELL, CO.",
+    "latitude": 40.006534,
+    "longitude": -105.330525,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCPINCO",
+    "siteId": "BOCPINCO",
+    "name": "SOUTH BOULDER CREEK ABOVE GROSS RESERVOIR AT PINECLIFFE",
+    "latitude": 39.931659,
+    "longitude": -105.422985,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCRULCO",
+    "siteId": "BOCRULCO",
+    "name": "BOULDER CREEK AT RURAL DITCH DIVERSION",
+    "latitude": 40.124985,
+    "longitude": -105.022638,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BOCWLMCO",
+    "siteId": "BOCWLMCO",
+    "name": "BOULDER CREEK BELOW WELLMAN DITCH",
+    "latitude": 40.011052,
+    "longitude": -105.25762,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BP2OUTCO",
+    "siteId": "BP2OUTCO",
+    "name": "BUCHANAN POND 2 OUTFLOW",
+    "latitude": 39.683086,
+    "longitude": -105.362668,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BREOUTCO",
+    "siteId": "BREOUTCO",
+    "name": "BRETT GRAY RESERVOIR AT SMITH RANCH NEAR RUSH (OUT",
+    "latitude": 38.737453,
+    "longitude": -103.911253,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BTABCMCO",
+    "siteId": "BTABCMCO",
+    "name": "BIG THOMPSON RIVER ABOVE CANYON MOUTH AT CEDAR COVE, CO",
+    "latitude": 40.414889,
+    "longitude": -105.251033,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BTABESCO",
+    "siteId": "BTABESCO",
+    "name": "BIG THOMPSON RIVER ABOVE LAKE ESTES",
+    "latitude": 40.378325,
+    "longitude": -105.513894,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BTBLESCO",
+    "siteId": "BTBLESCO",
+    "name": "BIG THOMPSON RIVER BELOW LAKE ESTES",
+    "latitude": 40.376375,
+    "longitude": -105.48556,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BTNFDRCO",
+    "siteId": "BTNFDRCO",
+    "name": "NORTH FORK BIG THOMPSON RIVER AT DRAKE, CO.",
+    "latitude": 40.433608,
+    "longitude": -105.345847,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BUCRMVCO",
+    "siteId": "BUCRMVCO",
+    "name": "BUCKHORN CREEK NEAR MASONVILLE, CO",
+    "latitude": 40.434464,
+    "longitude": -105.184951,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "BULLCRCO",
+    "siteId": "BULLCRCO",
+    "name": "BULL CREEK ABOVE SOUTH SIDE CANAL NR MOLINA",
+    "latitude": 39.1361,
+    "longitude": -108.047862,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CANSWKCO",
+    "siteId": "CANSWKCO",
+    "name": "CROOKED ARROYO NEAR SWINK, CO.",
+    "latitude": 37.982234,
+    "longitude": -103.598289,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CARLAGCO",
+    "siteId": "CARLAGCO",
+    "name": "CARNERO CREEK NEAR LA GARITA, CO.",
+    "latitude": 37.859697,
+    "longitude": -106.31955,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CCACCRCO",
+    "siteId": "CCACCRCO",
+    "name": "CLEAR CREEK ABOVE CLEAR CREEK RESERVOIR, CO.",
+    "latitude": 39.018264,
+    "longitude": -106.277574,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CCBCCRCO",
+    "siteId": "CCBCCRCO",
+    "name": "CLEAR CREEK BELOW CLEAR CREEK RESERVOIR",
+    "latitude": 39.022147,
+    "longitude": -106.242586,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CENKNGCO",
+    "siteId": "CENKNGCO",
+    "name": "KOENIG RESERVOIR INLET",
+    "latitude": 40.131205,
+    "longitude": -104.830237,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHAGULCO",
+    "siteId": "CHAGULCO",
+    "name": "CHAPMAN GULCH NEAR NAST, CO.",
+    "latitude": 39.264481,
+    "longitude": -106.632277,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHCRNACO",
+    "siteId": "CHCRNACO",
+    "name": "CHALK CREEK AT NATHROP",
+    "latitude": 38.733582,
+    "longitude": -106.159486,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHECRECO",
+    "siteId": "CHECRECO",
+    "name": "WILD CHERRY CREEK NEAR CRESTONE",
+    "latitude": 38.100268,
+    "longitude": -105.768228,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHEREDCO",
+    "siteId": "CHEREDCO",
+    "name": "CHERRY CREEK AT THE MOUTH NEAR RED MESA",
+    "latitude": 37.117976,
+    "longitude": -108.198509,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHERESCO",
+    "siteId": "CHERESCO",
+    "name": "CHEESMAN RESERVOIR",
+    "latitude": 39.208562,
+    "longitude": -105.272327,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHERESCO",
+    "siteId": "CHERESCO",
+    "name": "CHEESMAN RESERVOIR",
+    "latitude": 39.208562,
+    "longitude": -105.272327,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHIDEVCO",
+    "siteId": "CHIDEVCO",
+    "name": "CHICAGO CREEK BLW DEVILS CANYON NR IDAHO SPRGS C",
+    "latitude": 39.716986,
+    "longitude": -105.572152,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CHIIDSCO",
+    "siteId": "CHIIDSCO",
+    "name": "CHICAGO CREEK BELOW IDAHO SPRINGS RESERVOIR",
+    "latitude": 39.645135,
+    "longitude": -105.615265,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLAFISCO",
+    "siteId": "CLAFISCO",
+    "name": "CLEAR CREEK AT FISHER DITCH DIVERSION",
+    "latitude": 39.797699,
+    "longitude": -105.034445,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLAFTCCO",
+    "siteId": "CLAFTCCO",
+    "name": "CACHE LA POUDRE AT CANYON MOUTH NEAR FORT COLLINS",
+    "latitude": 40.66451,
+    "longitude": -105.224188,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLAGRECO",
+    "siteId": "CLAGRECO",
+    "name": "CACHE LA POUDRE NEAR GREELEY",
+    "latitude": 40.417682,
+    "longitude": -104.639957,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLASRKCO",
+    "siteId": "CLASRKCO",
+    "name": "SOUTH FORK CACHE LA POUDRE BELOW JACKS GULCH",
+    "latitude": 40.62813,
+    "longitude": -105.51286,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLAWASCO",
+    "siteId": "CLAWASCO",
+    "name": "CACHE LA POUDRE RIVER AT GREELEY WASTEWATER PLANT",
+    "latitude": 40.42272,
+    "longitude": -104.677204,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLECLPCO",
+    "siteId": "CLECLPCO",
+    "name": "CLEAR CREEK AT CLEAR CREEK AND PLATTE RIVER DITCH DIVERSION",
+    "latitude": 39.816265,
+    "longitude": -105.001611,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLECROCO",
+    "siteId": "CLECROCO",
+    "name": "CLEAR CREEK AT CROKE CANAL DIVERSION",
+    "latitude": 39.768512,
+    "longitude": -105.193688,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLEDERCO",
+    "siteId": "CLEDERCO",
+    "name": "CLEAR CREEK AT DERBY",
+    "latitude": 39.828097,
+    "longitude": -104.959039,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLEFHLCO",
+    "siteId": "CLEFHLCO",
+    "name": "CLEAR CREEK AT FARMER'S HIGHLINE CANAL DIVERSION",
+    "latitude": 39.758674,
+    "longitude": -105.218398,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CLEGLKCO",
+    "siteId": "CLEGLKCO",
+    "name": "CLEAR CR. ABV. GEORGETOWN LAKE NR GEORGETOWN, CO",
+    "latitude": 39.718878,
+    "longitude": -105.694464,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "COCABCCO",
+    "siteId": "COCABCCO",
+    "name": "COAL CREEK ABOVE BOULDER CREEK CONFULENCE",
+    "latitude": 40.076708,
+    "longitude": -105.058065,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "COCRBVCO",
+    "siteId": "COCRBVCO",
+    "name": "COTTONWOOD CREEK NEAR BUENA VISTA",
+    "latitude": 38.837345,
+    "longitude": -106.122882,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "COCREPCO",
+    "siteId": "COCREPCO",
+    "name": "COAL CREEK NEAR PLAINVIEW, CO.",
+    "latitude": 39.877787,
+    "longitude": -105.277504,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "COCRESCO",
+    "siteId": "COCRESCO",
+    "name": "COTTONWOOD CREEK NEAR CRESTONE, CO.",
+    "latitude": 37.93191,
+    "longitude": -105.648596,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "COCRMICO",
+    "siteId": "COCRMICO",
+    "name": "COTTON CREEK NEAR MINERAL HOT SPRINGS, CO.",
+    "latitude": 38.131987,
+    "longitude": -105.788048,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CONCONCO",
+    "siteId": "CONCONCO",
+    "name": "CONEJOS RIVER NEAR CONEJOS",
+    "latitude": 37.101457,
+    "longitude": -106.006909,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CONMANCO",
+    "siteId": "CONMANCO",
+    "name": "CONEJOS RIVER NEAR MANASSA",
+    "latitude": 37.174084,
+    "longitude": -105.89773,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CONMOGCO",
+    "siteId": "CONMOGCO",
+    "name": "CONEJOS RIVER NEAR MOGOTE, CO.",
+    "latitude": 37.053954,
+    "longitude": -106.187145,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CONPLACO",
+    "siteId": "CONPLACO",
+    "name": "CONEJOS RIVER BELOW PLATORO RESERVOIR, CO.",
+    "latitude": 37.354923,
+    "longitude": -106.544233,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "COWCRKCO",
+    "siteId": "COWCRKCO",
+    "name": "COW CREEK NEAR RIDGWAY RESERVOIR",
+    "latitude": 38.245126,
+    "longitude": -107.75198,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CRBRLVCO",
+    "siteId": "CRBRLVCO",
+    "name": "CUCHARAS RIVER AT BOYD RANCH NEAR LA VETA",
+    "latitude": 37.420021,
+    "longitude": -105.052788,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CRHBLVCO",
+    "siteId": "CRHBLVCO",
+    "name": "CUCHARAS RIVER AT HARRISON BRIDGE NEAR LA VETA, CO",
+    "latitude": 37.550138,
+    "longitude": -104.936363,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CRHW10CO",
+    "siteId": "CRHW10CO",
+    "name": "CUCHARAS RIVER AT HIGHWAY 10",
+    "latitude": 37.680896,
+    "longitude": -104.652049,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CRYDOWCO",
+    "siteId": "CRYDOWCO",
+    "name": "CRYSTAL RIVER AT DOW FISH HATCHERY AB CARBONDALE",
+    "latitude": 39.377436,
+    "longitude": -107.204587,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CSMOUTCO",
+    "siteId": "CSMOUTCO",
+    "name": "CARL SMITH RESERVOIR OUTFLOW",
+    "latitude": 38.960401,
+    "longitude": -107.751657,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CUCBCRCO",
+    "siteId": "CUCBCRCO",
+    "name": "CUCHARAS RIVER BELOW CUCHARAS RESERVOIR",
+    "latitude": 37.751703,
+    "longitude": -104.597774,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CULCHACO",
+    "siteId": "CULCHACO",
+    "name": "CULEBRA CREEK NEAR CHAMA, CO.",
+    "latitude": 37.181413,
+    "longitude": -105.32113,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "CULSANCO",
+    "siteId": "CULSANCO",
+    "name": "CULEBRA CREEK AT SAN LUIS, CO",
+    "latitude": 37.183832,
+    "longitude": -105.425746,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DEDMOUCO",
+    "siteId": "DEDMOUCO",
+    "name": "DEADMAN CREEK AT MOUTH OF CANYON NEAR CRESTONE, CO",
+    "latitude": 37.894916,
+    "longitude": -105.622806,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DEERCKCO",
+    "siteId": "DEERCKCO",
+    "name": "DEER CREEK BELOW CR43 NEAR BAILEY, CO",
+    "latitude": 39.465908,
+    "longitude": -105.472998,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DIXCOMCO",
+    "siteId": "DIXCOMCO",
+    "name": "DIXON FLUME ON HOLLTHUSEN GULCH",
+    "latitude": 39.340557,
+    "longitude": -105.902189,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DOLBMCCO",
+    "siteId": "DOLBMCCO",
+    "name": "DOLORES RIVER BELOW MCPHEE RESERVOIR",
+    "latitude": 37.575416,
+    "longitude": -108.577191,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DOUOUTCO",
+    "siteId": "DOUOUTCO",
+    "name": "DOUGLAS RESERVOIR AT SMITH RANCH NEAR RUSH (OUTFLOW)",
+    "latitude": 38.715,
+    "longitude": -103.887751,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DOZOUTCO",
+    "siteId": "DOZOUTCO",
+    "name": "DOZIER RESERVOIR #2 OUTLET",
+    "latitude": 39.478606,
+    "longitude": -105.485548,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "DRYABCCO",
+    "siteId": "DRYABCCO",
+    "name": "DRY CREEK CARRIER DITCH ABOVE BOULDER CREEK CONFLUENCE",
+    "latitude": 40.047775,
+    "longitude": -105.144265,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "EG4FDRCO",
+    "siteId": "EG4FDRCO",
+    "name": "EGGLESTON RESERVOIR 4 FEEDER DITCH",
+    "latitude": 39.914612,
+    "longitude": -105.244587,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ELACASCO",
+    "siteId": "ELACASCO",
+    "name": "ELBERT CREEK ABOVE CASCADE RESERVOIR",
+    "latitude": 37.579864,
+    "longitude": -107.812795,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ELBCASCO",
+    "siteId": "ELBCASCO",
+    "name": "ELBERT CREEK BELOW CASCADE RESERVOIR",
+    "latitude": 37.544455,
+    "longitude": -107.804333,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ELKCRKCO",
+    "siteId": "ELKCRKCO",
+    "name": "ELK CREEK NEAR PINE, CO",
+    "latitude": 39.492655,
+    "longitude": -105.386796,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ERIRGRCO",
+    "siteId": "ERIRGRCO",
+    "name": "EAST RIFLE CREEK ABOVE RIFLE GAP RESERVOIR",
+    "latitude": 39.634774,
+    "longitude": -107.732604,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "EV1OUTCO",
+    "siteId": "EV1OUTCO",
+    "name": "AURORA EVERIST RESERVOIR 1 OUTLET",
+    "latitude": 40.11226,
+    "longitude": -104.819676,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FALIDACO",
+    "siteId": "FALIDACO",
+    "name": "FALL RIVER NEAR IDAHO SPRINGS, CO.",
+    "latitude": 39.755409,
+    "longitude": -105.556547,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FALOUTCO",
+    "siteId": "FALOUTCO",
+    "name": "FALL RIVER RESERVOIR OUTLET",
+    "latitude": 39.819717,
+    "longitude": -105.690161,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FLOALECO",
+    "siteId": "FLOALECO",
+    "name": "FLORIDA RIVER ABOVE LEMON RESERVOIR NEAR DURANGO",
+    "latitude": 37.427368,
+    "longitude": -107.674943,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FLOBLECO",
+    "siteId": "FLOBLECO",
+    "name": "FLORIDA RIVER BELOW LEMON RESERVOIR",
+    "latitude": 37.380088,
+    "longitude": -107.662094,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FLOBONCO",
+    "siteId": "FLOBONCO",
+    "name": "FLORIDA RIVER AT BONDAD, CO.",
+    "latitude": 37.056898,
+    "longitude": -107.869961,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FLOFARCO",
+    "siteId": "FLOFARCO",
+    "name": "FLORIDA RIVER BELOW FLORIDA FARMERS CANAL NEAR DURANGO",
+    "latitude": 37.294836,
+    "longitude": -107.792044,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FOSOUTCO",
+    "siteId": "FOSOUTCO",
+    "name": "FOSSIL CREEK OUTLET",
+    "latitude": 40.493702,
+    "longitude": -104.992281,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FOU8THCO",
+    "siteId": "FOU8THCO",
+    "name": "FOUNTAIN CREEK AT 8TH STREET",
+    "latitude": 38.82959,
+    "longitude": -104.838257,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FOUBERCO",
+    "siteId": "FOUBERCO",
+    "name": "FOUR MILE CREEK AT BEERY DITCH",
+    "latitude": 39.112239,
+    "longitude": -105.950209,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FOUHARCO",
+    "siteId": "FOUHARCO",
+    "name": "FOUR MILE CREEK NEAR HARTSEL",
+    "latitude": 39.023813,
+    "longitude": -105.81837,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FOUHIGCO",
+    "siteId": "FOUHIGCO",
+    "name": "FOUR MILE AT HIGH CREEK",
+    "latitude": 39.083972,
+    "longitude": -105.895443,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FOUMOUCO",
+    "siteId": "FOUMOUCO",
+    "name": "FOUNTAIN CREEK AT MOUTH PUEBLO",
+    "latitude": 38.255722,
+    "longitude": -104.59076,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FRNCRKCO",
+    "siteId": "FRNCRKCO",
+    "name": "FRENCH CREEK ABOVE CONFLUENCE WITH MICHIGAN CREEK",
+    "latitude": 39.415193,
+    "longitude": -105.890303,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FRYIVLCO",
+    "siteId": "FRYIVLCO",
+    "name": "FRYINGPAN RIVER NEAR IVANHOE LAKE, CO.",
+    "latitude": 39.244793,
+    "longitude": -106.530823,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FRYMERCO",
+    "siteId": "FRYMERCO",
+    "name": "FRYINGPAN RIVER AT MEREDITH, CO.",
+    "latitude": 39.362485,
+    "longitude": -106.732542,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FRYNFNCO",
+    "siteId": "FRYNFNCO",
+    "name": "NORTH FORK FRYINGPAN RIVER NEAR NORRIE, CO.",
+    "latitude": 39.342772,
+    "longitude": -106.66588,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FRYSFUCO",
+    "siteId": "FRYSFUCO",
+    "name": "SOUTH FORK FRYINGPAN RIVER AT UPPER  STATION NEAR NORRIE",
+    "latitude": 39.238899,
+    "longitude": -106.590784,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "FRYTHOCO",
+    "siteId": "FRYTHOCO",
+    "name": "FRYINGPAN RIVER NEAR THOMASVILLE, CO.",
+    "latitude": 39.345262,
+    "longitude": -106.673818,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GACBFLCO",
+    "siteId": "GACBFLCO",
+    "name": "GAGEBY CREEK BELOW FORT LYON CANAL",
+    "latitude": 38.133633,
+    "longitude": -103.095881,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GARVILCO",
+    "siteId": "GARVILCO",
+    "name": "GARNER CREEK NEAR VILLA GROVE",
+    "latitude": 38.173334,
+    "longitude": -105.809534,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GNLKSPCO",
+    "siteId": "GNLKSPCO",
+    "name": "GREEN LAKE SEEPAGE IMPACT POINT",
+    "latitude": 39.678037,
+    "longitude": -105.701599,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GOOWAGCO",
+    "siteId": "GOOWAGCO",
+    "name": "GOOSE CREEK AT WAGONWHEEL GAP, CO.",
+    "latitude": 37.751883,
+    "longitude": -106.829773,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GOVDRACO",
+    "siteId": "GOVDRACO",
+    "name": "GOVERNMENT DRAW ABOVE LONG HOLLOW RESERVOIR NEAR RED MESA, CO",
+    "latitude": 37.072279,
+    "longitude": -108.165146,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GRAWESCO",
+    "siteId": "GRAWESCO",
+    "name": "GRAPE CREEK NEAR WESTCLIFFE, CO.",
+    "latitude": 38.186114,
+    "longitude": -105.4838,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GRECRKCO",
+    "siteId": "GRECRKCO",
+    "name": "GREENHORN CREEK ABOVE RYE CO",
+    "latitude": 37.921582,
+    "longitude": -104.93056,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GROBGRCO",
+    "siteId": "GROBGRCO",
+    "name": "GROUNDHOG CREEK BELOW GROUNDHOG RESERVOIR",
+    "latitude": 37.789284,
+    "longitude": -108.288878,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GUAINFCO",
+    "siteId": "GUAINFCO",
+    "name": "GUANELLA RESERVOIR INFLOW",
+    "latitude": 39.760837,
+    "longitude": -105.713949,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GUAOUTCO",
+    "siteId": "GUAOUTCO",
+    "name": "GUANELLA RESERVOIR (OUTFLOW)",
+    "latitude": 39.758737,
+    "longitude": -105.694689,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "GUNREDCO",
+    "siteId": "GUNREDCO",
+    "name": "GUNNISON RIVER BELOW REDLANDS DIVERSION DAM",
+    "latitude": 39.03819,
+    "longitude": -108.570103,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HABREDCO",
+    "siteId": "HABREDCO",
+    "name": "HAY GULCH BELOW RED MESA RESERVOIR",
+    "latitude": 37.165474,
+    "longitude": -108.142844,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HENOUTCO",
+    "siteId": "HENOUTCO",
+    "name": "LAKE HENRY RESERVOIR (OUTFLOW)",
+    "latitude": 38.253807,
+    "longitude": -103.721648,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HOCMINCO",
+    "siteId": "HOCMINCO",
+    "name": "HOCK HOCKING MINE PORTAL",
+    "latitude": 39.267203,
+    "longitude": -106.101033,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HOLINFCO",
+    "siteId": "HOLINFCO",
+    "name": "HOLBROOK RESERVOIR INFLOW",
+    "latitude": 38.075333,
+    "longitude": -103.610617,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HOLOUTCO",
+    "siteId": "HOLOUTCO",
+    "name": "HOLBROOK RESERVOIR OUTFLOW",
+    "latitude": 38.059082,
+    "longitude": -103.600586,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HOMOUTCO",
+    "siteId": "HOMOUTCO",
+    "name": "HOMESTAKE RESERVOIR (OUTFLOW)",
+    "latitude": 39.366652,
+    "longitude": -106.458936,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HOMOUTCO",
+    "siteId": "HOMOUTCO",
+    "name": "HOMESTAKE RESERVOIR (OUTFLOW)",
+    "latitude": 39.366652,
+    "longitude": -106.458936,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HOROUTCO",
+    "siteId": "HOROUTCO",
+    "name": "HORSETOOTH RESERVOIR (OUTFLOW)",
+    "latitude": 40.600539,
+    "longitude": -105.171379,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HP1OUTCO",
+    "siteId": "HP1OUTCO",
+    "name": "HARRIS PARK RESERVOIR #1 OUTLET",
+    "latitude": 39.50372,
+    "longitude": -105.493679,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HRC194CO",
+    "siteId": "HRC194CO",
+    "name": "HORSE CREEK AT HIGHWAY 194",
+    "latitude": 38.084771,
+    "longitude": -103.353425,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HUEBADCO",
+    "siteId": "HUEBADCO",
+    "name": "HUERFANO RIVER AT BADITO, CO.",
+    "latitude": 37.727809,
+    "longitude": -105.013855,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HUEDYLCO",
+    "siteId": "HUEDYLCO",
+    "name": "HUERFANO RIVER AT DOYLE BRIDGE, CO",
+    "latitude": 38.057346,
+    "longitude": -104.412395,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HUEI25CO",
+    "siteId": "HUEI25CO",
+    "name": "HUERFANO RIVER AT I-25",
+    "latitude": 37.75516,
+    "longitude": -104.836231,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "HURREDCO",
+    "siteId": "HURREDCO",
+    "name": "HUERFANO R AT MANZANARES XING, NR REDWING, CO.",
+    "latitude": 37.727712,
+    "longitude": -105.353887,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ILLRANCO",
+    "siteId": "ILLRANCO",
+    "name": "ILLINOIS RIVER NEAR RAND",
+    "latitude": 40.462767,
+    "longitude": -106.176657,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "IVAOUTCO",
+    "siteId": "IVAOUTCO",
+    "name": "IVANHOE LAKE OUTFLOW",
+    "latitude": 39.273325,
+    "longitude": -106.509025,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "IVCRNACO",
+    "siteId": "IVCRNACO",
+    "name": "IVANHOE CREEK NEAR NAST, CO.",
+    "latitude": 39.286936,
+    "longitude": -106.559208,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "JEFBELCO",
+    "siteId": "JEFBELCO",
+    "name": "JEFFERSON CREEK BELOW JEFFERSON LAKE NEAR JEFFERSON, CO",
+    "latitude": 39.44971,
+    "longitude": -105.863116,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "JEFJEFCO",
+    "siteId": "JEFJEFCO",
+    "name": "JEFFERSON CREEK NEAR JEFFERSON",
+    "latitude": 39.392492,
+    "longitude": -105.810584,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "JEFSNYCO",
+    "siteId": "JEFSNYCO",
+    "name": "JEFFERSON CREEK BELOW SYNDER CREEK",
+    "latitude": 39.342376,
+    "longitude": -105.773358,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "JOPOUTCO",
+    "siteId": "JOPOUTCO",
+    "name": "JOHNS POND OUTLET",
+    "latitude": 39.779473,
+    "longitude": -105.140352,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "JWCCHACO",
+    "siteId": "JWCCHACO",
+    "name": "JOE WRIGHT CREEK BELOW CHAMBERS RESERVOIR",
+    "latitude": 40.602222,
+    "longitude": -105.842803,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "KANJUNCO",
+    "siteId": "KANJUNCO",
+    "name": "KANNAH CREEK BELOW JUNIATA ENLARGED DIVERSION",
+    "latitude": 38.96137,
+    "longitude": -108.239268,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "KENINLCO",
+    "siteId": "KENINLCO",
+    "name": "KENDRICK LAKE INLET FROM WARD DITCH",
+    "latitude": 39.682718,
+    "longitude": -105.10958,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "KERVILCO",
+    "siteId": "KERVILCO",
+    "name": "KERBER CREEK NEAR VILLA GROVE",
+    "latitude": 38.220204,
+    "longitude": -106.089581,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "KISCRKCO",
+    "siteId": "KISCRKCO",
+    "name": "KISER CREEK ABOVE BIG DITCH HEADGATE",
+    "latitude": 38.965534,
+    "longitude": -107.942505,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAGLAGCO",
+    "siteId": "LAGLAGCO",
+    "name": "LA GARITA CREEK NEAR LA GARITA, CO",
+    "latitude": 37.813381,
+    "longitude": -106.318759,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAJCAPCO",
+    "siteId": "LAJCAPCO",
+    "name": "LAJARA CREEK AT GALLEGOS RANCH NEAR CAPULIN",
+    "latitude": 37.21012,
+    "longitude": -106.187717,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAJOUTCO",
+    "siteId": "LAJOUTCO",
+    "name": "LA JARA RESERVOIR OUTLET",
+    "latitude": 37.244065,
+    "longitude": -106.339732,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAKATLCO",
+    "siteId": "LAKATLCO",
+    "name": "LAKE CREEK ABOVE TWIN LAKES RESERVOIR, CO.",
+    "latitude": 39.063019,
+    "longitude": -106.407634,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAKBTLCO",
+    "siteId": "LAKBTLCO",
+    "name": "LAKE CREEK BELOW TWIN LAKES RESERVOIR",
+    "latitude": 39.076673,
+    "longitude": -106.3011,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAPBRECO",
+    "siteId": "LAPBRECO",
+    "name": "LA PLATA RIVER NEAR BREEN",
+    "latitude": 37.168543,
+    "longitude": -108.119462,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAPCHECO",
+    "siteId": "LAPCHECO",
+    "name": "LA PLATA RIVER BELOW MOUTH OF CHERRY CREEK NEAR RED MESA",
+    "latitude": 37.115203,
+    "longitude": -108.200091,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAPHESCO",
+    "siteId": "LAPHESCO",
+    "name": "LA PLATA RIVER AT HESPERUS, CO",
+    "latitude": 37.289642,
+    "longitude": -108.040667,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAPLODCO",
+    "siteId": "LAPLODCO",
+    "name": "LA POUDRE PASS CREEK BELOW LONG DRAW RESERVOIR",
+    "latitude": 40.503744,
+    "longitude": -105.770969,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAPLONCO",
+    "siteId": "LAPLONCO",
+    "name": "LA PLATA RIVER BELOW MOUTH LONG HOLLOW NEAR RED MESA, CO",
+    "latitude": 37.045859,
+    "longitude": -108.183011,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LAPMEXCO",
+    "siteId": "LAPMEXCO",
+    "name": "LA PLATA RIVER AT THE COLORADO-NEW MEXICO STATELINE",
+    "latitude": 36.999699,
+    "longitude": -108.188678,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LARRIVCO",
+    "siteId": "LARRIVCO",
+    "name": "LARAMIE RIVER NEAR GLENDEVEY, CO.",
+    "latitude": 40.800079,
+    "longitude": -105.878648,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LBBINLCO",
+    "siteId": "LBBINLCO",
+    "name": "LOWER BEAVER BROOK INLET",
+    "latitude": 39.704053,
+    "longitude": -105.41135,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LBBOUTCO",
+    "siteId": "LBBOUTCO",
+    "name": "LOWER BEAVER BROOK OUTLET",
+    "latitude": 39.70635,
+    "longitude": -105.411445,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LEFCRECO",
+    "siteId": "LEFCRECO",
+    "name": "LEFT HAND CREEK NEAR BOULDER, CO.",
+    "latitude": 40.126407,
+    "longitude": -105.30451,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LFCBSLCO",
+    "siteId": "LFCBSLCO",
+    "name": "LAKE FORK CREEK BELOW SUGAR LOAF DAM NEAR LEADVILLE",
+    "latitude": 39.251193,
+    "longitude": -106.374653,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LHCPINCO",
+    "siteId": "LHCPINCO",
+    "name": "LIGHTHOUSE COVE POND INLET",
+    "latitude": 40.14242,
+    "longitude": -105.007805,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LITOSOCO",
+    "siteId": "LITOSOCO",
+    "name": "LITTLE NAVAJO RIVER BELOW LITTLE OSO DIVERSION DAM",
+    "latitude": 37.07709,
+    "longitude": -106.811739,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LITSPGCO",
+    "siteId": "LITSPGCO",
+    "name": "LITTLE SPRING CREEK AT MEDANO RANCH NEAR MOSCA, CO",
+    "latitude": 37.712921,
+    "longitude": -105.650222,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LKCTURCO",
+    "siteId": "LKCTURCO",
+    "name": "LAKE FORK CREEK ABOVE TURQUOISE",
+    "latitude": 39.281297,
+    "longitude": -106.442416,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LNBC10CO",
+    "siteId": "LNBC10CO",
+    "name": "LITTLETON BOAT CHUTE NO 10",
+    "latitude": 39.566637,
+    "longitude": -105.040198,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LOMOUTCO",
+    "siteId": "LOMOUTCO",
+    "name": "LOCH LOMOND RESERVOIR OUTLET",
+    "latitude": 39.83348,
+    "longitude": -105.675586,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LONALOCO",
+    "siteId": "LONALOCO",
+    "name": "LONG HOLLOW ABOVE LONG HOLLOW RESERVOIR NEAR RED MESA, CO",
+    "latitude": 37.068287,
+    "longitude": -108.14826,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LONMINCO",
+    "siteId": "LONMINCO",
+    "name": "LONDON MINE",
+    "latitude": 39.273015,
+    "longitude": -106.144932,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LONREDCO",
+    "siteId": "LONREDCO",
+    "name": "LONG HOLLOW AT THE MOUTH NEAR RED MESA",
+    "latitude": 37.057262,
+    "longitude": -108.177136,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LOSORTCO",
+    "siteId": "LOSORTCO",
+    "name": "LOS PINOS RIVER NEAR ORTIZ",
+    "latitude": 36.982229,
+    "longitude": -106.073562,
+    "state": "NM",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LRASMICO",
+    "siteId": "LRASMICO",
+    "name": "LEROUX CREEK ABOVE CARL SMITH RESERVOIR",
+    "latitude": 38.963278,
+    "longitude": -107.736986,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LTCANYCO",
+    "siteId": "LTCANYCO",
+    "name": "LITTLE THOMPSON RIVER AT CANYON MOUTH NEAR BERTHOUD",
+    "latitude": 40.258045,
+    "longitude": -105.206401,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LUARMOCO",
+    "siteId": "LUARMOCO",
+    "name": "LUNING ARROYO NEAR MODEL, CO.",
+    "latitude": 37.304464,
+    "longitude": -104.015528,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LVRET1CO",
+    "siteId": "LVRET1CO",
+    "name": "LA VETA #1 RETURN FLOW",
+    "latitude": 37.650737,
+    "longitude": -104.712181,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "LVRET2CO",
+    "siteId": "LVRET2CO",
+    "name": "LA VETA #2 RETURN FLOW",
+    "latitude": 37.661177,
+    "longitude": -104.695021,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MAJVILCO",
+    "siteId": "MAJVILCO",
+    "name": "MAJOR CREEK NEAR VILLA GROVE",
+    "latitude": 38.157382,
+    "longitude": -105.809609,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MANCHICO",
+    "siteId": "MANCHICO",
+    "name": "MANCOS RIVER AT CJ's BRIDGE NEAR MANCOS",
+    "latitude": 37.326898,
+    "longitude": -108.329645,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MANJACCO",
+    "siteId": "MANJACCO",
+    "name": "WEST MANCOS RIVER BELOW JACKSON GULCH RESERVOIR INLET CANA",
+    "latitude": 37.431504,
+    "longitude": -108.23657,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MANMANCO",
+    "siteId": "MANMANCO",
+    "name": "MANCOS RIVER NEAR MANCOS",
+    "latitude": 37.354108,
+    "longitude": -108.259189,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MCHJEFCO",
+    "siteId": "MCHJEFCO",
+    "name": "MICHIGAN CREEK ABOVE JEFFERSON, CO.",
+    "latitude": 39.35888,
+    "longitude": -105.841418,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MCLNINCO",
+    "siteId": "MCLNINCO",
+    "name": "MCLELLAN RESERVOIR (INFLOW FROM DAD CLARK GULCH)",
+    "latitude": 39.562472,
+    "longitude": -104.998799,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MEDSANCO",
+    "siteId": "MEDSANCO",
+    "name": "MEDANO CREEK AT GREAT SAND DUNES NATIONAL PARK",
+    "latitude": 37.797789,
+    "longitude": -105.502803,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MERINFCO",
+    "siteId": "MERINFCO",
+    "name": "MEREDITH RESERVOIR (INFLOW NEAR ORDWAY)",
+    "latitude": 38.229826,
+    "longitude": -103.684114,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MEROUTCO",
+    "siteId": "MEROUTCO",
+    "name": "MEREDITH RESERVOIR (OUTFLOW)",
+    "latitude": 38.132447,
+    "longitude": -103.761683,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MFKABMCO",
+    "siteId": "MFKABMCO",
+    "name": "MIDDLE FORK SOUTH PLATTE ABOVE MONTGOMERY RESERVOIR NEAR ALMA",
+    "latitude": 39.356488,
+    "longitude": -106.082841,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MFKBLMCO",
+    "siteId": "MFKBLMCO",
+    "name": "MIDDLE FORK SOUTH PLATTE BELOW MONTGOMERY RESERVOIR NEAR ALMA",
+    "latitude": 39.352071,
+    "longitude": -106.069368,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MFKPRICO",
+    "siteId": "MFKPRICO",
+    "name": "MIDDLE FORK SOUTH PLATTE AT PRINCE",
+    "latitude": 39.109746,
+    "longitude": -105.890472,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MFKSTMCO",
+    "siteId": "MFKSTMCO",
+    "name": "MIDDLE FORK SOUTH PLATTE AT SANTA MARIA",
+    "latitude": 39.058242,
+    "longitude": -105.816156,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MGCLINCO",
+    "siteId": "MGCLINCO",
+    "name": "MEADOWS GOLF CLUB LAKE 1 DUTCH CREEK INFLOW",
+    "latitude": 39.589435,
+    "longitude": -105.141237,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MGCOUTCO",
+    "siteId": "MGCOUTCO",
+    "name": "MEADOWS GOLF CLUB LAKE 3 DITCH CREEK OUTFLOW",
+    "latitude": 39.593672,
+    "longitude": -105.115263,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MICMERCO",
+    "siteId": "MICMERCO",
+    "name": "MICHIGAN RIVER NEAR MEADOW CREEK RESERVOIR",
+    "latitude": 40.612984,
+    "longitude": -106.084932,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MICWLDCO",
+    "siteId": "MICWLDCO",
+    "name": "MICHIGAN RIVER AT WALDEN, CO.",
+    "latitude": 40.740791,
+    "longitude": -106.281421,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MIDSTECO",
+    "siteId": "MIDSTECO",
+    "name": "MIDDLE SAINT VRAIN AT PEACEFUL VALLEY",
+    "latitude": 40.129806,
+    "longitude": -105.517111,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MONBMNCO",
+    "siteId": "MONBMNCO",
+    "name": "MONUMENT CREEK BELOW MONUMENT LAKE NEAR MONUMENT",
+    "latitude": 39.087717,
+    "longitude": -104.879156,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MORBSCCO",
+    "siteId": "MORBSCCO",
+    "name": "MORRISON CREEK BELOW SILVER CREEK",
+    "latitude": 40.245525,
+    "longitude": -106.786656,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MUDAPRCO",
+    "siteId": "MUDAPRCO",
+    "name": "MUDDY CREEK ABOVE PAONIA RESERVOIR",
+    "latitude": 38.98751,
+    "longitude": -107.347847,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MUDBPRCO",
+    "siteId": "MUDBPRCO",
+    "name": "MUDDY CREEK BELOW PAONIA RESERVOIR",
+    "latitude": 38.940461,
+    "longitude": -107.357242,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "MUDTOOCO",
+    "siteId": "MUDTOOCO",
+    "name": "MUDDY CREEK BELOW MUDDY CR DAM NR TOONERVILLE, CO",
+    "latitude": 37.762695,
+    "longitude": -103.243461,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NAVBANCO",
+    "siteId": "NAVBANCO",
+    "name": "NAVAJO RIVER AT BANDED PEAK RANCH NEAR CHROMO",
+    "latitude": 37.085231,
+    "longitude": -106.689509,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NAVOSOCO",
+    "siteId": "NAVOSOCO",
+    "name": "NAVAJO RIVER BELOW OSO DIVERSION DAM NEAR CHROMO",
+    "latitude": 37.03033,
+    "longitude": -106.737667,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NBBABBCO",
+    "siteId": "NBBABBCO",
+    "name": "NORTH BEAVER BROOK AT BEAVER BROOK CONFLUENCE",
+    "latitude": 39.706873,
+    "longitude": -105.411472,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NCLCONCO",
+    "siteId": "NCLCONCO",
+    "name": "NORTH CLEAR CREEK BELOW CONTINENTAL RESERVOIR",
+    "latitude": 37.888253,
+    "longitude": -107.203619,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NCPOUTCO",
+    "siteId": "NCPOUTCO",
+    "name": "NORTH RESERVOIR COMPLEX OUTFLOW",
+    "latitude": 39.912955,
+    "longitude": -104.87456,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NCPXINCO",
+    "siteId": "NCPXINCO",
+    "name": "NORTH RESERVOIR COMPLEX INFLOW",
+    "latitude": 39.892912,
+    "longitude": -104.887533,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NOCRESCO",
+    "siteId": "NOCRESCO",
+    "name": "CRESTONE CREEK, NORTH NEAR CRESTONE",
+    "latitude": 38.013691,
+    "longitude": -105.693129,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NORCONCO",
+    "siteId": "NORCONCO",
+    "name": "NORTH BRANCH CONEJOS RIVER NEAR CONEJOS",
+    "latitude": 37.101753,
+    "longitude": -106.009141,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NORLASCO",
+    "siteId": "NORLASCO",
+    "name": "NORTH CHANNEL CONEJOS RIVER NEAR LA SAUSES",
+    "latitude": 37.300208,
+    "longitude": -105.746881,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NORLUXCO",
+    "siteId": "NORLUXCO",
+    "name": "NORTH FORK GUNNISON RIVER BELOW LEROUX CREEK",
+    "latitude": 38.788454,
+    "longitude": -107.739182,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NSVBBRCO",
+    "siteId": "NSVBBRCO",
+    "name": "NORTH SAINT VRAIN CREEK BELOW BUTTONROCK  (RALPH PRICE) RESERVOIR",
+    "latitude": 40.215665,
+    "longitude": -105.363434,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "NSVBRPCO",
+    "siteId": "NSVBRPCO",
+    "name": "NORTH SAINT VRAIN CREEK BELOW RALPH PRICE (BUTTON ROCK) RESERVOIR",
+    "latitude": 40.216263,
+    "longitude": -105.365341,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "OHGJEFCO",
+    "siteId": "OHGJEFCO",
+    "name": "OHLER GULCH NEAR JEFFERSON",
+    "latitude": 39.39186,
+    "longitude": -105.827519,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "ONEJURCO",
+    "siteId": "ONEJURCO",
+    "name": "SOUTH PLATTE RIVER AT JULESBURG (CHANNEL #1)",
+    "latitude": 40.972822,
+    "longitude": -102.250697,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PINBVACO",
+    "siteId": "PINBVACO",
+    "name": "PINE RIVER BELOW VALLECITO RESERVOIR NEAR BAYFIELD",
+    "latitude": 37.360153,
+    "longitude": -107.597762,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PINDELCO",
+    "siteId": "PINDELCO",
+    "name": "PINOS CREEK NEAR DEL NORTE, CO.",
+    "latitude": 37.590977,
+    "longitude": -106.449846,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PINMOUCO",
+    "siteId": "PINMOUCO",
+    "name": "PINE CREEK AT MOUTH",
+    "latitude": 39.002319,
+    "longitude": -106.231095,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PISOUTCO",
+    "siteId": "PISOUTCO",
+    "name": "MT PISGAH OUTFLOW",
+    "latitude": 38.792867,
+    "longitude": -105.27319,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAANTCO",
+    "siteId": "PLAANTCO",
+    "name": "SOUTH PLATTE RIVER BELOW ANTERO RESERVOIR",
+    "latitude": 38.993886,
+    "longitude": -105.894583,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLABAICO",
+    "siteId": "PLABAICO",
+    "name": "NORTH FORK SOUTH PLATTE RIVER AT BAILEY",
+    "latitude": 39.404767,
+    "longitude": -105.473828,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLABALCO",
+    "siteId": "PLABALCO",
+    "name": "SOUTH PLATTE RIVER AT COOPER BRIDGE NEAR BALZAC",
+    "latitude": 40.357682,
+    "longitude": -103.528595,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLACHACO",
+    "siteId": "PLACHACO",
+    "name": "SOUTH PLATTE RIVER BELOW CHATFIELD RESERVOIR",
+    "latitude": 39.562682,
+    "longitude": -105.059753,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLACHECO",
+    "siteId": "PLACHECO",
+    "name": "SOUTH PLATTE RIVER BELOW CHEESMAN RESERVOIR",
+    "latitude": 39.209275,
+    "longitude": -105.268136,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLACROCO",
+    "siteId": "PLACROCO",
+    "name": "SOUTH PLATTE RIVER NEAR CROOK, CO.",
+    "latitude": 40.841394,
+    "longitude": -102.805215,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLADENCO",
+    "siteId": "PLADENCO",
+    "name": "SOUTH PLATTE RIVER AT DENVER",
+    "latitude": 39.759456,
+    "longitude": -105.004003,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAGEOCO",
+    "siteId": "PLAGEOCO",
+    "name": "SOUTH PLATTE RIVER NEAR LAKE GEORGE, CO.",
+    "latitude": 38.905278,
+    "longitude": -105.473338,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAGRACO",
+    "siteId": "PLAGRACO",
+    "name": "NORTH FORK SOUTH PLATTE RIVER AT GRANT",
+    "latitude": 39.458018,
+    "longitude": -105.659179,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAHARCO",
+    "siteId": "PLAHARCO",
+    "name": "SOUTH PLATTE RIVER ABOVE ELEVENMILE RESERVOIR",
+    "latitude": 38.967805,
+    "longitude": -105.581544,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAHENCO",
+    "siteId": "PLAHENCO",
+    "name": "SOUTH PLATTE RIVER AT HENDERSON, CO",
+    "latitude": 39.9224,
+    "longitude": -104.868855,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAJURCO",
+    "siteId": "PLAJURCO",
+    "name": "SOUTH PLATTE RIVER AT JULESBURG (RIGHT CHAN. #2)",
+    "latitude": 40.974464,
+    "longitude": -102.25196,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAKASCO",
+    "siteId": "PLAKASCO",
+    "name": "SOUTH PLATTE RIVER AT LAST CHANCE DIVERSION NEAR KASSLER",
+    "latitude": 39.485034,
+    "longitude": -105.104106,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAKERCO",
+    "siteId": "PLAKERCO",
+    "name": "SOUTH PLATTE RIVER NEAR KERSEY, CO",
+    "latitude": 40.412507,
+    "longitude": -104.563185,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAMASCO",
+    "siteId": "PLAMASCO",
+    "name": "SOUTH PLATTE RIVER AT MASTERS, CO.",
+    "latitude": 40.305677,
+    "longitude": -104.245041,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAMERCO",
+    "siteId": "PLAMERCO",
+    "name": "SOUTH PLATTE RIVER AT MERINO, CO",
+    "latitude": 40.473863,
+    "longitude": -103.345742,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAPLACO",
+    "siteId": "PLAPLACO",
+    "name": "SOUTH PLATTE RIVER AT PLATTEVILLE, CO",
+    "latitude": 40.224922,
+    "longitude": -104.849703,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLASPICO",
+    "siteId": "PLASPICO",
+    "name": "SOUTH PLATTE RIVER ABOVE SPINNEY RESERVOIR",
+    "latitude": 38.996808,
+    "longitude": -105.680618,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLASPLCO",
+    "siteId": "PLASPLCO",
+    "name": "SOUTH PLATTE RIVER AT SOUTH PLATTE",
+    "latitude": 39.40887,
+    "longitude": -105.169876,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLASTRCO",
+    "siteId": "PLASTRCO",
+    "name": "SOUTH PLATTE RIVER BELOW STRONTIA SPRINGS",
+    "latitude": 39.435068,
+    "longitude": -105.123774,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLATAMCO",
+    "siteId": "PLATAMCO",
+    "name": "SOUTH PLATTE BELOW TAMARACK SWA",
+    "latitude": 40.870107,
+    "longitude": -102.690144,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAWATCO",
+    "siteId": "PLAWATCO",
+    "name": "SOUTH PLATTE RIVER AT WATERTON, CO.",
+    "latitude": 39.488332,
+    "longitude": -105.092773,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLAWELCO",
+    "siteId": "PLAWELCO",
+    "name": "SOUTH PLATTE RIVER NEAR WELDONA, CO",
+    "latitude": 40.321018,
+    "longitude": -103.922814,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PLUCHACO",
+    "siteId": "PLUCHACO",
+    "name": "PLUM CREEK ABOVE CHATFIELD RESERVOIR",
+    "latitude": 39.524396,
+    "longitude": -105.037463,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PNMAINCO",
+    "siteId": "PNMAINCO",
+    "name": "PANAMA RESERVOIR INLET",
+    "latitude": 40.09603,
+    "longitude": -105.091059,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PNMOUTCO",
+    "siteId": "PNMOUTCO",
+    "name": "PANAMA RESERVOIR OUTLET",
+    "latitude": 40.087583,
+    "longitude": -105.072502,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PURFICCO",
+    "siteId": "PURFICCO",
+    "name": "PURGATOIRE RIVER AT FISHERS CROSSING",
+    "latitude": 37.25188,
+    "longitude": -104.242419,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PURHILCO",
+    "siteId": "PURHILCO",
+    "name": "PURGATOIRE RIVER BLW HIGHLAND DAM NR LAS ANIMAS",
+    "latitude": 37.901265,
+    "longitude": -103.299962,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PURHOECO",
+    "siteId": "PURHOECO",
+    "name": "PURGATOIRE RIVER NEAR HOEHNE, CO.",
+    "latitude": 37.248979,
+    "longitude": -104.401716,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PURNINCO",
+    "siteId": "PURNINCO",
+    "name": "PURGATOIRE RIVER AT NINEMILE DAM NEAR HIGBEE",
+    "latitude": 37.714882,
+    "longitude": -103.510993,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PURTRICO",
+    "siteId": "PURTRICO",
+    "name": "PURGATOIRE RIVER AT TRINIDAD",
+    "latitude": 37.172496,
+    "longitude": -104.507686,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "PWSCHECO",
+    "siteId": "PWSCHECO",
+    "name": "PARKER WATER AND SANITATION DISTRICT REGIONAL POND DELIVERY TO CHERRY CREEK",
+    "latitude": 39.472499,
+    "longitude": -104.769742,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RACRSTCO",
+    "siteId": "RACRSTCO",
+    "name": "RATON CREEK ABOVE STARKVILLE, CO",
+    "latitude": 37.12535,
+    "longitude": -104.522559,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RALBLWCO",
+    "siteId": "RALBLWCO",
+    "name": "RALSTON CREEK BELOW RALSTON RESERVOIR",
+    "latitude": 39.828864,
+    "longitude": -105.231522,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RALCCKCO",
+    "siteId": "RALCCKCO",
+    "name": "RALSTON CREEK ABOVE CLEAR CREEK CONFLUENCE",
+    "latitude": 39.802766,
+    "longitude": -105.06809,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RALCRKCO",
+    "siteId": "RALCRKCO",
+    "name": "RALSTON CREEK ABOVE RALSTON RESERVOIR NEAR GOLDEN",
+    "latitude": 39.82125,
+    "longitude": -105.261607,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RAZAVUCO",
+    "siteId": "RAZAVUCO",
+    "name": "RAZOR CREEK ABOVE VOUGA RESERVOIR NEAR DOYLEVILLE",
+    "latitude": 38.345005,
+    "longitude": -106.657849,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RAZBVGCO",
+    "siteId": "RAZBVGCO",
+    "name": "RAZOR CREEK BELOW VOUGA RESERVOIR NEAR DOYLEVILLE",
+    "latitude": 38.356041,
+    "longitude": -106.664453,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RCKTARCO",
+    "siteId": "RCKTARCO",
+    "name": "ROCK CREEK ABOVE CONFLUENCE WITH TARRYALL CREEK",
+    "latitude": 39.294381,
+    "longitude": -105.696942,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RFCMERCO",
+    "siteId": "RFCMERCO",
+    "name": "ROCKY FORK CREEK NEAR MEREDITH, CO.",
+    "latitude": 39.361538,
+    "longitude": -106.820567,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIFRGRCO",
+    "siteId": "RIFRGRCO",
+    "name": "RIFLE CREEK BELOW RIFLE GAP RESERVOIR",
+    "latitude": 39.626291,
+    "longitude": -107.75989,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOALACO",
+    "siteId": "RIOALACO",
+    "name": "RIO GRANDE AT ALAMOSA",
+    "latitude": 37.480814,
+    "longitude": -105.877963,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOBLACO",
+    "siteId": "RIOBLACO",
+    "name": "RIO BLANCO BELOW BLANCO DIVERSION DAM NEAR PAGOSA",
+    "latitude": 37.203573,
+    "longitude": -106.812133,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIODELCO",
+    "siteId": "RIODELCO",
+    "name": "RIO GRANDE NEAR DEL NORTE, CO",
+    "latitude": 37.688606,
+    "longitude": -106.459809,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOLINCO",
+    "siteId": "RIOLINCO",
+    "name": "RIO GRANDE AT RIO GRANDE-ALAMOSA COUNTY LINE",
+    "latitude": 37.573117,
+    "longitude": -106.057491,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOLOBCO",
+    "siteId": "RIOLOBCO",
+    "name": "RIO GRANDE NEAR LOBATOS",
+    "latitude": 37.078689,
+    "longitude": -105.756966,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOMILCO",
+    "siteId": "RIOMILCO",
+    "name": "RIO GRANDE AT THIRTY MILE BRIDGE NEAR CREEDE",
+    "latitude": 37.724923,
+    "longitude": -107.25579,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOMONCO",
+    "siteId": "RIOMONCO",
+    "name": "RIO GRANDE AT MONTE VISTA",
+    "latitude": 37.609512,
+    "longitude": -106.149016,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOMOUCO",
+    "siteId": "RIOMOUCO",
+    "name": "RIO BLANCO AT THE MOUTH NEAR TRUJILLO",
+    "latitude": 37.127883,
+    "longitude": -107.035269,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOSF2CO",
+    "siteId": "RIOSF2CO",
+    "name": "SOUTH FORK OF THE RIO GRANDE",
+    "latitude": 37.659559,
+    "longitude": -106.649116,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOSF2CO",
+    "siteId": "RIOSF2CO",
+    "name": "SOUTH FORK OF THE RIO GRANDE",
+    "latitude": 37.659559,
+    "longitude": -106.649116,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOSFKCO",
+    "siteId": "RIOSFKCO",
+    "name": "SOUTH FORK RIO GRANDE AT SOUTH FORK",
+    "latitude": 37.659559,
+    "longitude": -106.649116,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOTRICO",
+    "siteId": "RIOTRICO",
+    "name": "RIO GRANDE ABOVE TRINCHERA CREEK NEAR LA SAUSES",
+    "latitude": 37.316503,
+    "longitude": -105.742788,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RIOWAGCO",
+    "siteId": "RIOWAGCO",
+    "name": "RIO GRANDE AT WAGON WHEEL GAP",
+    "latitude": 37.766415,
+    "longitude": -106.830654,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RITCRECO",
+    "siteId": "RITCRECO",
+    "name": "RITO ALTO CREEK NEAR CRESTONE",
+    "latitude": 38.078152,
+    "longitude": -105.759833,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RRCCPLCO",
+    "siteId": "RRCCPLCO",
+    "name": "REPUBLICAN RIVER COMPACT COMPLIANCE PIPELINE NEAR LAIRD, CO",
+    "latitude": 40.072199,
+    "longitude": -102.05919,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "RULTOOCO",
+    "siteId": "RULTOOCO",
+    "name": "RULE CREEK AT HWY 101 NEAR TOONERVILLE, CO",
+    "latitude": 37.819877,
+    "longitude": -103.182326,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SAFUPPCO",
+    "siteId": "SAFUPPCO",
+    "name": "SAN FRANCISCO CREEK AT UPPER STATION, NEAR DEL NORTE",
+    "latitude": 37.579311,
+    "longitude": -106.370189,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SAGCEMCO",
+    "siteId": "SAGCEMCO",
+    "name": "SAGUACHE CREEK AT CEMETERY ROAD NEAR SAGUACHE, CO",
+    "latitude": 38.069964,
+    "longitude": -106.128378,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SAGSAGCO",
+    "siteId": "SAGSAGCO",
+    "name": "SAGUACHE CREEK NEAR SAGUACHE, CO",
+    "latitude": 38.163444,
+    "longitude": -106.290661,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SALTMOCO",
+    "siteId": "SALTMOCO",
+    "name": "SALT CREEK NEAR MOUTH BELOW PUEBLO",
+    "latitude": 38.256798,
+    "longitude": -104.561734,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SALTOXCO",
+    "siteId": "SALTOXCO",
+    "name": "SALT CREEK NEAR OXFORD, CO.",
+    "latitude": 37.139841,
+    "longitude": -107.753646,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANCRECO",
+    "siteId": "SANCRECO",
+    "name": "SAN ISABEL CREEK NEAR CRESTONE",
+    "latitude": 38.034342,
+    "longitude": -105.71813,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANCRKCO",
+    "siteId": "SANCRKCO",
+    "name": "SAND CREEK AT THE COLORADO-WYOMING STATELINE",
+    "latitude": 40.993598,
+    "longitude": -105.757518,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANDUNCO",
+    "siteId": "SANDUNCO",
+    "name": "SAND CREEK AT GREAT SAND DUNES NATIONAL PARK",
+    "latitude": 37.829732,
+    "longitude": -105.593644,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANFTGCO",
+    "siteId": "SANFTGCO",
+    "name": "SANGRE DE CRISTO CREEK NEAR FORT GARLAND, CO.",
+    "latitude": 37.424894,
+    "longitude": -105.414799,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANMANCO",
+    "siteId": "SANMANCO",
+    "name": "SAN ANTONIO RIVER NEAR MANASSA",
+    "latitude": 37.177162,
+    "longitude": -105.877918,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANORTCO",
+    "siteId": "SANORTCO",
+    "name": "SAN ANTONIO RIVER AT ORTIZ",
+    "latitude": 36.993276,
+    "longitude": -106.038541,
+    "state": "NM",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SANSANCO",
+    "siteId": "SANSANCO",
+    "name": "SANGRE DE CRISTO CREEK ABOVE SANGRE CRISTO TRINCHERA CANAL",
+    "latitude": 37.430539,
+    "longitude": -105.373563,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SBCABCCO",
+    "siteId": "SBCABCCO",
+    "name": "SOUTH BOULDER CREEK BELOW VALMONT RESERVOIR INLET",
+    "latitude": 40.022086,
+    "longitude": -105.215333,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SBCHOWCO",
+    "siteId": "SBCHOWCO",
+    "name": "SOUTH BOULDER CREEK ABOVE HOWARD DITCH",
+    "latitude": 39.986802,
+    "longitude": -105.220564,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SCHFLMCO",
+    "siteId": "SCHFLMCO",
+    "name": "SCHATTINGER FLUME ABOVE CONFLUENCE WITH MICHIGAN CREEK",
+    "latitude": 39.373795,
+    "longitude": -105.866929,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SCPOUTCO",
+    "siteId": "SCPOUTCO",
+    "name": "SOUTH RESERVOIR COMPLEX OUTFLOW",
+    "latitude": 39.824354,
+    "longitude": -104.950687,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SCPXINCO",
+    "siteId": "SCPXINCO",
+    "name": "SOUTH RESERVOIR COMPLEX INFLOW",
+    "latitude": 39.815496,
+    "longitude": -104.946954,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SFKANTCO",
+    "siteId": "SFKANTCO",
+    "name": "SOUTH FORK OF SOUTH PLATTE ABOVE ANTERO",
+    "latitude": 39.070705,
+    "longitude": -105.97343,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SHLINLCO",
+    "siteId": "SHLINLCO",
+    "name": "SAND HILL LAKE (INLET)",
+    "latitude": 40.123229,
+    "longitude": -104.854774,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SHLLMOCO",
+    "siteId": "SHLLMOCO",
+    "name": "SAND HILL LAKE LM OUTLET",
+    "latitude": 40.116136,
+    "longitude": -104.845777,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SHLOUTCO",
+    "siteId": "SHLOUTCO",
+    "name": "SAND HILL LAKE (OUTLET)",
+    "latitude": 40.116217,
+    "longitude": -104.845636,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SKGOUTCO",
+    "siteId": "SKGOUTCO",
+    "name": "SKAGUAY RESERVOIR OUTFLOW",
+    "latitude": 38.687305,
+    "longitude": -105.052084,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SNAKEYCO",
+    "siteId": "SNAKEYCO",
+    "name": "SNAKE RIVER AT KEYSTONE SKI AREA",
+    "latitude": 39.606735,
+    "longitude": -105.951703,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SNOCRECO",
+    "siteId": "SNOCRECO",
+    "name": "SNOWMASS CREEK",
+    "latitude": 39.20893,
+    "longitude": -106.98046,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SOAKTECO",
+    "siteId": "SOAKTECO",
+    "name": "SOUTH ARKANSAS BELOW TENNASSE DITCH",
+    "latitude": 38.522198,
+    "longitude": -106.011836,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SOCOUTCO",
+    "siteId": "SOCOUTCO",
+    "name": "SODA CREEK POND OUTLET",
+    "latitude": 39.709569,
+    "longitude": -105.370704,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SODAINCO",
+    "siteId": "SODAINCO",
+    "name": "SODA LAKES INFLOW",
+    "latitude": 39.649178,
+    "longitude": -105.178133,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SOUCRECO",
+    "siteId": "SOUCRECO",
+    "name": "SOUTH CRESTONE CREEK NEAR CRESTONE",
+    "latitude": 37.983165,
+    "longitude": -105.702133,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SOULASCO",
+    "siteId": "SOULASCO",
+    "name": "SOUTH CHANNEL CONEJOS RIVER NEAR LA SAUSES",
+    "latitude": 37.29366,
+    "longitude": -105.751781,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SPACRECO",
+    "siteId": "SPACRECO",
+    "name": "SPANISH CREEK NEAR CRESTONE",
+    "latitude": 37.952719,
+    "longitude": -105.661811,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SPRBRNCO",
+    "siteId": "SPRBRNCO",
+    "name": "SPRING BRANCH ABOVE CONFLUENCE WITH MIDDLE FORK SOUTH PLATTE RIVER",
+    "latitude": 39.166904,
+    "longitude": -105.947333,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SSVWARCO",
+    "siteId": "SSVWARCO",
+    "name": "SOUTH SAINT VRAIN NEAR WARD",
+    "latitude": 40.090824,
+    "longitude": -105.514447,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SUGARCCO",
+    "siteId": "SUGARCCO",
+    "name": "SUGAR CITY FLUME SUGAR CITY",
+    "latitude": 38.262804,
+    "longitude": -103.757118,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SVCBSBCO",
+    "siteId": "SVCBSBCO",
+    "name": "SAINT VRAIN CREEK BELOW SOUTH BRANCH DIVERSION",
+    "latitude": 40.205292,
+    "longitude": -105.222304,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SVCHGICO",
+    "siteId": "SVCHGICO",
+    "name": "SAINT VRAIN CREEK AT HYGIENE, CO",
+    "latitude": 40.177179,
+    "longitude": -105.177286,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SVCLOPCO",
+    "siteId": "SVCLOPCO",
+    "name": "SAINT VRAIN CREEK BELOW KEN PRATT BLVD AT LONGMONT, CO",
+    "latitude": 40.153352,
+    "longitude": -105.075707,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SVCLYOCO",
+    "siteId": "SVCLYOCO",
+    "name": "SAINT VRAIN CREEK AT LYONS, CO",
+    "latitude": 40.218043,
+    "longitude": -105.260001,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "SVCPLACO",
+    "siteId": "SVCPLACO",
+    "name": "SAINT VRAIN CREEK AT MOUTH NEAR PLATTEVILLE, CO",
+    "latitude": 40.257716,
+    "longitude": -104.879876,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TARBORCO",
+    "siteId": "TARBORCO",
+    "name": "TARRYALL CREEK AT BORDEN DITCH",
+    "latitude": 39.286865,
+    "longitude": -105.695731,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TARCOMCO",
+    "siteId": "TARCOMCO",
+    "name": "TARRYALL CREEK AT US 285 NEAR COMO",
+    "latitude": 39.332281,
+    "longitude": -105.867159,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TARTARCO",
+    "siteId": "TARTARCO",
+    "name": "TARRYALL CREEK BELOW TARRYALL RESERVOIR",
+    "latitude": 39.221723,
+    "longitude": -105.602354,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TCBWTCCO",
+    "siteId": "TCBWTCCO",
+    "name": "TENMILE CREEK BELOW WEST TENMILE CREEK, CO",
+    "latitude": 39.51009,
+    "longitude": -106.141928,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "THURINCO",
+    "siteId": "THURINCO",
+    "name": "THURSTON RESERVOIR INLET CHANNEL",
+    "latitude": 38.2201,
+    "longitude": -102.64831,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TIMTIMCO",
+    "siteId": "TIMTIMCO",
+    "name": "TIMPAS CREEK AT HWY 350 AT TIMPAS, CO",
+    "latitude": 37.821853,
+    "longitude": -103.777868,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TLMTCKCO",
+    "siteId": "TLMTCKCO",
+    "name": "TALAMANTES CREEK",
+    "latitude": 40.917776,
+    "longitude": -108.789073,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TMPCRKCO",
+    "siteId": "TMPCRKCO",
+    "name": "TIMPAS CREEK AT HWY 10 NR SWINK, CO",
+    "latitude": 37.982294,
+    "longitude": -103.696757,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TRIMTNCO",
+    "siteId": "TRIMTNCO",
+    "name": "TRINCHERA CREEK ABOVE MOUNTAIN HOME RESERVOIR",
+    "latitude": 37.394715,
+    "longitude": -105.368945,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TRISMICO",
+    "siteId": "TRISMICO",
+    "name": "TRINCHERA CREEK BELOW SMITH RESERVOIR",
+    "latitude": 37.386261,
+    "longitude": -105.551542,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TRITURCO",
+    "siteId": "TRITURCO",
+    "name": "TRINCHERA CREEK ABOVE TURNER'S RANCH",
+    "latitude": 37.374463,
+    "longitude": -105.294313,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TROGARCO",
+    "siteId": "TROGARCO",
+    "name": "TROUT CREEK NEAR GARO",
+    "latitude": 39.133413,
+    "longitude": -105.896936,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "TURECGCO",
+    "siteId": "TURECGCO",
+    "name": "TU RECHARGE AREA INFLOW",
+    "latitude": 39.988587,
+    "longitude": -104.736429,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "UNCBRGCO",
+    "siteId": "UNCBRGCO",
+    "name": "UNCOMPAHGRE RIVER AT UNCOMPAHGRE ROAD BRIDGE",
+    "latitude": 38.377959,
+    "longitude": -107.81014,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "UNCOLACO",
+    "siteId": "UNCOLACO",
+    "name": "UNCOMPAHGRE RIVER NEAR OLATHE",
+    "latitude": 38.59954,
+    "longitude": -107.982641,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "UNCUPSCO",
+    "siteId": "UNCUPSCO",
+    "name": "UNCOMPAHGRE RIVER UPSTREAM OF SOUTH CANAL",
+    "latitude": 38.358057,
+    "longitude": -107.792366,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "UPBVCRCO",
+    "siteId": "UPBVCRCO",
+    "name": "UPPER BEAVER CREEK NEAR MONUMENT, CO",
+    "latitude": 39.058975,
+    "longitude": -104.901582,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "UTEFTGCO",
+    "siteId": "UTEFTGCO",
+    "name": "UTE CREEK NEAR FORT GARLAND, CO",
+    "latitude": 37.447146,
+    "longitude": -105.425764,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "VENSANCO",
+    "siteId": "VENSANCO",
+    "name": "VENTERO CREEK BELOW SANCHEZ RESERVOIR",
+    "latitude": 37.114565,
+    "longitude": -105.408519,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WCLOUTCO",
+    "siteId": "WCLOUTCO",
+    "name": "CITY OF WALSENBURG CITY LAKE OUTFLOW",
+    "latitude": 37.595356,
+    "longitude": -104.852441,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WESRIFCO",
+    "siteId": "WESRIFCO",
+    "name": "WEST RIFLE CREEK ABOVE RIFLE GAP RESERVOIR",
+    "latitude": 39.64377,
+    "longitude": -107.778297,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WFKCROCO",
+    "siteId": "WFKCROCO",
+    "name": "WIGHTMAN FORK BELOW CROPSEY CREEK AT SUMMITVILLE",
+    "latitude": 37.429307,
+    "longitude": -106.584412,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WFKMOUCO",
+    "siteId": "WFKMOUCO",
+    "name": "WIGHTMAN FORK AT MOUTH NEAR JASPER, CO",
+    "latitude": 37.404014,
+    "longitude": -106.521503,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WGLINLCO",
+    "siteId": "WGLINLCO",
+    "name": "WEST GRAVEL LAKES COMBINED",
+    "latitude": 39.848952,
+    "longitude": -104.951312,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WHIBUFCO",
+    "siteId": "WHIBUFCO",
+    "name": "WHITE RIVER BELOW N ELK CREEK NEAR BUFORD,CO",
+    "latitude": 39.95008,
+    "longitude": -107.694579,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WILBSLCO",
+    "siteId": "WILBSLCO",
+    "name": "WILLOW CREEK BELOW STEAMBOAT LAKE",
+    "latitude": 40.790999,
+    "longitude": -106.944622,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WILCRECO",
+    "siteId": "WILCRECO",
+    "name": "WILLOW CREEK NEAR CRESTONE",
+    "latitude": 37.967534,
+    "longitude": -105.676505,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WINBYPCO",
+    "siteId": "WINBYPCO",
+    "name": "WIND RIVER BYPASS",
+    "latitude": 40.328145,
+    "longitude": -105.576656,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WINDESCO",
+    "siteId": "WINDESCO",
+    "name": "WIND RIVER NEAR ESTES PARK",
+    "latitude": 40.327005,
+    "longitude": -105.581319,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WLTNCKCO",
+    "siteId": "WLTNCKCO",
+    "name": "WALTON CREEK NEAR STEAMBOAT SPRINGS, CO.",
+    "latitude": 40.410902,
+    "longitude": -106.756233,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WMFKMHCO",
+    "siteId": "WMFKMHCO",
+    "name": "WILLIAMS FORK AT MOUTH NEAR HAMILTON",
+    "latitude": 40.43657,
+    "longitude": -107.649186,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "WSDRAVCO",
+    "siteId": "WSDRAVCO",
+    "name": "WEST DIVIDE CREEK NEAR RAVEN, CO",
+    "latitude": 39.331079,
+    "longitude": -107.580175,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "YAMABVCO",
+    "siteId": "YAMABVCO",
+    "name": "YAMPA R ABOVE LAKE CATAMOUNT NR STREAMBOAT SPRINGS",
+    "latitude": 40.340872,
+    "longitude": -106.808124,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "YAMBELCO",
+    "siteId": "YAMBELCO",
+    "name": "LAKE CATAMOUNT SPILLWAY",
+    "latitude": 40.364651,
+    "longitude": -106.800857,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  },
+  {
+    "id": "YAMBELCO",
+    "siteId": "YAMBELCO",
+    "name": "LAKE CATAMOUNT SPILLWAY",
+    "latitude": 40.364651,
+    "longitude": -106.800857,
+    "state": "CO",
+    "metric": "CFS",
+    "country": "US"
+  }
+]

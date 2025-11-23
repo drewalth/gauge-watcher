@@ -1,0 +1,677 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */; };
+		A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEBA52ED2193400DAD9D4 /* Loadable */; };
+		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
+		A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2B42E7B711F004253ED /* GaugeSources */; };
+		A1DE6F5D2E7C6A69000AE422 /* FlowKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1DE6F5C2E7C6A69000AE422 /* FlowKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1FB4A492E7B61EA00A3C7FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1FB4A1D2E7B5DCD00A3C7FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1FB4A242E7B5DCD00A3C7FE;
+			remoteInfo = GaugeWatcher;
+		};
+		A1FB4A582E7B620000A3C7FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1FB4A1D2E7B5DCD00A3C7FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1FB4A242E7B5DCD00A3C7FE;
+			remoteInfo = GaugeWatcher;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A1AAF29A2E7B6F72004253ED /* GaugeSources */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeSources; sourceTree = "<group>"; };
+		A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GaugeWatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1FB4A452E7B61EA00A3C7FE /* GaugeWatcherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1FB4A522E7B620000A3C7FE /* GaugeWatcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GaugeWatcher;
+			sourceTree = "<group>";
+		};
+		A1FB4A462E7B61EA00A3C7FE /* GaugeWatcherTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GaugeWatcherTests;
+			sourceTree = "<group>";
+		};
+		A1FB4A532E7B620000A3C7FE /* GaugeWatcherUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GaugeWatcherUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1FB4A222E7B5DCD00A3C7FE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1DE6F5D2E7C6A69000AE422 /* FlowKit in Frameworks */,
+				A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */,
+				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
+				A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */,
+				A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FB4A422E7B61EA00A3C7FE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FB4A4F2E7B620000A3C7FE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1FB4A1C2E7B5DCD00A3C7FE = {
+			isa = PBXGroup;
+			children = (
+				A1AAF29A2E7B6F72004253ED /* GaugeSources */,
+				A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */,
+				A1FB4A462E7B61EA00A3C7FE /* GaugeWatcherTests */,
+				A1FB4A532E7B620000A3C7FE /* GaugeWatcherUITests */,
+				A1FB4A262E7B5DCD00A3C7FE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1FB4A262E7B5DCD00A3C7FE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */,
+				A1FB4A452E7B61EA00A3C7FE /* GaugeWatcherTests.xctest */,
+				A1FB4A522E7B620000A3C7FE /* GaugeWatcherUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1FB4A302E7B5DCE00A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcher" */;
+			buildPhases = (
+				A1FB4A212E7B5DCD00A3C7FE /* Sources */,
+				A1FB4A222E7B5DCD00A3C7FE /* Frameworks */,
+				A1FB4A232E7B5DCD00A3C7FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */,
+			);
+			name = GaugeWatcher;
+			packageProductDependencies = (
+				A1AAF2802E7B63A2004253ED /* SQLiteData */,
+				A1AAF2B42E7B711F004253ED /* GaugeSources */,
+				A1DE6F5C2E7C6A69000AE422 /* FlowKit */,
+				A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */,
+				A16CEBA52ED2193400DAD9D4 /* Loadable */,
+			);
+			productName = GaugeWatcher;
+			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A1FB4A442E7B61EA00A3C7FE /* GaugeWatcherTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1FB4A4B2E7B61EA00A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcherTests" */;
+			buildPhases = (
+				A1FB4A412E7B61EA00A3C7FE /* Sources */,
+				A1FB4A422E7B61EA00A3C7FE /* Frameworks */,
+				A1FB4A432E7B61EA00A3C7FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1FB4A4A2E7B61EA00A3C7FE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A1FB4A462E7B61EA00A3C7FE /* GaugeWatcherTests */,
+			);
+			name = GaugeWatcherTests;
+			packageProductDependencies = (
+			);
+			productName = GaugeWatcherTests;
+			productReference = A1FB4A452E7B61EA00A3C7FE /* GaugeWatcherTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A1FB4A512E7B620000A3C7FE /* GaugeWatcherUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1FB4A5A2E7B620000A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcherUITests" */;
+			buildPhases = (
+				A1FB4A4E2E7B620000A3C7FE /* Sources */,
+				A1FB4A4F2E7B620000A3C7FE /* Frameworks */,
+				A1FB4A502E7B620000A3C7FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1FB4A592E7B620000A3C7FE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A1FB4A532E7B620000A3C7FE /* GaugeWatcherUITests */,
+			);
+			name = GaugeWatcherUITests;
+			packageProductDependencies = (
+			);
+			productName = GaugeWatcherUITests;
+			productReference = A1FB4A522E7B620000A3C7FE /* GaugeWatcherUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1FB4A1D2E7B5DCD00A3C7FE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					A1FB4A242E7B5DCD00A3C7FE = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					A1FB4A442E7B61EA00A3C7FE = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = A1FB4A242E7B5DCD00A3C7FE;
+					};
+					A1FB4A512E7B620000A3C7FE = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = A1FB4A242E7B5DCD00A3C7FE;
+					};
+				};
+			};
+			buildConfigurationList = A1FB4A202E7B5DCD00A3C7FE /* Build configuration list for PBXProject "GaugeWatcher" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A1FB4A1C2E7B5DCD00A3C7FE;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A1AAF27F2E7B63A2004253ED /* XCRemoteSwiftPackageReference "sqlite-data" */,
+				A1AAF2B32E7B711F004253ED /* XCLocalSwiftPackageReference "GaugeSources" */,
+				A1DE6F5B2E7C6A69000AE422 /* XCRemoteSwiftPackageReference "FlowKit" */,
+				A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A1FB4A262E7B5DCD00A3C7FE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */,
+				A1FB4A442E7B61EA00A3C7FE /* GaugeWatcherTests */,
+				A1FB4A512E7B620000A3C7FE /* GaugeWatcherUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1FB4A232E7B5DCD00A3C7FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FB4A432E7B61EA00A3C7FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FB4A502E7B620000A3C7FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1FB4A212E7B5DCD00A3C7FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FB4A412E7B61EA00A3C7FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FB4A4E2E7B620000A3C7FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1FB4A4A2E7B61EA00A3C7FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */;
+			targetProxy = A1FB4A492E7B61EA00A3C7FE /* PBXContainerItemProxy */;
+		};
+		A1FB4A592E7B620000A3C7FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */;
+			targetProxy = A1FB4A582E7B620000A3C7FE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A1FB4A2E2E7B5DCE00A3C7FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A1FB4A2F2E7B5DCE00A3C7FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1FB4A312E7B5DCE00A3C7FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2BTKYF3W9D;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drewalth.GageWatcher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1FB4A322E7B5DCE00A3C7FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2BTKYF3W9D;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drewalth.GageWatcher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A1FB4A4C2E7B61EA00A3C7FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drewalth.GaugeWatcherTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GaugeWatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GaugeWatcher";
+			};
+			name = Debug;
+		};
+		A1FB4A4D2E7B61EA00A3C7FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drewalth.GaugeWatcherTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GaugeWatcher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GaugeWatcher";
+			};
+			name = Release;
+		};
+		A1FB4A5B2E7B620000A3C7FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drewalth.GaugeWatcherUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GaugeWatcher;
+			};
+			name = Debug;
+		};
+		A1FB4A5C2E7B620000A3C7FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drewalth.GaugeWatcherUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GaugeWatcher;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1FB4A202E7B5DCD00A3C7FE /* Build configuration list for PBXProject "GaugeWatcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1FB4A2E2E7B5DCE00A3C7FE /* Debug */,
+				A1FB4A2F2E7B5DCE00A3C7FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1FB4A302E7B5DCE00A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1FB4A312E7B5DCE00A3C7FE /* Debug */,
+				A1FB4A322E7B5DCE00A3C7FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1FB4A4B2E7B61EA00A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcherTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1FB4A4C2E7B61EA00A3C7FE /* Debug */,
+				A1FB4A4D2E7B61EA00A3C7FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1FB4A5A2E7B620000A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcherUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1FB4A5B2E7B620000A3C7FE /* Debug */,
+				A1FB4A5C2E7B620000A3C7FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A1AAF2B32E7B711F004253ED /* XCLocalSwiftPackageReference "GaugeSources" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = GaugeSources;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.23.1;
+			};
+		};
+		A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/drewalth/swift-loadable.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		A1AAF27F2E7B63A2004253ED /* XCRemoteSwiftPackageReference "sqlite-data" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/sqlite-data";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		A1DE6F5B2E7C6A69000AE422 /* XCRemoteSwiftPackageReference "FlowKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/drewalth/FlowKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		A16CEBA52ED2193400DAD9D4 /* Loadable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */;
+			productName = Loadable;
+		};
+		A1AAF2802E7B63A2004253ED /* SQLiteData */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1AAF27F2E7B63A2004253ED /* XCRemoteSwiftPackageReference "sqlite-data" */;
+			productName = SQLiteData;
+		};
+		A1AAF2B42E7B711F004253ED /* GaugeSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GaugeSources;
+		};
+		A1DE6F5C2E7C6A69000AE422 /* FlowKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1DE6F5B2E7C6A69000AE422 /* XCRemoteSwiftPackageReference "FlowKit" */;
+			productName = FlowKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A1FB4A1D2E7B5DCD00A3C7FE /* Project object */;
+}
