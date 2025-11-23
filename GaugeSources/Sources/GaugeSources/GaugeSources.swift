@@ -3,117 +3,149 @@ import os
 
 // MARK: - GaugeSources
 
-public struct GaugeSources {
-
-    // MARK: Lifecycle
-
-    public init() { }
-
-    // MARK: Public
-
-    public static func load() throws -> [GaugeSourceItem] {
-        let resources = ["usgs-gages", "canada-bc", "canada-on", "canada-qc", "dwr-gauges"]
-        var results: [GaugeSourceItem] = []
-
-        for resource in resources {
-            guard let url = Bundle.module.url(forResource: resource, withExtension: "json") else { throw Errors.invalidJSONURL }
+public enum GaugeSources {
+    
+    // MARK: Public API
+    
+    /// Loads all available gauge sources asynchronously
+    public static func loadAll() async throws -> [GaugeSourceItem] {
+        try await withThrowingTaskGroup(of: [GaugeSourceItem].self) { group in
+            for file in GaugeSourceFile.allCases {
+                group.addTask {
+                    try await load(file: file)
+                }
+            }
+            
+            var allItems: [GaugeSourceItem] = []
+            for try await items in group {
+                allItems.append(contentsOf: items)
+            }
+            return allItems
+        }
+    }
+    
+    /// Loads gauges for a specific Canadian province
+    public static func loadCanadianProvince(_ province: CanadianProvince) async throws -> [GaugeSourceItem] {
+        let file = GaugeSourceFile.canadian(province)
+        return try await load(file: file)
+    }
+    
+    /// Loads gauges for USGS
+    public static func loadUSGS() async throws -> [GaugeSourceItem] {
+        try await load(file: .usgs)
+    }
+    
+    /// Loads gauges for DWR
+    public static func loadDWR() async throws -> [GaugeSourceItem] {
+        try await load(file: .dwr)
+    }
+    
+    /// Loads gauges for New Zealand LAWA
+    public static func loadLAWA() async throws -> [GaugeSourceItem] {
+        try await load(file: .nz)
+    }
+    
+    // MARK: Private Implementation
+    
+    private static let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        return decoder
+    }()
+    
+    private static let logger = Logger(
+        subsystem: "com.drewalth.GaugeWatcher",
+        category: "GaugeSources"
+    )
+    
+    private static func load(file: GaugeSourceFile) async throws -> [GaugeSourceItem] {
+        guard let url = Bundle.module.url(forResource: file.fileName, withExtension: "json") else {
+            logger.error("Failed to locate resource: \(file.fileName)")
+            throw GaugeSourceError.resourceNotFound(file.fileName)
+        }
+        
+        return try await Task.detached {
             let data = try Data(contentsOf: url)
-
-            let decoder = JSONDecoder()
-            // add `source` val based on the resource name
-            let gages = try decoder.decode([GaugeSourceItem].self, from: data).map {
-                var item = $0
-                item.source = {
-                    switch resource {
-                    case "usgs-gages":
-                        return .usgs
-                    case "canada-bc":
-                        return .environmentCanada
-                    case "canada-on":
-                        return .environmentCanada
-                    case "canada-qc":
-                        return .environmentCanada
-                    case "dwr-gauges":
-                        return .dwr
-                    default:
-                        return nil
-                    }
-                }()
-                return item
+            
+            do {
+                var items = try decoder.decode([GaugeSourceItem].self, from: data)
+                // Assign the correct source to each item
+                for index in items.indices {
+                    items[index].source = file.source
+                }
+                return items
+            } catch {
+                logger.error("Failed to decode \(file.fileName): \(error.localizedDescription)")
+                throw GaugeSourceError.decodingFailed(file.fileName, underlyingError: error)
             }
-            results.append(contentsOf: gages)
-        }
-        return results
+        }.value
     }
+}
 
-    //    public func load(source: GaugeSource, province: CanadianProvince? = nil) throws -> [GaugeSourceItem] {
-    //        if source == .usgs, province != nil { throw Errors.invalidOptionsProvided }
-    //        if source == .environmentCanada, province == nil { throw Errors.invalidOptionsProvided }
-    //
-    //        let resource: String = {
-    //            if source == .usgs {
-    //                return "usgs-gages"
-    //            }
-    //
-    //            if source == .lawa {
-    //                return "nz-gauges"
-    //            }
-    //
-    //            if source == .dwr {
-    //                return "dwr-gauges"
-    //            }
-    //
-    //            switch province {
-    //            case .britishColumbia:
-    //                return "canada-bc"
-    //            case .quebec:
-    //                return "canada-qc"
-    //            case .ontario:
-    //                return "canada-on"
-    //            default:
-    //                return "canada-bc"
-    //            }
-    //        }()
-    //
-    //        guard let url = Bundle.module.url(forResource: resource, withExtension: "json") else { throw Errors.invalidJSONURL }
-    //        let data = try Data(contentsOf: url)
-    //
-    //        let decoder = JSONDecoder()
-    //        do {
-    //            return try decoder.decode([GaugeSourceItem].self, from: data)
-    //        } catch {
-    //            logger.error("Failed to decode source data for: \(resource)")
-    //            logger.error("Error: \(error)")
-    //            throw Errors.failedToDecode
-    //        }
-    //    }
+// MARK: - GaugeSourceError
 
-    // MARK: Internal
-
-    enum Errors: Error, LocalizedError {
-        case invalidOptionsProvided, invalidJSONURL, failedToDecode
-
-        public var errorDescription: String? {
-            switch self {
-            case .failedToDecode:
-                "Failed to Decode source data"
-            case .invalidJSONURL:
-                "Bad URL"
-            case .invalidOptionsProvided:
-                "Invalid Options Provided"
-            }
+public enum GaugeSourceError: LocalizedError {
+    case resourceNotFound(String)
+    case decodingFailed(String, underlyingError: Error)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .resourceNotFound(let resource):
+            "Resource file not found: \(resource)"
+        case .decodingFailed(let resource, let error):
+            "Failed to decode \(resource): \(error.localizedDescription)"
         }
     }
+}
 
-    // MARK: Private
+// MARK: - GaugeSourceFile
 
-    private let logger = Logger(subsystem: "com.drewalth.GaugeWatcher", category: "GageSources")
-
+enum GaugeSourceFile: CaseIterable {
+    case canadian(CanadianProvince)
+    case dwr
+    case nz
+    case usgs
+    
+    static var allCases: [GaugeSourceFile] {
+        [
+            .canadian(.britishColumbia),
+            .canadian(.ontario),
+            .canadian(.quebec),
+            .dwr,
+            .usgs
+            // Note: .nz excluded from allCases until nz-gauges.json is available
+        ]
+    }
+    
+    var fileName: String {
+        switch self {
+        case .canadian(let province):
+            return "canada-\(province.rawValue.lowercased())"
+        case .dwr:
+            return "dwr-gauges"
+        case .nz:
+            return "nz-gauges"
+        case .usgs:
+            return "usgs-gages"
+        }
+    }
+    
+    var source: GaugeSource {
+        switch self {
+        case .canadian:
+            return .environmentCanada
+        case .dwr:
+            return .dwr
+        case .nz:
+            return .lawa
+        case .usgs:
+            return .usgs
+        }
+    }
 }
 
 // MARK: - GaugeSourceItem
 
-public struct GaugeSourceItem: Codable, Equatable, Identifiable {
+public struct GaugeSourceItem: Codable, Equatable, Identifiable, Sendable {
 
     // MARK: Lifecycle
 
@@ -125,9 +157,10 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable {
         siteID: String,
         state: String,
         country: String,
-        source: GaugeSource?,
-        zone: String?,
-        metric: String) {
+        source: GaugeSource,
+        zone: String? = nil,
+        metric: GaugeSourceMetric
+    ) {
         self.id = id
         self.name = name
         self.latitude = latitude
@@ -149,12 +182,14 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable {
         id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
 
         let country = try container.decode(String.self, forKey: .country)
-        let defaultMetric = country == "CA" ? "CMS" : "CFS"
+        let defaultMetric = country == "CA" ? GaugeSourceMetric.cms : GaugeSourceMetric.cfs
         self.country = country
-        metric = try container.decodeIfPresent(String.self, forKey: .metric) ?? defaultMetric
+        metric = try container.decodeIfPresent(GaugeSourceMetric.self, forKey: .metric) ?? defaultMetric
         siteID = try container.decode(String.self, forKey: .siteID)
-
         zone = try container.decodeIfPresent(String.self, forKey: .zone)
+        
+        // Source is assigned after decoding
+        source = nil
     }
 
     // MARK: Public
@@ -166,9 +201,9 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable {
     public var siteID: String
     public var state: String
     public var country: String
-    public var metric: String
+    public var metric: GaugeSourceMetric
     public var zone: String?
-    public var source: GaugeSource?
+    public internal(set) var source: GaugeSource?
 
     // MARK: Internal
 
@@ -176,8 +211,6 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable {
         case name, latitude, longitude, state, id, metric, country, zone
         case siteID = "siteId"
     }
-
-    let uuid = UUID()
 }
 
 // MARK: - GaugeSource
@@ -191,7 +224,7 @@ public enum GaugeSource: String, Codable, CaseIterable, Sendable {
 
 // MARK: - CanadianProvince
 
-public enum CanadianProvince: String {
+public enum CanadianProvince: String, CaseIterable, Sendable {
     case britishColumbia = "BC"
     case quebec = "QC"
     case ontario = "ON"
@@ -200,12 +233,12 @@ public enum CanadianProvince: String {
 
 // MARK: - NZRegion
 
-public enum NZRegion: String, CaseIterable, Codable {
+public enum NZRegion: String, CaseIterable, Codable, Sendable {
     case wellington = "Wellington"
     case bayOfPlenty = "Bay of Plenty"
     case westCoast = "West Coast"
-
-    var zones: [NZZone] {
+    
+    public var zones: [NZZone] {
         switch self {
         case .wellington:
             [.ruamaahanga, .wellingtonHarbourAndHuttValley, .teAwaruaOPorirua]
@@ -219,17 +252,30 @@ public enum NZRegion: String, CaseIterable, Codable {
 
 // MARK: - NZZone
 
-public enum NZZone: String, CaseIterable, Codable {
+public enum NZZone: String, CaseIterable, Codable, Sendable {
     // wellington
     case ruamaahanga = "Ruamahanga"
     case wellingtonHarbourAndHuttValley = "Wellington Harbour and Hutt Valley"
     case teAwaruaOPorirua = "Te Awarua o Porirua"
-
+    
     // bay of plenty
     case kaituna = "Kaituna-Maketu-Pongakawa"
-
+    
     // west coast
     case buller = "Buller"
     case grey = "Grey"
     case hokitika = "Hokitika"
+}
+
+// MARK: - GaugeSourceMetric
+
+public enum GaugeSourceMetric: String, CaseIterable, Codable, Sendable {
+    /// Cubic Meters per Second
+    case cms = "CMS"
+    /// Cubic Feet per Second
+    case cfs = "CFS"
+    /// Feet stage height
+    case feetHeight = "FT"
+    /// Meters stage height
+    case meterHeight = "M"
 }
