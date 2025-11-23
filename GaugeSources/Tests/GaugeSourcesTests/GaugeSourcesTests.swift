@@ -6,7 +6,7 @@ struct GaugeSourcesTests {
     @Test
     func loadAll_happy() async throws {
         let sources = try await GaugeSources.loadAll()
-        #expect(sources.count == 8929) // Includes all regions: CA (BC, ON, QC), US (USGS, DWR), NZ (3 regions)
+        #expect(sources.count == 8921) // Includes all regions: CA (BC, ON, QC), US (USGS, DWR), NZ (3 regions)
     }
 
     @Test
@@ -20,7 +20,7 @@ struct GaugeSourcesTests {
     @Test
     func loadUSGS_happy() async throws {
         let sources = try await GaugeSources.loadUSGS()
-        #expect(sources.count == 7457)
+        #expect(sources.count == 7449)
         #expect(sources.allSatisfy { $0.source == .usgs })
         #expect(sources.allSatisfy { $0.country == "US" })
     }

@@ -93,7 +93,10 @@ public enum GaugeSources {
                 for index in items.indices {
                     items[index].source = file.source
                 }
-                return items
+
+                // TODO: clan up data files to remove duplicates and gauges with partial data
+                // some gauges have empty strings for state, name, etc. For now, we'll just filter them out.
+                return items.filter { !$0.state.isEmpty && !$0.name.isEmpty && !$0.siteID.isEmpty }
             } catch {
                 logger.error("Failed to decode \(file.fileName): \(error.localizedDescription)")
                 throw GaugeSourceError.decodingFailed(file.fileName, underlyingError: error)

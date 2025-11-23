@@ -7,10 +7,14 @@
 
 import ComposableArchitecture
 import Loadable
+import os
 import SQLiteData
 
 @Reducer
 struct GaugeSearchFeature {
+
+    private let logger = Logger(category: "GaugeSearchFeature")
+
     @ObservableState
     struct State {
         var queryString = ""
@@ -50,6 +54,7 @@ struct GaugeSearchFeature {
                                     .map { $0.ref }
                             }
                         }
+                        logger.debug("\(results[0])")
                         await send(.setResults(.loaded(results)))
                     } catch {
                         await send(.setResults(.error(error)))

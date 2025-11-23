@@ -1,10 +1,13 @@
 //
-//  Modifiers.swift
+//  ListModifiers.swift
 //  GaugeWatcher
 //
-//  Created by Andrew Althage on 9/17/25.
+//  Created by Andrew Althage on 11/23/25.
 //
+
 import SwiftUI
+
+// MARK: - GaugeWatcherListModifier
 
 struct GaugeWatcherListModifier: ViewModifier {
 
@@ -21,5 +24,11 @@ struct GaugeWatcherListModifier: ViewModifier {
             .if(colorScheme == .light) {
                 $0.shadow(color: Color.gray.opacity(0.15), radius: 4, x: 0, y: 4)
             }
+    }
+}
+
+extension View {
+    func gaugeWatcherList() -> some View {
+        modifier(GaugeWatcherListModifier())
     }
 }

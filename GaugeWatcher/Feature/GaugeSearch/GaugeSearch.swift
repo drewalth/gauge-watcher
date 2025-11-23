@@ -11,6 +11,7 @@ import SwiftUI
 
 struct GaugeSearch: View {
     var store: StoreOf<GaugeSearchFeature>
+
     var body: some View {
         NavigationStack {
             List {
@@ -24,7 +25,8 @@ struct GaugeSearch: View {
                 case .error(let err):
                     Text(String(describing: err.localizedDescription))
                 }
-            }.task {
+            }.gaugeWatcherList()
+            .task {
                 store.send(.query)
             }
         }.navigationTitle("Gauges")

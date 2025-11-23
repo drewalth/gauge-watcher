@@ -87,3 +87,20 @@ extension Gauge {
             createdAt: createdAt)
     }
 }
+
+// MARK: - GaugeRef + CustomStringConvertible
+
+nonisolated extension GaugeRef: CustomStringConvertible {
+    var description: String {
+        """
+    GaugeRef(
+        id: \(id),
+        name: \(name),
+        siteID: \(siteID),
+        metric: \(metric),
+        country: \(country),
+        state: \(state),
+        zone: \(zone),
+    """
+    }
+}

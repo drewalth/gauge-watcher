@@ -29,8 +29,4 @@ extension View {
             self
         }
     }
-
-    func gaugeWatcherList() -> some View {
-        modifier(GaugeWatcherListModifier())
-    }
 }
