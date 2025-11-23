@@ -7,9 +7,9 @@
 
 import ComposableArchitecture
 import GaugeSources
+import os
 import SQLiteData
 import SwiftUI
-import os
 
 // MARK: - AppModel
 
@@ -28,7 +28,7 @@ final class GaugeDetailModel { }
 struct AppView: View {
 
     @AppStorage("gauges-seeded") var seeded = false
-    
+
     private let logger = Logger(category: "AppView")
 
     @Bindable var model: AppModel
@@ -62,13 +62,13 @@ struct AppView: View {
         do {
             // Load gauge data asynchronously
             let gaugeData = try await GaugeSources.loadAll()
-            
+
             try await Task {
-                try self.database.write { db in
+                try database.write { db in
                     try db.seedGaugeData(gaugeData)
                 }
             }.value
-            
+
             seeded = true
         } catch {
             // Log error but don't crash the app
@@ -81,7 +81,7 @@ extension Database {
     func seedGaugeData(_ gaugeData: [GaugeSourceItem]) throws {
         // Filter out any items without a source before seeding
         let validGauges = gaugeData.filter { $0.source != nil }
-        
+
         try seed {
             for (index, gauge) in validGauges.enumerated() {
                 Gauge.Draft(
@@ -96,8 +96,7 @@ extension Database {
                     latitude: Double(gauge.latitude),
                     longitude: Double(gauge.longitude),
                     updatedAt: .distantPast,
-                    createdAt: .now
-                )
+                    createdAt: .now)
             }
         }
     }

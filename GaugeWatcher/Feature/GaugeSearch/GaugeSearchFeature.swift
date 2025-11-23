@@ -31,30 +31,30 @@ struct GaugeSearchFeature {
             case .setQueryString(let newValue):
                 state.queryString = newValue
                 return .none
-           case .query:
-    state.results = .loading
-    return .run { [queryString = state.queryString] send in
-        do {
-            let results = try await database.read { db in
-                if !queryString.isEmpty {
-                    return try Gauge
-                        .where { $0.name.lower().contains(queryString.lowercased()) }
-                        .order(by: \.name)
-                        .fetchAll(db)
-                        
-                        .map { $0.ref }
-                } else {
-                    return try Gauge.all
-                        .order(by: \.name)
-                        .fetchAll(db)
-                        .map { $0.ref }
+            case .query:
+                state.results = .loading
+                return .run { [queryString = state.queryString] send in
+                    do {
+                        let results = try await database.read { db in
+                            if !queryString.isEmpty {
+                                return try Gauge
+                                    .where { $0.name.lower().contains(queryString.lowercased()) }
+                                    .order(by: \.name)
+                                    .fetchAll(db)
+
+                                    .map { $0.ref }
+                            } else {
+                                return try Gauge.all
+                                    .order(by: \.name)
+                                    .fetchAll(db)
+                                    .map { $0.ref }
+                            }
+                        }
+                        await send(.setResults(.loaded(results)))
+                    } catch {
+                        await send(.setResults(.error(error)))
+                    }
                 }
-            }
-            await send(.setResults(.loaded(results)))
-        } catch {
-            await send(.setResults(.error(error)))
-        }
-    }
             case .setResults(let results):
                 state.results = results
                 return .none

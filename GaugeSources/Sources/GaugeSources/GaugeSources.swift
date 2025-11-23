@@ -4,9 +4,11 @@ import os
 // MARK: - GaugeSources
 
 public enum GaugeSources {
-    
+
+    // MARK: Public
+
     // MARK: Public API
-    
+
     /// Loads all available gauge sources asynchronously
     public static func loadAll() async throws -> [GaugeSourceItem] {
         try await withThrowingTaskGroup(of: [GaugeSourceItem].self) { group in
@@ -15,7 +17,7 @@ public enum GaugeSources {
                     try await load(file: file)
                 }
             }
-            
+
             var allItems: [GaugeSourceItem] = []
             for try await items in group {
                 allItems.append(contentsOf: items)
@@ -23,49 +25,50 @@ public enum GaugeSources {
             return allItems
         }
     }
-    
+
     /// Loads gauges for a specific Canadian province
     public static func loadCanadianProvince(_ province: CanadianProvince) async throws -> [GaugeSourceItem] {
         let file = GaugeSourceFile.canadian(province)
         return try await load(file: file)
     }
-    
+
     /// Loads gauges for USGS
     public static func loadUSGS() async throws -> [GaugeSourceItem] {
         try await load(file: .usgs)
     }
-    
+
     /// Loads gauges for DWR
     public static func loadDWR() async throws -> [GaugeSourceItem] {
         try await load(file: .dwr)
     }
-    
+
     /// Loads gauges for New Zealand LAWA
     public static func loadLAWA() async throws -> [GaugeSourceItem] {
         try await load(file: .nz)
     }
-    
+
+    // MARK: Private
+
     // MARK: Private Implementation
-    
+
     private static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         return decoder
     }()
-    
+
     private static let logger = Logger(
         subsystem: "com.drewalth.GaugeWatcher",
-        category: "GaugeSources"
-    )
-    
+        category: "GaugeSources")
+
     private static func load(file: GaugeSourceFile) async throws -> [GaugeSourceItem] {
         guard let url = Bundle.module.url(forResource: file.fileName, withExtension: "json") else {
             logger.error("Failed to locate resource: \(file.fileName)")
             throw GaugeSourceError.resourceNotFound(file.fileName)
         }
-        
+
         return try await Task.detached {
             let data = try Data(contentsOf: url)
-            
+
             do {
                 var items = try decoder.decode([GaugeSourceItem].self, from: data)
                 // Assign the correct source to each item
@@ -86,7 +89,7 @@ public enum GaugeSources {
 public enum GaugeSourceError: LocalizedError {
     case resourceNotFound(String)
     case decodingFailed(String, underlyingError: Error)
-    
+
     public var errorDescription: String? {
         switch self {
         case .resourceNotFound(let resource):
@@ -104,7 +107,9 @@ enum GaugeSourceFile: CaseIterable {
     case dwr
     case nz
     case usgs
-    
+
+    // MARK: Internal
+
     static var allCases: [GaugeSourceFile] {
         [
             .canadian(.britishColumbia),
@@ -115,7 +120,7 @@ enum GaugeSourceFile: CaseIterable {
             // Note: .nz excluded from allCases until nz-gauges.json is available
         ]
     }
-    
+
     var fileName: String {
         switch self {
         case .canadian(let province):
@@ -128,7 +133,7 @@ enum GaugeSourceFile: CaseIterable {
             return "usgs-gages"
         }
     }
-    
+
     var source: GaugeSource {
         switch self {
         case .canadian:
@@ -159,8 +164,7 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable, Sendable {
         country: String,
         source: GaugeSource,
         zone: String? = nil,
-        metric: GaugeSourceMetric
-    ) {
+        metric: GaugeSourceMetric) {
         self.id = id
         self.name = name
         self.latitude = latitude
@@ -187,7 +191,7 @@ public struct GaugeSourceItem: Codable, Equatable, Identifiable, Sendable {
         metric = try container.decodeIfPresent(GaugeSourceMetric.self, forKey: .metric) ?? defaultMetric
         siteID = try container.decode(String.self, forKey: .siteID)
         zone = try container.decodeIfPresent(String.self, forKey: .zone)
-        
+
         // Source is assigned after decoding
         source = nil
     }
@@ -237,7 +241,7 @@ public enum NZRegion: String, CaseIterable, Codable, Sendable {
     case wellington = "Wellington"
     case bayOfPlenty = "Bay of Plenty"
     case westCoast = "West Coast"
-    
+
     public var zones: [NZZone] {
         switch self {
         case .wellington:
@@ -257,10 +261,10 @@ public enum NZZone: String, CaseIterable, Codable, Sendable {
     case ruamaahanga = "Ruamahanga"
     case wellingtonHarbourAndHuttValley = "Wellington Harbour and Hutt Valley"
     case teAwaruaOPorirua = "Te Awarua o Porirua"
-    
+
     // bay of plenty
     case kaituna = "Kaituna-Maketu-Pongakawa"
-    
+
     // west coast
     case buller = "Buller"
     case grey = "Grey"

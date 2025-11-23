@@ -5,9 +5,7 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
-import SQLiteData
 import GaugeSources
+import SQLiteData
 
-extension GaugeSourceMetric: QueryBindable {
-    
-}
+extension GaugeSourceMetric: QueryBindable { }
