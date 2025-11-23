@@ -19,6 +19,7 @@ struct GaugeSearchFeature {
     struct State {
         var queryString = ""
         var results: Loadable<[GaugeRef]> = .initial
+        var queryOptions = GaugeQueryOptions()
     }
 
     enum Action {
@@ -27,7 +28,7 @@ struct GaugeSearchFeature {
         case setQueryString(String)
     }
 
-    @Dependency(\.defaultDatabase) var database
+    @Dependency(\.databaseService) var databaseService: DatabaseService
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -37,24 +38,9 @@ struct GaugeSearchFeature {
                 return .none
             case .query:
                 state.results = .loading
-                return .run { [queryString = state.queryString] send in
+                return .run { [state] send in
                     do {
-                        let results = try await database.read { db in
-                            if !queryString.isEmpty {
-                                return try Gauge
-                                    .where { $0.name.lower().contains(queryString.lowercased()) }
-                                    .order(by: \.name)
-                                    .fetchAll(db)
-
-                                    .map { $0.ref }
-                            } else {
-                                return try Gauge.all
-                                    .order(by: \.name)
-                                    .fetchAll(db)
-                                    .map { $0.ref }
-                            }
-                        }
-                        logger.debug("\(results[0])")
+                        let results = try await databaseService.loadGauges(state.queryOptions).map { $0.ref }
                         await send(.setResults(.loaded(results)))
                     } catch {
                         await send(.setResults(.error(error)))
