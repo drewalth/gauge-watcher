@@ -9,6 +9,7 @@ import ComposableArchitecture
 import GaugeSources
 import SQLiteData
 import SwiftUI
+import os
 
 // MARK: - AppModel
 
@@ -27,6 +28,8 @@ final class GaugeDetailModel { }
 struct AppView: View {
 
     @AppStorage("gauges-seeded") var seeded = false
+    
+    private let logger = Logger(category: "AppView")
 
     @Bindable var model: AppModel
 
@@ -41,9 +44,9 @@ struct AppView: View {
             .tabItem {
                 Label("Home", systemImage: "house.fill")
             }
-            .tag(0) // Assign a unique tag to each tab
+            .tag(0)
             .task {
-                seedDatabase()
+                await seedDatabase()
             }
             SettingsView()
                 .tabItem {
@@ -53,24 +56,34 @@ struct AppView: View {
         }
     }
 
-    func seedDatabase() {
+    func seedDatabase() async {
         guard !seeded else { return }
 
-        withErrorReporting {
-            try database.write { db in
-                try db.seedGaugeData()
-            }
+        do {
+            // Load gauge data asynchronously
+            let gaugeData = try await GaugeSources.loadAll()
+            
+            try await Task {
+                try self.database.write { db in
+                    try db.seedGaugeData(gaugeData)
+                }
+            }.value
+            
             seeded = true
+        } catch {
+            // Log error but don't crash the app
+            logger.error("Failed to seed database: \(error.localizedDescription)")
         }
     }
 }
 
 extension Database {
-    func seedGaugeData() throws {
-        let gaugeData = try GaugeSources.load()
-
+    func seedGaugeData(_ gaugeData: [GaugeSourceItem]) throws {
+        // Filter out any items without a source before seeding
+        let validGauges = gaugeData.filter { $0.source != nil }
+        
         try seed {
-            for (index, gauge) in gaugeData.enumerated() {
+            for (index, gauge) in validGauges.enumerated() {
                 Gauge.Draft(
                     id: index + 1,
                     name: gauge.name,
@@ -79,11 +92,12 @@ extension Database {
                     country: gauge.country,
                     state: gauge.state,
                     zone: gauge.zone ?? "",
-                    source: gauge.source!,
+                    source: gauge.source!, // Safe because we filtered
                     latitude: Double(gauge.latitude),
                     longitude: Double(gauge.longitude),
                     updatedAt: .distantPast,
-                    createdAt: .now)
+                    createdAt: .now
+                )
             }
         }
     }

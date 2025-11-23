@@ -1,8 +1,8 @@
 //
-//  Extensions.swift
+//  ViewExtension.swift
 //  GaugeWatcher
 //
-//  Created by Andrew Althage on 9/17/25.
+//  Created by Andrew Althage on 11/23/25.
 //
 
 import SwiftUI
