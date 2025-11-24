@@ -14,7 +14,7 @@ struct GaugeDetailFeature {
     struct State {
         var gaugeID: Int
         var gauge: Loadable<GaugeRef> = .initial
-        
+
         init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
         }

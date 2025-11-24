@@ -46,12 +46,11 @@ struct GaugeSearchFeature {
     @Dependency(\.databaseService) var databaseService: DatabaseService
     @Dependency(\.locationService) var locationService: LocationService
 
-    
     @Reducer
     enum Path {
         case gaugeDetail(GaugeDetailFeature)
     }
-    
+
     nonisolated enum CancelID {
         case query
     }
@@ -62,11 +61,8 @@ struct GaugeSearchFeature {
             case .goToGaugeDetail(let gaugeID):
                 state.path.append(.gaugeDetail(GaugeDetailFeature.State(gaugeID)))
                 return .none
-            case let .path(action):
-                switch action {
-                default:
-                    print(action)
-                }
+            case .path(let action):
+                print(action)
                 return .none
             case .setSearchText(let newValue):
                 var opt = state.queryOptions
@@ -113,7 +109,7 @@ struct GaugeSearchFeature {
                                 guard let placemark = try await geocoder.reverseGeocodeLocation(currentLocation.loc).first else {
                                     throw GaugeSearchFeatureError.couldNotGetMapItemFromGeocoding
                                 }
-                                
+
                                 guard let stateArea = placemark.administrativeArea else {
                                     throw GaugeSearchFeatureError.couldNotGetRegionName
                                 }
@@ -202,6 +198,8 @@ nonisolated struct CurrentLocation: Equatable, Sendable, Codable {
         .init(latitude: latitude, longitude: longitude)
     }
 }
+
+// MARK: - GaugeSearchFeatureError
 
 // state.currentLocation = .init(
 //                        latitude: Double(location.coordinate.latitude),

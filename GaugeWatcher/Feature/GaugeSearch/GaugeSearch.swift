@@ -18,7 +18,6 @@ struct GaugeSearch: View {
     var body: some View {
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             content()
-                
         } destination: { store in
             switch store.case {
             case .gaugeDetail(let gaugeDetailStore):

@@ -8,6 +8,7 @@
 import Foundation
 import GaugeSources
 import SQLiteData
+import CoreLocation
 
 // MARK: - GaugeProtocol
 
@@ -102,5 +103,11 @@ nonisolated extension GaugeRef: CustomStringConvertible {
         state: \(state),
         zone: \(zone),
     """
+    }
+}
+
+extension GaugeRef {
+    var location: CLLocation {
+        .init(latitude: latitude, longitude: longitude)
     }
 }
