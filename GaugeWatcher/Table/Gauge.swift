@@ -111,3 +111,12 @@ extension GaugeRef {
         .init(latitude: latitude, longitude: longitude)
     }
 }
+
+extension GaugeRef {
+    /// Checks if the gauge is stale by comparing the updatedAt date to the current date.
+    /// If the updatedAt date is more than 30 minutes ago, the gauge is stale.
+    func isStale() -> Bool {
+        let thirtyMinutesAgo = Date().addingTimeInterval(-1800)
+        return updatedAt < thirtyMinutesAgo
+    }
+}

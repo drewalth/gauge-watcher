@@ -1,5 +1,5 @@
 {
-  "originHash" : "36e87901889ab1f51a84eb076adf924f2507faae20ceb030e1e429c00600505d",
+  "originHash" : "05da84dc25aa0281cf2c13033481f4a4e9fc31244e5b5dedd5a4ede5a7ae1aff",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "5928286acce13def418ec36d05a001a9641086f2",
         "version" : "1.0.3"
-      }
-    },
-    {
-      "identity" : "flowkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/drewalth/FlowKit.git",
-      "state" : {
-        "revision" : "ab7b9fac516e6b3663b42cd4406f61c340283bbe",
-        "version" : "1.2.1"
       }
     },
     {

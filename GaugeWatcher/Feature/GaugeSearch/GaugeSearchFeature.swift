@@ -43,7 +43,7 @@ struct GaugeSearchFeature {
         case goToGaugeDetail(Int)
     }
 
-    @Dependency(\.databaseService) var databaseService: DatabaseService
+    @Dependency(\.gaugeService) var gaugeService: GaugeService
     @Dependency(\.locationService) var locationService: LocationService
 
     @Reducer
@@ -199,7 +199,7 @@ struct GaugeSearchFeature {
                 state.results = .loading
                 return .run { [state] send in
                     do {
-                        let results = try await databaseService.loadGauges(state.queryOptions).map { $0.ref }
+                        let results = try await gaugeService.loadGauges(state.queryOptions).map { $0.ref }
                         await send(.setResults(.loaded(results)))
                     } catch {
                         await send(.setResults(.error(error)))

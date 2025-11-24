@@ -11,7 +11,6 @@
 		A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEBA52ED2193400DAD9D4 /* Loadable */; };
 		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
 		A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2B42E7B711F004253ED /* GaugeSources */; };
-		A1DE6F5D2E7C6A69000AE422 /* FlowKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1DE6F5C2E7C6A69000AE422 /* FlowKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +32,7 @@
 
 /* Begin PBXFileReference section */
 		A1AAF29A2E7B6F72004253ED /* GaugeSources */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeSources; sourceTree = "<group>"; };
+		A1F9E3A12ED4C60C00676AB1 /* GaugeDrivers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeDrivers; sourceTree = "<group>"; };
 		A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GaugeWatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1FB4A452E7B61EA00A3C7FE /* GaugeWatcherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1FB4A522E7B620000A3C7FE /* GaugeWatcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,7 +61,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1DE6F5D2E7C6A69000AE422 /* FlowKit in Frameworks */,
 				A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */,
 				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
 				A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */,
@@ -89,6 +88,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A1F9E3A12ED4C60C00676AB1 /* GaugeDrivers */,
 				A1AAF29A2E7B6F72004253ED /* GaugeSources */,
 				A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */,
 				A1FB4A462E7B61EA00A3C7FE /* GaugeWatcherTests */,
@@ -129,7 +129,6 @@
 			packageProductDependencies = (
 				A1AAF2802E7B63A2004253ED /* SQLiteData */,
 				A1AAF2B42E7B711F004253ED /* GaugeSources */,
-				A1DE6F5C2E7C6A69000AE422 /* FlowKit */,
 				A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */,
 				A16CEBA52ED2193400DAD9D4 /* Loadable */,
 			);
@@ -218,7 +217,6 @@
 			packageReferences = (
 				A1AAF27F2E7B63A2004253ED /* XCRemoteSwiftPackageReference "sqlite-data" */,
 				A1AAF2B32E7B711F004253ED /* XCLocalSwiftPackageReference "GaugeSources" */,
-				A1DE6F5B2E7C6A69000AE422 /* XCRemoteSwiftPackageReference "FlowKit" */,
 				A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */,
 			);
@@ -638,14 +636,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		A1DE6F5B2E7C6A69000AE422 /* XCRemoteSwiftPackageReference "FlowKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/drewalth/FlowKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -667,11 +657,6 @@
 		A1AAF2B42E7B711F004253ED /* GaugeSources */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GaugeSources;
-		};
-		A1DE6F5C2E7C6A69000AE422 /* FlowKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A1DE6F5B2E7C6A69000AE422 /* XCRemoteSwiftPackageReference "FlowKit" */;
-			productName = FlowKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

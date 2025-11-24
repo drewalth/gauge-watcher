@@ -6,15 +6,35 @@
 //
 
 import ComposableArchitecture
+import Loadable
 import SwiftUI
 
 struct GaugeDetail: View {
+
+    // MARK: Internal
+
     @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
-        Text("GaugeDeatil")
-            .task {
-                store.send(.load)
-            }
+        Group {
+            content()
+        }
+        .task {
+            store.send(.load)
+        }
+    }
+
+    // MARK: Private
+
+    @ViewBuilder
+    private func content() -> some View {
+        switch store.gauge {
+        case .initial, .loading:
+            ProgressView()
+        case .loaded(let gauge), .reloading(let gauge):
+            Text(gauge.name)
+        case .error(let error):
+            Text(error.localizedDescription)
+        }
     }
 }

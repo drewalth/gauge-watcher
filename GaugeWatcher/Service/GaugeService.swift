@@ -1,26 +1,28 @@
 //
-//  DatabaseService.swift
+//  GaugeService.swift
 //  GaugeWatcher
 //
 //  Created by Andrew Althage on 11/23/25.
 //
 
 import ComposableArchitecture
+import FlowKit
 import GaugeSources
 import SQLiteData
 
-// MARK: - DatabaseService
+// MARK: - GaugeService
 
-struct DatabaseService {
+struct GaugeService {
     var loadGauge: (Gauge.ID) async throws -> Gauge
     var loadGauges: (GaugeQueryOptions) async throws -> [Gauge]
     var loadGaugeReadings: (Gauge.ID) async throws -> [GaugeReading]
+    var sync: (Gauge.ID) async throws -> Void
 }
 
 // MARK: DependencyKey
 
-extension DatabaseService: DependencyKey {
-    static let liveValue: DatabaseService = Self(loadGauge: { id in
+extension GaugeService: DependencyKey {
+    static let liveValue: GaugeService = Self(loadGauge: { id in
         @Dependency(\.defaultDatabase) var database
         return try await database.read { db in
             guard let gauge = try Gauge.where { $0.id == id }.fetchOne(db) else {
@@ -65,13 +67,14 @@ extension DatabaseService: DependencyKey {
         return try await database.read { db in
             try GaugeReading.where { $0.gaugeID == id }.fetchAll(db)
         }
+    }, sync: { _ in
     })
 }
 
 extension DependencyValues {
-    var databaseService: DatabaseService {
-        get { self[DatabaseService.self] }
-        set { self[DatabaseService.self] = newValue }
+    var gaugeService: GaugeService {
+        get { self[GaugeService.self] }
+        set { self[GaugeService.self] = newValue }
     }
 }
 
