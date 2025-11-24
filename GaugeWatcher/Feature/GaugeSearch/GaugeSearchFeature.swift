@@ -252,8 +252,23 @@ async throws {
 
     logger.info("Successfully determined state: \(currentState.abbreviation)")
 
-    // TODO: get country based on current state abbreviation
-    await send(.setQueryOptions(.init(state: currentState.abbreviation)))
+    // Determine country and source based on the state/province
+    let (country, source): (String, GaugeSource) = {
+        if StatesProvinces.CanadianProvince(rawValue: currentState.abbreviation) != nil {
+            return ("CA", .environmentCanada)
+        } else if StatesProvinces.USState(rawValue: currentState.abbreviation) != nil {
+            return ("US", .usgs)
+        } else if StatesProvinces.NewZealandRegion(rawValue: currentState.abbreviation) != nil {
+            return ("NZ", .lawa)
+        } else {
+            // Default to US/USGS if we can't determine
+            logger.warning("Could not determine country for state: \(currentState.abbreviation), defaulting to US/USGS")
+            return ("US", .usgs)
+        }
+    }()
+
+    logger.info("Determined country: \(country), source: \(source.rawValue)")
+    await send(.setQueryOptions(.init(country: country, state: currentState.abbreviation, source: source)))
     await send(.query)
     await send(.setInitialized(.loaded(true)))
 }
