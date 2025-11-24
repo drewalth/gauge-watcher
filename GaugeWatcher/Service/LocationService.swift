@@ -97,49 +97,44 @@ extension LocationService: CLLocationManagerDelegate {
 
 extension LocationService {
 
+    public func locationServicesEnabled() -> Bool {
+        let enabled = CLLocationManager.locationServicesEnabled()
+        logger.info("Location services enabled: \(enabled)")
+        return enabled
+    }
+
     public func requestWhenInUseAuthorization() {
-        let authStatus = authorizationStatus()
-        switch authStatus {
-        case .notDetermined:
-            logger.info("Requesting Location Services Authorization")
-            locationManager.requestWhenInUseAuthorization()
-        case .restricted, .denied:
-            logger.warning("Location Services Denied")
-        case .authorizedWhenInUse, .authorizedAlways:
-            logger.info("Location Services Authorized")
-            startUpdatingLocation()
-        @unknown default:
-            break
-        }
+        logger.info("Requesting Location Services Authorization")
+        locationManager.requestWhenInUseAuthorization()
     }
 
     public func requestLocation() {
-        logger.info("Requesting Location")
+        logger.info("Requesting single location update")
         #if os(iOS) || os(macOS)
         if #available(iOS 9.0, macOS 10.12, *) {
             locationManager.requestLocation()
         } else {
             // Fallback for earlier versions if necessary
+            locationManager.startUpdatingLocation()
         }
         #endif
     }
 
     public func startUpdatingLocation() {
-        logger.info("Starting Location Updates")
+        logger.info("Starting continuous location updates")
         #if os(iOS) || os(macOS)
         locationManager.startUpdatingLocation()
         #endif
     }
 
     public func stopUpdatingLocation() {
-        logger.info("Stopping Location Updates")
+        logger.info("Stopping location updates")
         #if os(iOS) || os(macOS)
         locationManager.stopUpdatingLocation()
         #endif
     }
 
     public func authorizationStatus() -> CLAuthorizationStatus {
-        logger.info("Getting Location Authorization Status")
         #if os(macOS)
         if #available(macOS 10.12, *) {
             return locationManager.authorizationStatus

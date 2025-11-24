@@ -26,6 +26,16 @@ struct GaugeSearchMap: View {
             }
             UserAnnotation()
         }.ignoresSafeArea(.all)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        store.send(.toggleMode)
+                    } label: {
+                        Label("Mode", systemImage: store.mode == .list ? "list.bullet" : "map")
+                            .labelStyle(.iconOnly)
+                    }
+                }
+            }
     }
 
     // MARK: Private
