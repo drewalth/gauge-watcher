@@ -5,19 +5,24 @@
 //  Created by Andrew Althage on 11/24/25.
 //
 
+import ComposableArchitecture
 import Loadable
 import SwiftUI
-import ComposableArchitecture
 
 struct GaugeReadingChart: View {
+
+    // MARK: Internal
+
     var store: StoreOf<GaugeDetailFeature>
-    
+
     var body: some View {
         VStack {
             content()
         }.frame(minHeight: 300)
     }
-    
+
+    // MARK: Private
+
     @ViewBuilder
     private func content() -> some View {
         switch store.readings {

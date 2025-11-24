@@ -34,7 +34,7 @@ struct GaugeDetailFeature {
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
-    
+
     nonisolated enum CancelID {
         case sync
     }
@@ -46,23 +46,20 @@ struct GaugeDetailFeature {
                 state.readings = newValue
                 return .none
             case .loadReadings:
-                
                 if state.readings.isInitial() || state.readings.isError() {
                     state.readings = .loading
                 } else {
                     state.readings = .reloading(state.readings.unwrap() ?? [])
                 }
-                
+
                 return .run { [gaugeID = state.gaugeID] send in
-                    
                     do {
                         let readings = try await gaugeService.loadGaugeReadings(.init(gaugeID: gaugeID)).map { $0.ref }
                         await send(.setReadings(.loaded(readings)))
-                        
+
                     } catch {
                         await send(.setReadings(.error(error)))
                     }
-                    
                 }
             case .sync:
                 guard let gauge = state.gauge.unwrap() else {
@@ -72,7 +69,6 @@ struct GaugeDetailFeature {
                 state.gauge = .reloading(gauge)
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
-                        
                         try await gaugeService.sync(gaugeID)
                         await send(.loadReadings)
                     } catch {
@@ -93,7 +89,7 @@ struct GaugeDetailFeature {
                         let gauge = try await gaugeService.loadGauge(state.gaugeID).ref
 
                         await send(.setGauge(.loaded(gauge)))
-                        
+
                         if !gauge.isStale() {
                             logger.info("Gauge not stale. Skipping sync.")
                             return

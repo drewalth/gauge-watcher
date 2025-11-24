@@ -8,6 +8,8 @@
 import Foundation
 import SQLiteData
 
+// MARK: - GaugeReadingProtocol
+
 protocol GaugeReadingProtocol: Sendable {
     var id: Int { get }
     var siteID: String { get }
@@ -16,6 +18,8 @@ protocol GaugeReadingProtocol: Sendable {
     var gaugeID: Gauge.ID { get }
     var createdAt: Date { get }
 }
+
+// MARK: - GaugeReading
 
 @Table
 struct GaugeReading: Identifiable, Hashable, GaugeReadingProtocol {
@@ -28,6 +32,8 @@ struct GaugeReading: Identifiable, Hashable, GaugeReadingProtocol {
     var createdAt: Date
 }
 
+// MARK: - GaugeReadingRef
+
 nonisolated struct GaugeReadingRef: Identifiable, Hashable, GaugeReadingProtocol {
     let id: Int
     let siteID: String
@@ -37,18 +43,20 @@ nonisolated struct GaugeReadingRef: Identifiable, Hashable, GaugeReadingProtocol
     let createdAt: Date
 }
 
+// MARK: CustomStringConvertible
+
 extension GaugeReadingRef: CustomStringConvertible {
     var description: String {
         """
-        GaugeReadingRef(
-            id: \(id),
-            siteID: \(siteID),
-            value: \(value),
-            metric: \(metric),
-            gaugeID: \(gaugeID),
-            createdAt: \(createdAt)
-        )
-        """
+    GaugeReadingRef(
+        id: \(id),
+        siteID: \(siteID),
+        value: \(value),
+        metric: \(metric),
+        gaugeID: \(gaugeID),
+        createdAt: \(createdAt)
+    )
+    """
     }
 }
 
@@ -60,8 +68,6 @@ extension GaugeReading {
             value: value,
             metric: metric,
             gaugeID: gaugeID,
-            createdAt: createdAt
-        )
+            createdAt: createdAt)
     }
 }
-
