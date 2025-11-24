@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C292ED4D4BD0063C7FA /* GaugeDrivers */; };
 		A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C5F2ED4EAA00063C7FA /* Algorithms */; };
+		A1526C722ED51C490063C7FA /* AccessibleUI in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C712ED51C490063C7FA /* AccessibleUI */; };
+		A1526C912ED51FCC0063C7FA /* UIAppearance in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C902ED51FCC0063C7FA /* UIAppearance */; };
 		A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */; };
 		A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEBA52ED2193400DAD9D4 /* Loadable */; };
 		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
@@ -33,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1AAF29A2E7B6F72004253ED /* GaugeSources */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeSources; sourceTree = "<group>"; };
 		A1F9E3A12ED4C60C00676AB1 /* GaugeDrivers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeDrivers; sourceTree = "<group>"; };
 		A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GaugeWatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +67,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */,
+				A1526C722ED51C490063C7FA /* AccessibleUI in Frameworks */,
+				A1526C912ED51FCC0063C7FA /* UIAppearance in Frameworks */,
 				A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */,
 				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
 				A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */,
@@ -92,6 +97,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A1526C762ED51F410063C7FA /* UIAppearance */,
 				A1F9E3A12ED4C60C00676AB1 /* GaugeDrivers */,
 				A1AAF29A2E7B6F72004253ED /* GaugeSources */,
 				A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */,
@@ -137,6 +143,8 @@
 				A16CEBA52ED2193400DAD9D4 /* Loadable */,
 				A1526C292ED4D4BD0063C7FA /* GaugeDrivers */,
 				A1526C5F2ED4EAA00063C7FA /* Algorithms */,
+				A1526C712ED51C490063C7FA /* AccessibleUI */,
+				A1526C902ED51FCC0063C7FA /* UIAppearance */,
 			);
 			productName = GaugeWatcher;
 			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
@@ -227,6 +235,8 @@
 				A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */,
 				A1526C282ED4D4BD0063C7FA /* XCLocalSwiftPackageReference "GaugeDrivers" */,
 				A1526C5E2ED4EAA00063C7FA /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				A1526C702ED51C490063C7FA /* XCRemoteSwiftPackageReference "accessible-ui" */,
+				A1526C8F2ED51FCC0063C7FA /* XCLocalSwiftPackageReference "UIAppearance" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1FB4A262E7B5DCD00A3C7FE /* Products */;
@@ -617,6 +627,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = GaugeDrivers;
 		};
+		A1526C8F2ED51FCC0063C7FA /* XCLocalSwiftPackageReference "UIAppearance" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = UIAppearance;
+		};
 		A1AAF2B32E7B711F004253ED /* XCLocalSwiftPackageReference "GaugeSources" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = GaugeSources;
@@ -630,6 +644,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.2.1;
+			};
+		};
+		A1526C702ED51C490063C7FA /* XCRemoteSwiftPackageReference "accessible-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/drewalth/accessible-ui.git";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 		A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
@@ -667,6 +689,15 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A1526C5E2ED4EAA00063C7FA /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
+		};
+		A1526C712ED51C490063C7FA /* AccessibleUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1526C702ED51C490063C7FA /* XCRemoteSwiftPackageReference "accessible-ui" */;
+			productName = AccessibleUI;
+		};
+		A1526C902ED51FCC0063C7FA /* UIAppearance */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UIAppearance;
 		};
 		A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;

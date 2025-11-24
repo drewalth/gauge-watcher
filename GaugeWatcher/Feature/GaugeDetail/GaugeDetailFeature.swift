@@ -123,11 +123,11 @@ struct GaugeDetailFeature {
 
                         await send(.setGauge(.loaded(gauge)))
 
-                        if !gauge.isStale() {
-                            logger.info("Gauge not stale. Skipping sync.")
-                            return
+                        if gauge.isStale() {
+                            logger.info("syncing gauge")
+                            await send(.sync)
                         }
-                        await send(.sync)
+
                     } catch {
                         await send(.setGauge(.error(error)))
                     }

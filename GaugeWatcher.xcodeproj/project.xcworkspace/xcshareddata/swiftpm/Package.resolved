@@ -1,6 +1,15 @@
 {
-  "originHash" : "34350d4d4045579b6d665436c21b33546179076e50ddc8b984eefecf1e3f060a",
+  "originHash" : "b8736f3bcf3846a7961768c4c09a53fbe908b26f523c1eab9bc5a600856d7584",
   "pins" : [
+    {
+      "identity" : "accessible-ui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/drewalth/accessible-ui.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "512fdf3d433362135fd5f47284aedcf6077acbe0"
+      }
+    },
     {
       "identity" : "combine-schedulers",
       "kind" : "remoteSourceControl",

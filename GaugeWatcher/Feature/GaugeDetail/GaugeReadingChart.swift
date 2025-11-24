@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/24/25.
 //
 
+import AccessibleUI
 import Algorithms
 import Charts
 import ComposableArchitecture
@@ -37,15 +38,8 @@ struct GaugeReadingChart: View {
             ProgressView()
         case .loaded, .reloading:
             VStack(spacing: 16) {
-                HStack {
-                    Picker("Time Period", selection: $store.selectedTimePeriod.sending(\.setSelectedTimePeriod)) {
-                        ForEach(TimePeriod.PredefinedPeriod.allCases, id: \.rawValue) { timePeriod in
-                            Text(timePeriod.description)
-                                .tag(timePeriod)
-                        }
-                    }.pickerStyle(.segmented)
-                }
                 let formattedReadings = getReadings(for: store)
+                GaugeReadingChartControls(store: store)
                 Chart(formattedReadings, id: \.id) { reading in
                     AreaMark(
                         x: .value("Day", reading.createdAt),

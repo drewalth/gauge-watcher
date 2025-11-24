@@ -41,28 +41,31 @@ struct AppView: View {
                     .multilineTextAlignment(.leading)
             }
         case .loaded(let isInitialized):
-            TabView {
-                GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
-                    GaugeSearchFeature()
-                }))
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-                .tag(0)
-
-                FavoriteGaugesView(store: Store(initialState: FavoriteGaugesFeature.State(), reducer: {
-                    FavoriteGaugesFeature()._printChanges()
-                }))
-                .tabItem {
-                    Label("Favorites", systemImage: "star.fill")
-                }
-                .tag(1)
-
-                SettingsView()
+            if isInitialized {
+                TabView {
+                    GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
+                        GaugeSearchFeature()
+                    }))
                     .tabItem {
-                        Label("Settings", systemImage: "gearshape.fill")
+                        Label("Home", systemImage: "house.fill")
                     }
-                    .tag(2)
+                    .tag(0)
+
+                    FavoriteGaugesView(store: Store(initialState: FavoriteGaugesFeature.State(), reducer: {
+                        FavoriteGaugesFeature()._printChanges()
+                    }))
+                    .tabItem {
+                        Label("Favorites", systemImage: "star.fill")
+                    }
+                    .tag(1)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("And you may ask yourself, well, how did I get here?")
+                        .font(.caption)
+                        .lineLimit(3)
+                        .multilineTextAlignment(.leading)
+                }
             }
         }
     }

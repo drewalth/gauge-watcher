@@ -24,7 +24,7 @@ struct GaugeSearchFeature {
     struct State {
         var results: Loadable<[GaugeRef]> = .initial
         var queryOptions = GaugeQueryOptions()
-        var mode: Mode = .list
+        var mode: Mode = .map
         var initialized: Loadable<Bool> = .initial
         @Shared(.appStorage(LocalStorageKey.currentLocation.rawValue)) var currentLocation: CurrentLocation?
         var path = StackState<Path.State>()
