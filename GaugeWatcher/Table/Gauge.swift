@@ -5,10 +5,10 @@
 //  Created by Andrew Althage on 11/22/25.
 //
 
+import CoreLocation
 import Foundation
 import GaugeSources
 import SQLiteData
-import CoreLocation
 
 // MARK: - GaugeProtocol
 

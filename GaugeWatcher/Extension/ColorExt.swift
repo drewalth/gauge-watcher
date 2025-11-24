@@ -14,7 +14,7 @@ extension Color: RawRepresentable {
 
     // MARK: Lifecycle
 
-     public init?(rawValue: String) {
+    public init?(rawValue: String) {
         guard let data = Data(base64Encoded: rawValue) else {
             self = .black
             return
@@ -28,18 +28,6 @@ extension Color: RawRepresentable {
         }
     }
 
-    // MARK: Public
-
-     public var rawValue: String {
-        do {
-            let data = try NSKeyedArchiver.archivedData(withRootObject: UIColor(self), requiringSecureCoding: false) as Data
-            return data.base64EncodedString()
-
-        } catch {
-            return ""
-        }
-    }
-    
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -63,6 +51,18 @@ extension Color: RawRepresentable {
             green: Double(g) / 255,
             blue: Double(b) / 255,
             opacity: Double(a) / 255)
+    }
+
+    // MARK: Public
+
+    public var rawValue: String {
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: UIColor(self), requiringSecureCoding: false) as Data
+            return data.base64EncodedString()
+
+        } catch {
+            return ""
+        }
     }
 
 }

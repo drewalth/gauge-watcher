@@ -4,8 +4,8 @@
 //
 //  Created by Andrew Althage on 11/23/25.
 //
-import SwiftUI
 import ComposableArchitecture
+import SwiftUI
 
 struct GaugeMapMarker: View {
 
@@ -16,7 +16,9 @@ struct GaugeMapMarker: View {
         self.store = store
     }
 
-    // MARK: Public
+    // MARK: Internal
+
+    @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
         ZStack {
@@ -36,8 +38,7 @@ struct GaugeMapMarker: View {
                         .animation(
                             Animation.easeOut(duration: 1.5)
                                 .repeatForever(autoreverses: false),
-                            value: isAnimating)
-                        )
+                            value: isAnimating))
         }.onTapGesture {
             popoverVisible.toggle()
         }
@@ -49,7 +50,7 @@ struct GaugeMapMarker: View {
                     .font(.callout)
                     .bold()
                     .layoutPriority(1)
-                
+
                 Button {
                     popoverVisible.toggle()
                     store.send(.goToGaugeDetail(gauge.id))
@@ -61,13 +62,8 @@ struct GaugeMapMarker: View {
             .frame(maxWidth: 250)
             .padding(16)
             .presentationCompactAdaptation(.popover)
-            
         }
     }
-
-    // MARK: Internal
-
-    @Bindable var store: StoreOf<GaugeSearchFeature>
 
     // MARK: Private
 

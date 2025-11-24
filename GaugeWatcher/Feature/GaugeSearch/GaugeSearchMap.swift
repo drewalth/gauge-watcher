@@ -6,15 +6,18 @@
 //
 
 import ComposableArchitecture
-import SwiftUI
-import MapKit
 import Loadable
+import MapKit
+import SwiftUI
 
 struct GaugeSearchMap: View {
+
+    // MARK: Internal
+
     @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
-       Map(position: $position, interactionModes: .all) {
+        Map(position: $position, interactionModes: .all) {
             ForEach(store.results.unwrap() ?? [], id: \.id) { gauge in
                 Annotation(gauge.name, coordinate: gauge.location.coordinate) {
                     GaugeMapMarker(store: store, gauge: gauge)
@@ -25,6 +28,7 @@ struct GaugeSearchMap: View {
         }.ignoresSafeArea(.all)
     }
 
+    // MARK: Private
 
     @State private var position: MapCameraPosition = .region(.init(
                                                                 center: .init(latitude: 39.8283, longitude: -98.5795),
