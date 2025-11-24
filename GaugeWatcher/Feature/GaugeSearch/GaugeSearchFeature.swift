@@ -87,16 +87,16 @@ struct GaugeSearchFeature {
                         await send(.setInitialized(.loaded(true)))
                         return
                     }
-                    
+
                     let authStatus = locationService.authorizationStatus()
-                    
+
                     // Handle based on current authorization status
                     switch authStatus {
                     case .notDetermined:
                         // Need to request permission - wait for authorization change
                         logger.info("Requesting location authorization")
                         locationService.requestWhenInUseAuthorization()
-                        
+
                         // Wait for authorization response
                         for await delegateAction in await locationService.delegate() {
                             switch delegateAction {
@@ -116,7 +116,7 @@ struct GaugeSearchFeature {
                                 @unknown default:
                                     break
                                 }
-                                
+
                             case .didUpdateLocations(let locations):
                                 do {
                                     try await handleLocationUpdate(locations: locations, send: send, logger: logger)
@@ -126,24 +126,24 @@ struct GaugeSearchFeature {
                                     await send(.setInitialized(.error(error)))
                                     return
                                 }
-                                
+
                             case .didFailWithError(let error):
                                 logger.error("Location error: \(error.localizedDescription) - loading default gauges")
                                 await send(.setQueryOptions(.init()))
                                 await send(.query)
                                 await send(.setInitialized(.loaded(true)))
                                 return
-                                
+
                             case .didDetermineState, .didStartMonitoringFor:
                                 break
                             }
                         }
-                        
+
                     case .authorizedAlways, .authorizedWhenInUse:
                         // Already authorized - immediately request location
                         logger.info("Already authorized - fetching location")
                         locationService.requestLocation()
-                        
+
                         for await delegateAction in await locationService.delegate() {
                             switch delegateAction {
                             case .didUpdateLocations(let locations):
@@ -155,26 +155,26 @@ struct GaugeSearchFeature {
                                     await send(.setInitialized(.error(error)))
                                     return
                                 }
-                                
+
                             case .didFailWithError(let error):
                                 logger.error("Location error: \(error.localizedDescription) - loading default gauges")
                                 await send(.setQueryOptions(.init()))
                                 await send(.query)
                                 await send(.setInitialized(.loaded(true)))
                                 return
-                                
+
                             case .didChangeAuthorization, .didDetermineState, .didStartMonitoringFor:
                                 break
                             }
                         }
-                        
+
                     case .denied, .restricted:
                         // User denied or restricted - load default gauges
                         logger.warning("Location denied/restricted - loading default gauges")
                         await send(.setQueryOptions(.init()))
                         await send(.query)
                         await send(.setInitialized(.loaded(true)))
-                        
+
                     @unknown default:
                         logger.warning("Unknown authorization status - loading default gauges")
                         await send(.setQueryOptions(.init()))
@@ -222,37 +222,36 @@ struct GaugeSearchFeature {
 private func handleLocationUpdate(
     locations: [CLLocation],
     send: Send<GaugeSearchFeature.Action>,
-    logger: Logger
-) async throws {
+    logger: Logger)
+async throws {
     logger.info("Processing location update with \(locations.count) locations")
-    
+
     guard let location = locations.last else {
         throw GaugeSearchFeatureError.couldNotDetermineLocation
     }
-    
+
     let currentLocation = CurrentLocation(
         latitude: location.coordinate.latitude,
-        longitude: location.coordinate.longitude
-    )
-    
+        longitude: location.coordinate.longitude)
+
     await send(.setCurrentLocation(currentLocation))
-    
+
     // Using CLGeocoder - deprecated in iOS 26 but haven't gotten MapKit replacement working yet
     let geocoder = CLGeocoder()
     guard let placemark = try await geocoder.reverseGeocodeLocation(currentLocation.loc).first else {
         throw GaugeSearchFeatureError.couldNotGetMapItemFromGeocoding
     }
-    
+
     guard let stateArea = placemark.administrativeArea else {
         throw GaugeSearchFeatureError.couldNotGetRegionName
     }
-    
+
     guard let currentState = StatesProvinces.state(from: stateArea) else {
         throw GaugeSearchFeatureError.couldNotGetCurrentState
     }
-    
+
     logger.info("Successfully determined state: \(currentState.abbreviation)")
-    
+
     // TODO: get country based on current state abbreviation
     await send(.setQueryOptions(.init(state: currentState.abbreviation)))
     await send(.query)
