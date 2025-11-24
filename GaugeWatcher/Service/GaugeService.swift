@@ -6,9 +6,9 @@
 //
 
 import ComposableArchitecture
+import GaugeDrivers
 import GaugeSources
 import SQLiteData
-import GaugeDrivers
 
 // MARK: - GaugeService
 
@@ -72,8 +72,7 @@ extension GaugeService: DependencyKey {
             siteID: "09380000",
             source: .usgs,
             timePeriod: .predefined(.last7Days),
-            parameters: [.discharge, .height]
-        )
+            parameters: [.discharge, .height])
 
         // Fetch readings
         let factory = GaugeDriverFactory()

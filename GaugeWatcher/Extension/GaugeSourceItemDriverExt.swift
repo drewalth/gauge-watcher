@@ -7,8 +7,8 @@
 //  This file bridges GaugeSources metadata with GaugeDrivers fetching API
 
 import Foundation
-import GaugeSources
 import GaugeDrivers
+import GaugeSources
 
 // MARK: - GaugeSource + GaugeDriverSource
 
@@ -38,10 +38,10 @@ extension GaugeSourceItem {
     /// - Returns: GaugeDriverOptions ready to use with the unified API
     func toDriverOptions(
         timePeriod: TimePeriod = .predefined(.last7Days),
-        parameters: [ReadingParameter] = ReadingParameter.allCases
-    ) -> GaugeDriverOptions? {
-        guard let source = self.source else { return nil }
-        
+        parameters: [ReadingParameter] = ReadingParameter.allCases)
+    -> GaugeDriverOptions? {
+        guard let source else { return nil }
+
         let metadata: SourceMetadata? = {
             switch source {
             case .environmentCanada:
@@ -55,16 +55,15 @@ extension GaugeSourceItem {
                 return nil
             }
         }()
-        
+
         return GaugeDriverOptions(
             siteID: siteID,
             source: source.toDriverSource,
             timePeriod: timePeriod,
             parameters: parameters,
-            metadata: metadata
-        )
+            metadata: metadata)
     }
-    
+
     /// Convenience method to fetch readings directly from this gauge source item
     /// - Parameters:
     ///   - timePeriod: Time period for data retrieval (defaults to last 7 days)
@@ -75,8 +74,8 @@ extension GaugeSourceItem {
     func fetchReadings(
         timePeriod: TimePeriod = .predefined(.last7Days),
         parameters: [ReadingParameter] = ReadingParameter.allCases,
-        factory: GaugeDriverFactory = GaugeDriverFactory()
-    ) async throws -> [GDGaugeReading] {
+        factory: GaugeDriverFactory = GaugeDriverFactory())
+    async throws -> [GDGaugeReading] {
         guard let options = toDriverOptions(timePeriod: timePeriod, parameters: parameters) else {
             throw GaugeDriverErrors.invalidOptions("Unable to create driver options for gauge: \(name)")
         }
@@ -86,7 +85,7 @@ extension GaugeSourceItem {
 
 // MARK: - Array<GaugeSourceItem> + Batch Fetching
 
-extension Array where Element == GaugeSourceItem {
+extension [GaugeSourceItem] {
     /// Convenience method to fetch readings for multiple gauge sources in parallel
     /// - Parameters:
     ///   - timePeriod: Time period for data retrieval (defaults to last 7 days)
@@ -97,17 +96,16 @@ extension Array where Element == GaugeSourceItem {
     func fetchReadings(
         timePeriod: TimePeriod = .predefined(.last7Days),
         parameters: [ReadingParameter] = ReadingParameter.allCases,
-        factory: GaugeDriverFactory = GaugeDriverFactory()
-    ) async throws -> [GDGaugeReading] {
-        let optionsArray = self.compactMap { item in
+        factory: GaugeDriverFactory = GaugeDriverFactory())
+    async throws -> [GDGaugeReading] {
+        let optionsArray = compactMap { item in
             item.toDriverOptions(timePeriod: timePeriod, parameters: parameters)
         }
-        
+
         guard !optionsArray.isEmpty else {
             throw GaugeDriverErrors.invalidOptions("No valid gauge source items to fetch")
         }
-        
+
         return try await factory.fetchReadings(optionsArray: optionsArray)
     }
 }
-

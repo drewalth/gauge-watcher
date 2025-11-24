@@ -52,4 +52,3 @@ public func environmentCanadaMetadata(stateCode: String) -> SourceMetadata? {
     }
     return .environmentCanada(province: province)
 }
-

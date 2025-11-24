@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - GaugeDriver Protocol
+// MARK: - GaugeDriver
 
 /// Unified protocol that all gauge data source drivers must implement
 public protocol GaugeDriver: Sendable {
@@ -16,7 +16,7 @@ public protocol GaugeDriver: Sendable {
     /// - Returns: Array of gauge readings
     /// - Throws: Driver-specific errors
     func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading]
-    
+
     /// Fetches readings for multiple sites concurrently
     /// - Parameter optionsArray: Array of options for each site
     /// - Returns: Array of gauge readings from all sites
@@ -28,37 +28,36 @@ public protocol GaugeDriver: Sendable {
 
 /// Unified options for fetching gauge data that work across all sources
 public struct GaugeDriverOptions: Sendable {
-    
+
     // MARK: Lifecycle
-    
+
     public init(
         siteID: String,
         source: GaugeDriverSource,
         timePeriod: TimePeriod = .predefined(.last7Days),
         parameters: [ReadingParameter] = ReadingParameter.allCases,
-        metadata: SourceMetadata? = nil
-    ) {
+        metadata: SourceMetadata? = nil) {
         self.siteID = siteID
         self.source = source
         self.timePeriod = timePeriod
         self.parameters = parameters
         self.metadata = metadata
     }
-    
+
     // MARK: Public
-    
+
     /// The site identifier for the gauge station
     public let siteID: String
-    
+
     /// The data source (USGS, Environment Canada, etc.)
     public let source: GaugeDriverSource
-    
+
     /// Time period for data retrieval (defaults to last 7 days)
     public let timePeriod: TimePeriod
-    
+
     /// Which parameters to fetch (discharge, height, temperature)
     public let parameters: [ReadingParameter]
-    
+
     /// Source-specific metadata (province for Canada, etc.)
     public let metadata: SourceMetadata?
 }
@@ -95,7 +94,7 @@ public enum ReadingParameter: String, CaseIterable, Sendable {
 public enum TimePeriod: Sendable, Equatable {
     case predefined(PredefinedPeriod)
     case custom(start: Date, end: Date)
-    
+
     public enum PredefinedPeriod: Int, CaseIterable, Sendable {
         case last24Hours = 1
         case last7Days = 7
@@ -108,9 +107,13 @@ public enum TimePeriod: Sendable, Equatable {
 
 /// Factory for creating the appropriate driver for a given source
 public struct GaugeDriverFactory {
-    
-    public init() {}
-    
+
+    // MARK: Lifecycle
+
+    public init() { }
+
+    // MARK: Public
+
     /// Returns the appropriate driver for the given source
     /// - Parameter source: The gauge data source
     /// - Returns: A driver instance that conforms to GaugeDriver protocol
@@ -127,7 +130,7 @@ public struct GaugeDriverFactory {
             throw GaugeDriverErrors.unsupportedSource(source)
         }
     }
-    
+
     /// Convenience method to fetch readings with a single call
     /// - Parameter options: Unified driver options
     /// - Returns: Array of gauge readings
@@ -136,7 +139,7 @@ public struct GaugeDriverFactory {
         let driver = try driver(for: options.source)
         return try await driver.fetchReadings(options: options)
     }
-    
+
     /// Convenience method to fetch readings from multiple sites
     /// - Parameter optionsArray: Array of options for different sites
     /// - Returns: Array of all gauge readings
@@ -144,22 +147,22 @@ public struct GaugeDriverFactory {
     public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
         // Group by source for efficient batch fetching
         let groupedBySource = Dictionary(grouping: optionsArray, by: { $0.source })
-        
+
         var allReadings: [GDGaugeReading] = []
-        
+
         try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
             for (source, optionsForSource) in groupedBySource {
                 group.addTask {
-                    let driver = try self.driver(for: source)
+                    let driver = try driver(for: source)
                     return try await driver.fetchReadings(optionsArray: optionsForSource)
                 }
             }
-            
+
             for try await readings in group {
                 allReadings.append(contentsOf: readings)
             }
         }
-        
+
         return allReadings
     }
 }
@@ -171,7 +174,7 @@ public enum GaugeDriverErrors: Error, LocalizedError {
     case unsupportedParameter(ReadingParameter, GaugeDriverSource)
     case unsupportedSource(GaugeDriverSource)
     case invalidOptions(String)
-    
+
     public var errorDescription: String? {
         switch self {
         case .missingRequiredMetadata(let detail):
@@ -194,14 +197,13 @@ public struct GDGaugeReading: Codable, Identifiable, Sendable {
     public let timestamp: Date
     public let unit: GDGaugeReadingUnit
     public let siteID: String
-    
+
     public init(
         id: UUID,
         value: Double,
         timestamp: Date,
         unit: GDGaugeReadingUnit,
-        siteID: String
-    ) {
+        siteID: String) {
         self.id = id
         self.value = value
         self.timestamp = timestamp
@@ -213,8 +215,8 @@ public struct GDGaugeReading: Codable, Identifiable, Sendable {
 // MARK: - GDGaugeReadingUnit
 
 public enum GDGaugeReadingUnit: String, Codable, Sendable {
-    case cfs = "cfs"
-    case cms = "cms"
+    case cfs
+    case cms
     case feet = "ft"
     case meter = "m"
     case temperature = "temp"

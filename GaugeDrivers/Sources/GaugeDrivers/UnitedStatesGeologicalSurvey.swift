@@ -19,71 +19,7 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
     public init() { }
 
     // MARK: Public
-    
-    // MARK: - GaugeDriver Protocol Conformance
-    
-    /// Unified API: Fetches readings using standardized options
-    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
-        let parameters = options.parameters.compactMap { param -> USGSParameter? in
-            switch param {
-            case .discharge:
-                return .discharge
-            case .height:
-                return .height
-            case .temperature:
-                return .temperature
-            }
-        }
-        
-        return try await fetchGaugeStationData(
-            siteID: options.siteID,
-            timePeriod: options.timePeriod,
-            parameters: parameters
-        )
-    }
-    
-    /// Unified API: Fetches readings for multiple sites
-    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
-        // Group by time period and parameters for efficient batching
-        let grouped = Dictionary(grouping: optionsArray) { options in
-            "\(options.timePeriod)-\(options.parameters.map { $0.rawValue }.joined())"
-        }
-        
-        var allReadings: [GDGaugeReading] = []
-        
-        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
-            for (_, optionsGroup) in grouped {
-                guard let firstOptions = optionsGroup.first else { continue }
-                
-                let siteIDs = optionsGroup.map { $0.siteID }
-                let parameters = firstOptions.parameters.compactMap { param -> USGSParameter? in
-                    switch param {
-                    case .discharge:
-                        return .discharge
-                    case .height:
-                        return .height
-                    case .temperature:
-                        return .temperature
-                    }
-                }
-                
-                group.addTask {
-                    try await self.fetchGaugeStationData(
-                        for: siteIDs,
-                        timePeriod: firstOptions.timePeriod,
-                        parameters: parameters
-                    )
-                }
-            }
-            
-            for try await readings in group {
-                allReadings.append(contentsOf: readings)
-            }
-        }
-        
-        return allReadings
-    }
-    
+
     // MARK: - Legacy API (Deprecated but kept for backward compatibility)
 
     public enum USGSParameter: String, CaseIterable, Sendable {
@@ -91,7 +27,7 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
         case height = "00065"
         case temperature = "00010"
     }
-    
+
     @available(*, deprecated, message: "Use fetchReadings(options:) instead")
     public enum ReadingParameter: String, CaseIterable, Sendable {
         case discharge = "00060"
@@ -133,6 +69,68 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
                 "Unable to convert string to double: \(string)"
             }
         }
+    }
+
+    // MARK: - GaugeDriver Protocol Conformance
+
+    /// Unified API: Fetches readings using standardized options
+    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+        let parameters = options.parameters.compactMap { param -> USGSParameter? in
+            switch param {
+            case .discharge:
+                return .discharge
+            case .height:
+                return .height
+            case .temperature:
+                return .temperature
+            }
+        }
+
+        return try await fetchGaugeStationData(
+            siteID: options.siteID,
+            timePeriod: options.timePeriod,
+            parameters: parameters)
+    }
+
+    /// Unified API: Fetches readings for multiple sites
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+        // Group by time period and parameters for efficient batching
+        let grouped = Dictionary(grouping: optionsArray) { options in
+            "\(options.timePeriod)-\(options.parameters.map { $0.rawValue }.joined())"
+        }
+
+        var allReadings: [GDGaugeReading] = []
+
+        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+            for (_, optionsGroup) in grouped {
+                guard let firstOptions = optionsGroup.first else { continue }
+
+                let siteIDs = optionsGroup.map { $0.siteID }
+                let parameters = firstOptions.parameters.compactMap { param -> USGSParameter? in
+                    switch param {
+                    case .discharge:
+                        return .discharge
+                    case .height:
+                        return .height
+                    case .temperature:
+                        return .temperature
+                    }
+                }
+
+                group.addTask {
+                    try await fetchGaugeStationData(
+                        for: siteIDs,
+                        timePeriod: firstOptions.timePeriod,
+                        parameters: parameters)
+                }
+            }
+
+            for try await readings in group {
+                allReadings.append(contentsOf: readings)
+            }
+        }
+
+        return allReadings
     }
 
     /// Fetches data from the USGS Water Services API for a single gauge station.

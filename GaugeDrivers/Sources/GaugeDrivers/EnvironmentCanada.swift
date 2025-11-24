@@ -20,55 +20,7 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
     public init() { }
 
     // MARK: Public
-    
-    // MARK: - GaugeDriver Protocol Conformance
-    
-    /// Unified API: Fetches readings using standardized options
-    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
-        guard case .environmentCanada(let province) = options.metadata else {
-            throw GaugeDriverErrors.missingRequiredMetadata(
-                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)"
-            )
-        }
-        
-        return try await fetchGaugeStationData(siteID: options.siteID, province: province)
-    }
-    
-    /// Unified API: Fetches readings for multiple sites
-    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
-        // Group by province for efficient batching
-        let grouped = Dictionary(grouping: optionsArray) { options -> Province? in
-            guard case .environmentCanada(let province) = options.metadata else {
-                return nil
-            }
-            return province
-        }
-        
-        var allReadings: [GDGaugeReading] = []
-        
-        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
-            for (provinceOpt, optionsGroup) in grouped {
-                guard let province = provinceOpt else {
-                    throw GaugeDriverErrors.missingRequiredMetadata(
-                        "Environment Canada requires province metadata for all sites"
-                    )
-                }
-                
-                let siteIDs = optionsGroup.map { $0.siteID }
-                
-                group.addTask {
-                    try await self.fetchGaugeStationData(for: siteIDs, province: province)
-                }
-            }
-            
-            for try await readings in group {
-                allReadings.append(contentsOf: readings)
-            }
-        }
-        
-        return allReadings
-    }
-    
+
     // MARK: - Legacy API (kept for backward compatibility)
 
     public enum Errors: Error, LocalizedError {
@@ -115,6 +67,52 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
         case qc
         case sk
         case yt
+    }
+
+    // MARK: - GaugeDriver Protocol Conformance
+
+    /// Unified API: Fetches readings using standardized options
+    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+        guard case .environmentCanada(let province) = options.metadata else {
+            throw GaugeDriverErrors.missingRequiredMetadata(
+                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)")
+        }
+
+        return try await fetchGaugeStationData(siteID: options.siteID, province: province)
+    }
+
+    /// Unified API: Fetches readings for multiple sites
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+        // Group by province for efficient batching
+        let grouped = Dictionary(grouping: optionsArray) { options -> Province? in
+            guard case .environmentCanada(let province) = options.metadata else {
+                return nil
+            }
+            return province
+        }
+
+        var allReadings: [GDGaugeReading] = []
+
+        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+            for (provinceOpt, optionsGroup) in grouped {
+                guard let province = provinceOpt else {
+                    throw GaugeDriverErrors.missingRequiredMetadata(
+                        "Environment Canada requires province metadata for all sites")
+                }
+
+                let siteIDs = optionsGroup.map { $0.siteID }
+
+                group.addTask {
+                    try await fetchGaugeStationData(for: siteIDs, province: province)
+                }
+            }
+
+            for try await readings in group {
+                allReadings.append(contentsOf: readings)
+            }
+        }
+
+        return allReadings
     }
 
     /// Fetches the latest readings for multiple gauge stations from the Environment Canada API concurrently.
@@ -176,7 +174,7 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
             }
 
             logger.info("Fetching from: \(url.absoluteString)")
-            
+
             guard let downloadedFileURL = try? await csvManager.downloadCSV(from: url) else {
                 throw Errors.failedToDownloadCSV(url.absoluteString)
             }
@@ -215,7 +213,7 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
             throw Errors.failedToFetch(error)
         }
     }
-    
+
     /// Builds the URL for the Environment Canada CSV file, trying current date first, then previous day.
     /// - Parameters:
     ///   - siteID: The site ID of the gauge station
@@ -225,32 +223,32 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd"
         dateFormatter.timeZone = TimeZone(identifier: "America/Toronto") // Environment Canada uses Eastern Time
-        
+
         // Try current date and previous day (in case today's file isn't published yet)
         for daysBack in 0...1 {
             let targetDate = Calendar.current.date(byAdding: .day, value: -daysBack, to: Date()) ?? Date()
             let dateString = dateFormatter.string(from: targetDate)
-            
+
             let urlString = String(
                 format: "https://dd.weather.gc.ca/%@/WXO-DD/hydrometric/csv/%@/hourly/%@_%@_hourly_hydrometric.csv",
                 dateString,
                 province.rawValue.uppercased(),
                 province.rawValue.uppercased(),
                 siteID)
-            
+
             guard let url = URL(string: urlString) else { continue }
-            
+
             // Quick HEAD request to check if URL exists before attempting full download
             if await urlExists(url) {
                 return url
             }
-            
+
             logger.info("File not found for date \(dateString), trying previous day...")
         }
-        
+
         return nil
     }
-    
+
     /// Checks if a URL exists by performing a HEAD request
     /// - Parameter url: The URL to check
     /// - Returns: true if the URL exists (returns 200), false otherwise
@@ -258,7 +256,7 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
         var request = URLRequest(url: url)
         request.httpMethod = "HEAD"
         request.timeoutInterval = 5
-        
+
         do {
             let (_, response) = try await URLSession.shared.data(for: request)
             if let httpResponse = response as? HTTPURLResponse {
