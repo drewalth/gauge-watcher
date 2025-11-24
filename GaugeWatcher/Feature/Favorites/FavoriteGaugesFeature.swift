@@ -25,13 +25,13 @@ struct FavoriteGaugesFeature {
         case goToGaugeDetail(Int)
     }
 
-    @Dependency(\.gaugeService) var gaugeService: GaugeService
-    
     @Reducer
     enum Path {
         case gaugeDetail(GaugeDetailFeature)
     }
-    
+
+    @Dependency(\.gaugeService) var gaugeService: GaugeService
+
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -50,7 +50,7 @@ struct FavoriteGaugesFeature {
                 return .run { send in
                     do {
                         let gauges = try await gaugeService.loadFavoriteGauges().map { $0.ref }
-                            await send(.setGauges(.loaded(gauges)))
+                        await send(.setGauges(.loaded(gauges)))
                     } catch {
                         await send(.setGauges(.error(error)))
                     }

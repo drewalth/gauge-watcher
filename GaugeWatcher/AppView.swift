@@ -53,10 +53,10 @@ struct AppView: View {
                 FavoriteGaugesView(store: Store(initialState: FavoriteGaugesFeature.State(), reducer: {
                     FavoriteGaugesFeature()._printChanges()
                 }))
-                    .tabItem {
-                        Label("Favorites", systemImage: "star.fill")
-                    }
-                    .tag(1)
+                .tabItem {
+                    Label("Favorites", systemImage: "star.fill")
+                }
+                .tag(1)
 
                 SettingsView()
                     .tabItem {

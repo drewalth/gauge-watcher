@@ -5,7 +5,6 @@
 //  Created by Andrew Althage on 11/24/25.
 //
 
-import SwiftUI
 import ComposableArchitecture
 import Loadable
 import SwiftUI
@@ -40,6 +39,5 @@ struct FavoriteGaugesView: View {
                 GaugeDetail(store: gaugeDetailStore)
             }
         }
-        
     }
 }

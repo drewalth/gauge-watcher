@@ -56,9 +56,9 @@ struct GaugeDetailFeature {
                     return .none
                 }
                 return .concatenate(
-                    .run { [gaugeID = state.gaugeID] send in
-                    try await gaugeService.toggleFavorite(gaugeID)
-                }, .send(.load))
+                    .run { [gaugeID = state.gaugeID] _ in
+                        try await gaugeService.toggleFavorite(gaugeID)
+                    }, .send(.load))
             case .setAvailableMetrics(let newValue):
                 state.availableMetrics = newValue
                 return .none
