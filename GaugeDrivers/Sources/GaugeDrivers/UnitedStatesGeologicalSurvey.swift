@@ -8,33 +8,91 @@
 import Foundation
 import os
 
-// MARK: - WaterServicesAPI
-
-public protocol WaterServicesAPI: Sendable {
-    func fetchGaugeStationData(
-        siteID: String,
-        timePeriod: TimePeriod,
-        parameters: [GDUnitedStatesGeologicalSurvey.ReadingParameter])
-    async throws -> [GDGaugeReading]
-    func fetchGaugeStationData(
-        for siteIDs: [String],
-        timePeriod: TimePeriod,
-        parameters: [GDUnitedStatesGeologicalSurvey.ReadingParameter])
-    async throws -> [GDGaugeReading]
-}
-
 public typealias USGS = GDUnitedStatesGeologicalSurvey
 
 // MARK: - GDUnitedStatesGeologicalSurvey
 
-public struct GDUnitedStatesGeologicalSurvey: WaterServicesAPI, Sendable {
+public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
 
     // MARK: Lifecycle
 
     public init() { }
 
     // MARK: Public
+    
+    // MARK: - GaugeDriver Protocol Conformance
+    
+    /// Unified API: Fetches readings using standardized options
+    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+        let parameters = options.parameters.compactMap { param -> USGSParameter? in
+            switch param {
+            case .discharge:
+                return .discharge
+            case .height:
+                return .height
+            case .temperature:
+                return .temperature
+            }
+        }
+        
+        return try await fetchGaugeStationData(
+            siteID: options.siteID,
+            timePeriod: options.timePeriod,
+            parameters: parameters
+        )
+    }
+    
+    /// Unified API: Fetches readings for multiple sites
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+        // Group by time period and parameters for efficient batching
+        let grouped = Dictionary(grouping: optionsArray) { options in
+            "\(options.timePeriod)-\(options.parameters.map { $0.rawValue }.joined())"
+        }
+        
+        var allReadings: [GDGaugeReading] = []
+        
+        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+            for (_, optionsGroup) in grouped {
+                guard let firstOptions = optionsGroup.first else { continue }
+                
+                let siteIDs = optionsGroup.map { $0.siteID }
+                let parameters = firstOptions.parameters.compactMap { param -> USGSParameter? in
+                    switch param {
+                    case .discharge:
+                        return .discharge
+                    case .height:
+                        return .height
+                    case .temperature:
+                        return .temperature
+                    }
+                }
+                
+                group.addTask {
+                    try await self.fetchGaugeStationData(
+                        for: siteIDs,
+                        timePeriod: firstOptions.timePeriod,
+                        parameters: parameters
+                    )
+                }
+            }
+            
+            for try await readings in group {
+                allReadings.append(contentsOf: readings)
+            }
+        }
+        
+        return allReadings
+    }
+    
+    // MARK: - Legacy API (Deprecated but kept for backward compatibility)
 
+    public enum USGSParameter: String, CaseIterable, Sendable {
+        case discharge = "00060"
+        case height = "00065"
+        case temperature = "00010"
+    }
+    
+    @available(*, deprecated, message: "Use fetchReadings(options:) instead")
     public enum ReadingParameter: String, CaseIterable, Sendable {
         case discharge = "00060"
         case height = "00065"
@@ -82,12 +140,12 @@ public struct GDUnitedStatesGeologicalSurvey: WaterServicesAPI, Sendable {
     ///  - siteID: The site ID of the gauge station.
     ///  - timePeriod: The time period for fetching data.
     ///  - parameters: The parameters to fetch.
-    ///  - Returns: An array of `FKReading` objects.
+    ///  - Returns: An array of `GDGaugeReading` objects.
     ///  - Throws: An error if the site ID is invalid, the date range is invalid, the URL is invalid, the data is missing, the parameter is invalid, or the string cannot be converted to a date or double.
     public func fetchGaugeStationData(
         siteID: String,
         timePeriod: TimePeriod,
-        parameters: [ReadingParameter])
+        parameters: [USGSParameter])
     async throws -> [GDGaugeReading] {
         try await fetchData(for: [siteID], timePeriod: timePeriod, parameters: parameters)
     }
@@ -97,13 +155,13 @@ public struct GDUnitedStatesGeologicalSurvey: WaterServicesAPI, Sendable {
     ///  - siteIDs: An array of site IDs for the gauge stations.
     ///  - timePeriod: The time period for fetching data.
     ///  - parameters: The parameters to fetch.
-    ///  - Returns: An array of `FKReading` objects.
+    ///  - Returns: An array of `GDGaugeReading` objects.
     ///  - Throws: An error if the site ID is invalid, the date range is invalid, the URL is invalid, the data is missing, the parameter is invalid, or the string cannot be converted to a date or double.
     ///  - Note: The USGS API has a limit of 100 site IDs per request. If you provide more than 100 site IDs, the function will split the requests into chunks of 100 site IDs each and fetch the data concurrently.
     public func fetchGaugeStationData(
         for siteIDs: [String],
         timePeriod: TimePeriod,
-        parameters: [ReadingParameter])
+        parameters: [USGSParameter])
     async throws -> [GDGaugeReading] {
         let siteIDChunks = chunkedSiteIDs(array: siteIDs)
 
@@ -133,7 +191,7 @@ public struct GDUnitedStatesGeologicalSurvey: WaterServicesAPI, Sendable {
     private func fetchData(
         for siteIDs: [String],
         timePeriod: TimePeriod,
-        parameters: [ReadingParameter])
+        parameters: [USGSParameter])
     async throws -> [GDGaugeReading] {
         if siteIDs.count > 100 {
             throw Errors.tooManySiteIDs
@@ -172,7 +230,7 @@ public struct GDUnitedStatesGeologicalSurvey: WaterServicesAPI, Sendable {
                 throw Errors.missingData
             }
 
-            guard let parameter = ReadingParameter(rawValue: variable) else {
+            guard let parameter = USGSParameter(rawValue: variable) else {
                 throw Errors.invalidParameter(variable)
             }
 

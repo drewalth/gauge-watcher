@@ -6,9 +6,9 @@
 //
 
 import ComposableArchitecture
-import FlowKit
 import GaugeSources
 import SQLiteData
+import GaugeDrivers
 
 // MARK: - GaugeService
 
@@ -68,6 +68,21 @@ extension GaugeService: DependencyKey {
             try GaugeReading.where { $0.gaugeID == id }.fetchAll(db)
         }
     }, sync: { _ in
+        let options = GaugeDriverOptions(
+            siteID: "09380000",
+            source: .usgs,
+            timePeriod: .predefined(.last7Days),
+            parameters: [.discharge, .height]
+        )
+
+        // Fetch readings
+        let factory = GaugeDriverFactory()
+        let readings = try await factory.fetchReadings(options: options)
+
+        // Process results
+        for reading in readings {
+            print("\(reading.timestamp): \(reading.value) \(reading.unit.rawValue)")
+        }
     })
 }
 

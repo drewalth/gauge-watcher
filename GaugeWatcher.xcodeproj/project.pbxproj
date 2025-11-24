@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C292ED4D4BD0063C7FA /* GaugeDrivers */; };
 		A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */; };
 		A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEBA52ED2193400DAD9D4 /* Loadable */; };
 		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
@@ -65,6 +66,7 @@
 				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
 				A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */,
 				A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */,
+				A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +133,7 @@
 				A1AAF2B42E7B711F004253ED /* GaugeSources */,
 				A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */,
 				A16CEBA52ED2193400DAD9D4 /* Loadable */,
+				A1526C292ED4D4BD0063C7FA /* GaugeDrivers */,
 			);
 			productName = GaugeWatcher;
 			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
@@ -219,6 +222,7 @@
 				A1AAF2B32E7B711F004253ED /* XCLocalSwiftPackageReference "GaugeSources" */,
 				A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */,
+				A1526C282ED4D4BD0063C7FA /* XCLocalSwiftPackageReference "GaugeDrivers" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1FB4A262E7B5DCD00A3C7FE /* Products */;
@@ -605,6 +609,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		A1526C282ED4D4BD0063C7FA /* XCLocalSwiftPackageReference "GaugeDrivers" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = GaugeDrivers;
+		};
 		A1AAF2B32E7B711F004253ED /* XCLocalSwiftPackageReference "GaugeSources" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = GaugeSources;
@@ -639,6 +647,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A1526C292ED4D4BD0063C7FA /* GaugeDrivers */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GaugeDrivers;
+		};
 		A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;

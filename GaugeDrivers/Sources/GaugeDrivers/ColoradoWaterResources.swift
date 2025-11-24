@@ -17,13 +17,41 @@ public typealias DWR = GDColoradoDepartmentWaterResources
 
 // MARK: - GDColoradoDepartmentWaterResources
 
-public struct GDColoradoDepartmentWaterResources {
+public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
 
     // MARK: Lifecycle
 
     public init() { }
 
     // MARK: Public
+    
+    // MARK: - GaugeDriver Protocol Conformance
+    
+    /// Unified API: Fetches readings using standardized options
+    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+        return try await fetchData(options.siteID)
+    }
+    
+    /// Unified API: Fetches readings for multiple sites
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+        var allReadings: [GDGaugeReading] = []
+        
+        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+            for options in optionsArray {
+                group.addTask {
+                    try await self.fetchData(options.siteID)
+                }
+            }
+            
+            for try await readings in group {
+                allReadings.append(contentsOf: readings)
+            }
+        }
+        
+        return allReadings
+    }
+    
+    // MARK: - Legacy API
 
     public enum Errors: Error {
         case invalidURL

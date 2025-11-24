@@ -8,30 +8,68 @@
 import Foundation
 import os
 // https://dd.weather.gc.ca/20251026/WXO-DD/hydrometric/csv/BC/hourly/BC_07EA004_hourly_hydrometric.csv
-// MARK: - EnvironmentCanadaAPIProtocol
-
-public protocol EnvironmentCanadaAPIProtocol {
-    func fetchGaugeStationData(
-        siteID: String,
-        province: EnvironmentCanada.Province)
-    async throws -> [GDGaugeReading]
-    func fetchGaugeStationData(
-        for siteIDs: [String],
-        province: EnvironmentCanada.Province)
-    async throws -> [GDGaugeReading]
-}
 
 public typealias EnvironmentCanada = GDEnvironmentCanada
 
 // MARK: - GDEnvironmentCanada
 
-public struct GDEnvironmentCanada: EnvironmentCanadaAPIProtocol, Sendable {
+public struct GDEnvironmentCanada: GaugeDriver, Sendable {
 
     // MARK: Lifecycle
 
     public init() { }
 
     // MARK: Public
+    
+    // MARK: - GaugeDriver Protocol Conformance
+    
+    /// Unified API: Fetches readings using standardized options
+    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+        guard case .environmentCanada(let province) = options.metadata else {
+            throw GaugeDriverErrors.missingRequiredMetadata(
+                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)"
+            )
+        }
+        
+        return try await fetchGaugeStationData(siteID: options.siteID, province: province)
+    }
+    
+    /// Unified API: Fetches readings for multiple sites
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+        // Group by province for efficient batching
+        let grouped = Dictionary(grouping: optionsArray) { options -> Province? in
+            guard case .environmentCanada(let province) = options.metadata else {
+                return nil
+            }
+            return province
+        }
+        
+        var allReadings: [GDGaugeReading] = []
+        
+        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+            for (provinceOpt, optionsGroup) in grouped {
+                guard let province = provinceOpt else {
+                    throw GaugeDriverErrors.missingRequiredMetadata(
+                        "Environment Canada requires province metadata for all sites"
+                    )
+                }
+                
+                let siteIDs = optionsGroup.map { $0.siteID }
+                
+                group.addTask {
+                    try await self.fetchGaugeStationData(for: siteIDs, province: province)
+                }
+            }
+            
+            for try await readings in group {
+                allReadings.append(contentsOf: readings)
+            }
+        }
+        
+        return allReadings
+    }
+    
+    // MARK: - Legacy API (kept for backward compatibility)
 
     public enum Errors: Error, LocalizedError {
         case failedToFetch(Error)
