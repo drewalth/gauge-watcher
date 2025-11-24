@@ -5,13 +5,15 @@
 //  Created by Andrew Althage on 11/24/25.
 //
 
+import Algorithms
+import Charts
 import ComposableArchitecture
+import GaugeDrivers
+import GaugeSources
 import Loadable
 import SwiftUI
-import Charts
-import GaugeDrivers
-import Algorithms
-import GaugeSources
+
+// MARK: - GaugeReadingChart
 
 struct GaugeReadingChart: View {
 
@@ -22,7 +24,7 @@ struct GaugeReadingChart: View {
     var body: some View {
         VStack {
             content()
-            
+
         }.frame(minHeight: 300)
     }
 
@@ -42,7 +44,6 @@ struct GaugeReadingChart: View {
                                 .tag(timePeriod)
                         }
                     }.pickerStyle(.segmented)
-                   
                 }
                 let formattedReadings = getReadings(for: store)
                 Chart(formattedReadings, id: \.id) { reading in
@@ -75,16 +76,19 @@ struct GaugeReadingChart: View {
 private func getReadings(for store: StoreOf<GaugeDetailFeature>) -> [GaugeReadingRef] {
     let readings = store.readings.unwrap() ?? []
     let timePeriod = store.selectedTimePeriod
-    
+
     guard let selectedMetric = store.selectedMetric else {
         return []
     }
-    
-    let filteredReadings = readings.filter { isInTimePeriod(reading: $0, timePeriod: .predefined(timePeriod)) && $0.metric.uppercased() == selectedMetric.rawValue }
-    
+
+    let filteredReadings = readings
+        .filter {
+            isInTimePeriod(reading: $0, timePeriod: .predefined(timePeriod)) && $0.metric.uppercased() == selectedMetric.rawValue
+        }
+
     if store.selectedTimePeriod == .last24Hours {
         return filteredReadings
     }
-    
+
     return filteredReadings.striding(by: timePeriod.stride).map { $0 }
 }

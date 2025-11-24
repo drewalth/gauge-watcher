@@ -6,10 +6,10 @@
 //
 
 import ComposableArchitecture
-import Loadable
-import os
 import GaugeDrivers
 import GaugeSources
+import Loadable
+import os
 
 @Reducer
 struct GaugeDetailFeature {
@@ -73,8 +73,7 @@ struct GaugeDetailFeature {
                     do {
                         let readings = try await gaugeService.loadGaugeReadings(.init(gaugeID: gaugeID)).map { $0.ref }
                         let availableMetrics = getAvailableMetrics(for: readings)
-                        
-                        
+
                         await send(.setAvailableMetrics(availableMetrics))
                         if let selectedMetric = availableMetrics.first {
                             await send(.setSelectedMetric(selectedMetric))
@@ -126,6 +125,7 @@ struct GaugeDetailFeature {
             }
         }
     }
+
     private nonisolated func getAvailableMetrics(for readings: [GaugeReadingRef]) -> [GaugeSourceMetric] {
         // Use Set to get unique metrics, then convert back to array
         // TODO: usage of .uppercased() here is a design flaw
@@ -133,5 +133,3 @@ struct GaugeDetailFeature {
         return Array(uniqueMetrics).sorted { $0.rawValue < $1.rawValue }
     }
 }
-
-

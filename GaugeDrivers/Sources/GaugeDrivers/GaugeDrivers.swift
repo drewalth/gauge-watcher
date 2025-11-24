@@ -96,12 +96,16 @@ public enum TimePeriod: Sendable, Equatable, Hashable {
     case predefined(PredefinedPeriod)
     case custom(start: Date, end: Date)
 
+    // MARK: Public
+
     public enum PredefinedPeriod: Int, CaseIterable, Sendable, Hashable {
         case last24Hours = 1
         case last7Days = 7
         case last30Days = 30
         case last90Days = 90
-        
+
+        // MARK: Public
+
         public var description: String {
             switch self {
             case .last24Hours:
@@ -126,17 +130,17 @@ public enum TimePeriod: Sendable, Equatable, Hashable {
             case .last90Days:
                 return 12
             }
+        }
     }
-}
 
-public func stride(by timePeriod: TimePeriod) -> Int {
-    switch timePeriod {
-    case .predefined(let predefinedPeriod):
-        return predefinedPeriod.stride
-    case .custom(let start, let end):
-        return Int(end.timeIntervalSince(start) / 60 * 60)
+    public func stride(by timePeriod: TimePeriod) -> Int {
+        switch timePeriod {
+        case .predefined(let predefinedPeriod):
+            return predefinedPeriod.stride
+        case .custom(let start, let end):
+            return Int(end.timeIntervalSince(start) / 60 * 60)
+        }
     }
-}
 }
 
 // MARK: - GaugeDriverFactory
