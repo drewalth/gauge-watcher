@@ -120,7 +120,7 @@ extension GaugeService: DependencyKey {
         let options = GaugeDriverOptions(
             siteID: gauge.siteID,
             source: driverSource,
-            timePeriod: .predefined(.last24Hours), // Fetch last 24 hours for sync
+            timePeriod: .predefined(.last30Days), // Fetch last 24 hours for sync
             parameters: [.discharge, .height], // Fetch both discharge and height
             metadata: metadata)
 

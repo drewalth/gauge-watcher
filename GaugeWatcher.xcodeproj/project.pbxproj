@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C292ED4D4BD0063C7FA /* GaugeDrivers */; };
+		A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C5F2ED4EAA00063C7FA /* Algorithms */; };
 		A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */; };
 		A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEBA52ED2193400DAD9D4 /* Loadable */; };
 		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
@@ -62,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */,
 				A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */,
 				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
 				A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */,
@@ -134,6 +136,7 @@
 				A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */,
 				A16CEBA52ED2193400DAD9D4 /* Loadable */,
 				A1526C292ED4D4BD0063C7FA /* GaugeDrivers */,
+				A1526C5F2ED4EAA00063C7FA /* Algorithms */,
 			);
 			productName = GaugeWatcher;
 			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
@@ -223,6 +226,7 @@
 				A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */,
 				A1526C282ED4D4BD0063C7FA /* XCLocalSwiftPackageReference "GaugeDrivers" */,
+				A1526C5E2ED4EAA00063C7FA /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1FB4A262E7B5DCD00A3C7FE /* Products */;
@@ -620,6 +624,14 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A1526C5E2ED4EAA00063C7FA /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
 		A16CEB992ED2187400DAD9D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
@@ -650,6 +662,11 @@
 		A1526C292ED4D4BD0063C7FA /* GaugeDrivers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GaugeDrivers;
+		};
+		A1526C5F2ED4EAA00063C7FA /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1526C5E2ED4EAA00063C7FA /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
 		};
 		A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;

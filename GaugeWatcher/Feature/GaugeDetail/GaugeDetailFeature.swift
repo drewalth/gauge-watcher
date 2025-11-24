@@ -8,6 +8,8 @@
 import ComposableArchitecture
 import Loadable
 import os
+import GaugeDrivers
+import GaugeSources
 
 @Reducer
 struct GaugeDetailFeature {
@@ -19,6 +21,9 @@ struct GaugeDetailFeature {
         var gaugeID: Int
         var gauge: Loadable<GaugeRef> = .initial
         var readings: Loadable<[GaugeReadingRef]> = .initial
+        var selectedTimePeriod: TimePeriod.PredefinedPeriod = .last7Days
+        var availableMetrics: [GaugeSourceMetric]?
+        var selectedMetric: GaugeSourceMetric?
 
         init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
@@ -31,6 +36,9 @@ struct GaugeDetailFeature {
         case sync
         case loadReadings
         case setReadings(Loadable<[GaugeReadingRef]>)
+        case setSelectedTimePeriod(TimePeriod.PredefinedPeriod)
+        case setAvailableMetrics([GaugeSourceMetric])
+        case setSelectedMetric(GaugeSourceMetric)
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
@@ -42,6 +50,15 @@ struct GaugeDetailFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .setAvailableMetrics(let newValue):
+                state.availableMetrics = newValue
+                return .none
+            case .setSelectedMetric(let newValue):
+                state.selectedMetric = newValue
+                return .none
+            case .setSelectedTimePeriod(let newValue):
+                state.selectedTimePeriod = newValue
+                return .none
             case .setReadings(let newValue):
                 state.readings = newValue
                 return .none
@@ -55,6 +72,13 @@ struct GaugeDetailFeature {
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
                         let readings = try await gaugeService.loadGaugeReadings(.init(gaugeID: gaugeID)).map { $0.ref }
+                        let availableMetrics = getAvailableMetrics(for: readings)
+                        
+                        
+                        await send(.setAvailableMetrics(availableMetrics))
+                        if let selectedMetric = availableMetrics.first {
+                            await send(.setSelectedMetric(selectedMetric))
+                        }
                         await send(.setReadings(.loaded(readings)))
 
                     } catch {
@@ -102,4 +126,12 @@ struct GaugeDetailFeature {
             }
         }
     }
+    private nonisolated func getAvailableMetrics(for readings: [GaugeReadingRef]) -> [GaugeSourceMetric] {
+        // Use Set to get unique metrics, then convert back to array
+        // TODO: usage of .uppercased() here is a design flaw
+        let uniqueMetrics = Set(readings.compactMap { GaugeSourceMetric(rawValue: $0.metric.uppercased()) })
+        return Array(uniqueMetrics).sorted { $0.rawValue < $1.rawValue }
+    }
 }
+
+

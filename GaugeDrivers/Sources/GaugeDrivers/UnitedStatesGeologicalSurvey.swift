@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GaugeSources
 import os
 
 public typealias USGS = GDUnitedStatesGeologicalSurvey
@@ -232,13 +233,18 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
                 throw Errors.invalidParameter(variable)
             }
 
-            let unit: GDGaugeReadingUnit = switch parameter {
+            // Skip temperature readings as they're not in GaugeSourceMetric yet
+            guard parameter != .temperature else {
+                continue
+            }
+
+            let unit: GaugeSourceMetric = switch parameter {
             case .discharge:
                 .cfs
             case .height:
-                .feet
+                .feetHeight
             case .temperature:
-                .temperature
+                fatalError("Temperature should have been filtered above")
             }
 
             for reading in timeseries.values {

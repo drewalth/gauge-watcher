@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GaugeSources
 
 // MARK: - GaugeDriver
 
@@ -91,16 +92,51 @@ public enum ReadingParameter: String, CaseIterable, Sendable {
 // MARK: - TimePeriod
 
 /// Represents a time range for fetching gauge data
-public enum TimePeriod: Sendable, Equatable {
+public enum TimePeriod: Sendable, Equatable, Hashable {
     case predefined(PredefinedPeriod)
     case custom(start: Date, end: Date)
 
-    public enum PredefinedPeriod: Int, CaseIterable, Sendable {
+    public enum PredefinedPeriod: Int, CaseIterable, Sendable, Hashable {
         case last24Hours = 1
         case last7Days = 7
         case last30Days = 30
         case last90Days = 90
+        
+        public var description: String {
+            switch self {
+            case .last24Hours:
+                return "Last 24 Hours"
+            case .last7Days:
+                return "Last 7 Days"
+            case .last30Days:
+                return "Last 30 Days"
+            case .last90Days:
+                return "Last 90 Days"
+            }
+        }
+
+        public var stride: Int {
+            switch self {
+            case .last24Hours:
+                return 1
+            case .last7Days:
+                return 2
+            case .last30Days:
+                return 8
+            case .last90Days:
+                return 12
+            }
     }
+}
+
+public func stride(by timePeriod: TimePeriod) -> Int {
+    switch timePeriod {
+    case .predefined(let predefinedPeriod):
+        return predefinedPeriod.stride
+    case .custom(let start, let end):
+        return Int(end.timeIntervalSince(start) / 60 * 60)
+    }
+}
 }
 
 // MARK: - GaugeDriverFactory
@@ -195,14 +231,14 @@ public struct GDGaugeReading: Codable, Identifiable, Sendable {
     public let id: UUID
     public let value: Double
     public let timestamp: Date
-    public let unit: GDGaugeReadingUnit
+    public let unit: GaugeSourceMetric
     public let siteID: String
 
     public init(
         id: UUID,
         value: Double,
         timestamp: Date,
-        unit: GDGaugeReadingUnit,
+        unit: GaugeSourceMetric,
         siteID: String) {
         self.id = id
         self.value = value
@@ -210,14 +246,4 @@ public struct GDGaugeReading: Codable, Identifiable, Sendable {
         self.unit = unit
         self.siteID = siteID
     }
-}
-
-// MARK: - GDGaugeReadingUnit
-
-public enum GDGaugeReadingUnit: String, Codable, Sendable {
-    case cfs
-    case cms
-    case feet = "ft"
-    case meter = "m"
-    case temperature = "temp"
 }

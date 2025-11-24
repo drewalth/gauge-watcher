@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GaugeSources
 
 // MARK: - DWR
 
@@ -86,8 +87,12 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
         var readings = [GDGaugeReading]()
 
         for result in response.ResultList {
-            guard let unit = GDGaugeReadingUnit(rawValue: result.units.lowercased()) else {
-                throw Errors.invalidUnit
+            // Map DWR units to GaugeSourceMetric
+            // DWR returns units like "cfs", "ft", etc.
+            let unitString = result.units.uppercased()
+            guard let unit = GaugeSourceMetric(rawValue: unitString) else {
+                // Skip readings with unsupported units
+                continue
             }
 
             guard let timestamp = dateFormater.date(from: result.measDateTime) else {

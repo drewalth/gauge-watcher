@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GaugeSources
 import os
 // https://dd.weather.gc.ca/20251026/WXO-DD/hydrometric/csv/BC/hourly/BC_07EA004_hourly_hydrometric.csv
 
@@ -201,7 +202,7 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
                     throw Errors.failedToParseWaterLevel(siteID)
                 }
 
-                newReadings.append(.init(id: .init(), value: heightReading, timestamp: createdAt, unit: .meter, siteID: siteID))
+                newReadings.append(.init(id: .init(), value: heightReading, timestamp: createdAt, unit: .meterHeight, siteID: siteID))
                 newReadings.append(.init(id: .init(), value: dischargeReading, timestamp: createdAt, unit: .cms, siteID: siteID))
             }
 
@@ -288,7 +289,7 @@ extension EnvironmentCanada {
         // MARK: Internal
 
         func parseCSV(at url: URL) throws -> [[String]] {
-            let content = try String(contentsOf: url)
+            let content = try String(contentsOf: url, encoding: .utf8)
             return content.components(separatedBy: "\n").map { $0.components(separatedBy: ",") }
         }
 
