@@ -43,18 +43,26 @@ struct AppView: View {
         case .loaded(let isInitialized):
             TabView {
                 GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
-                    GaugeSearchFeature()._printChanges()
+                    GaugeSearchFeature()
                 }))
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
                 .tag(0)
 
+                FavoriteGaugesView(store: Store(initialState: FavoriteGaugesFeature.State(), reducer: {
+                    FavoriteGaugesFeature()._printChanges()
+                }))
+                    .tabItem {
+                        Label("Favorites", systemImage: "star.fill")
+                    }
+                    .tag(1)
+
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gearshape.fill")
                     }
-                    .tag(1)
+                    .tag(2)
             }
         }
     }

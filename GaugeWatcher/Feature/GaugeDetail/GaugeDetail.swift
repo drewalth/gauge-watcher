@@ -21,6 +21,12 @@ struct GaugeDetail: View {
         }.gaugeWatcherList()
         .task {
             store.send(.load)
+        }.toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                GaugeFavoriteToggle(onPress: {
+                    store.send(.toggleFavorite)
+                }, isFavorite: store.gauge.unwrap()?.favorite ?? false)
+            }
         }
     }
 

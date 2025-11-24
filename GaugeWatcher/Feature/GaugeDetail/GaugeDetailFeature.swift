@@ -39,6 +39,7 @@ struct GaugeDetailFeature {
         case setSelectedTimePeriod(TimePeriod.PredefinedPeriod)
         case setAvailableMetrics([GaugeSourceMetric])
         case setSelectedMetric(GaugeSourceMetric)
+        case toggleFavorite
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
@@ -50,6 +51,14 @@ struct GaugeDetailFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .toggleFavorite:
+                guard let gauge = state.gauge.unwrap() else {
+                    return .none
+                }
+                return .concatenate(
+                    .run { [gaugeID = state.gaugeID] send in
+                    try await gaugeService.toggleFavorite(gaugeID)
+                }, .send(.load))
             case .setAvailableMetrics(let newValue):
                 state.availableMetrics = newValue
                 return .none
@@ -78,6 +87,7 @@ struct GaugeDetailFeature {
                         if let selectedMetric = availableMetrics.first {
                             await send(.setSelectedMetric(selectedMetric))
                         }
+                        await Task.yield()
                         await send(.setReadings(.loaded(readings)))
 
                     } catch {
@@ -102,11 +112,11 @@ struct GaugeDetailFeature {
                 state.gauge = newValue
                 return .none
             case .load:
-                guard state.gauge.isInitial() else {
-                    return .none
+                if state.gauge.isLoaded() {
+                    state.gauge = .reloading(state.gauge.unwrap()!)
+                } else if state.gauge.isInitial() {
+                    state.gauge = .loading
                 }
-
-                state.gauge = .loading
                 return .concatenate(.run { [state] send in
                     do {
                         let gauge = try await gaugeService.loadGauge(state.gaugeID).ref

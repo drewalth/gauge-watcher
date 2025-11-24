@@ -18,6 +18,8 @@ struct GaugeService {
     var loadGauges: (GaugeQueryOptions) async throws -> [Gauge]
     var loadGaugeReadings: (GaugeReadingQuery) async throws -> [GaugeReading]
     var sync: (Gauge.ID) async throws -> Void
+    var toggleFavorite: (Gauge.ID) async throws -> Void
+    var loadFavoriteGauges: () async throws -> [Gauge]
 }
 
 // MARK: DependencyKey
@@ -154,6 +156,18 @@ extension GaugeService: DependencyKey {
             try #sql("""
             UPDATE gauges SET updatedAt = \(now) WHERE id = \(gaugeID)
         """).execute(db)
+        }
+    }, toggleFavorite: { gaugeID in
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try #sql("""
+            UPDATE gauges SET favorite = NOT favorite WHERE id = \(gaugeID)
+        """).execute(db)
+        }
+    }, loadFavoriteGauges: {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { db in
+            try Gauge.where { $0.favorite == true }.fetchAll(db)
         }
     })
 }
