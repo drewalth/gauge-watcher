@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import GaugeDrivers
 import GaugeSources
 import SQLiteData
@@ -15,7 +16,7 @@ import SQLiteData
 struct GaugeService {
     var loadGauge: (Gauge.ID) async throws -> Gauge
     var loadGauges: (GaugeQueryOptions) async throws -> [Gauge]
-    var loadGaugeReadings: (Gauge.ID) async throws -> [GaugeReading]
+    var loadGaugeReadings: (GaugeReadingQuery) async throws -> [GaugeReading]
     var sync: (Gauge.ID) async throws -> Void
 }
 
@@ -62,25 +63,97 @@ extension GaugeService: DependencyKey {
             return try query.fetchAll(db)
         }
 
-    }, loadGaugeReadings: { id in
+    }, loadGaugeReadings: { query in
         @Dependency(\.defaultDatabase) var database
         return try await database.read { db in
-            try GaugeReading.where { $0.gaugeID == id }.fetchAll(db)
+            var dbQuery = GaugeReading
+                .where { $0.gaugeID == query.gaugeID }
+                .order { $0.createdAt.desc() } // Most recent first
+            
+            // Apply date range filter if provided
+            if let dateRange = query.dateRange {
+                dbQuery = dbQuery
+                    .where { $0.createdAt >= dateRange.start }
+                    .where { $0.createdAt <= dateRange.end }
+            }
+            
+            // Apply metric filter if provided
+            if let metric = query.metric {
+                dbQuery = dbQuery.where { $0.metric == metric }
+            }
+            
+            // Apply limit if provided, otherwise default to 1000
+            let limit = query.limit ?? 1000
+            dbQuery = dbQuery.limit(limit)
+            
+            return try dbQuery.fetchAll(db)
         }
-    }, sync: { _ in
+    }, sync: { gaugeID in
+        @Dependency(\.defaultDatabase) var database
+        
+        // 1. Load gauge from database
+        let gauge = try await database.read { db in
+            guard let gauge = try Gauge.where { $0.id == gaugeID }.fetchOne(db) else {
+                throw DatabaseServiceError.gaugeNotFound
+            }
+            return gauge
+        }
+        
+        // 2. Convert GaugeSource to GaugeDriverSource
+        let driverSource = gauge.source.toDriverSource
+        
+        // 3. Create metadata for sources that need it (e.g., Environment Canada needs province)
+        let metadata: SourceMetadata? = {
+            switch gauge.source {
+            case .environmentCanada:
+                let provinceCode = gauge.state.lowercased()
+                guard let province = EnvironmentCanada.Province(rawValue: provinceCode) else {
+                    return nil
+                }
+                return .environmentCanada(province: province)
+            case .usgs, .dwr, .lawa:
+                return nil
+            }
+        }()
+        
+        // 4. Create driver options
         let options = GaugeDriverOptions(
-            siteID: "09380000",
-            source: .usgs,
-            timePeriod: .predefined(.last7Days),
-            parameters: [.discharge, .height])
-
-        // Fetch readings
+            siteID: gauge.siteID,
+            source: driverSource,
+            timePeriod: .predefined(.last24Hours), // Fetch last 24 hours for sync
+            parameters: [.discharge, .height], // Fetch both discharge and height
+            metadata: metadata
+        )
+        
+        // 5. Fetch readings using unified API
         let factory = GaugeDriverFactory()
-        let readings = try await factory.fetchReadings(options: options)
-
-        // Process results
-        for reading in readings {
-            print("\(reading.timestamp): \(reading.value) \(reading.unit.rawValue)")
+        let driverReadings = try await factory.fetchReadings(options: options)
+        
+        // 6. Save readings to database
+        try await database.write { db in
+            for driverReading in driverReadings {
+                // Check if reading already exists (by siteID, timestamp, and metric)
+                let existingCount = try GaugeReading
+                    .where { $0.gaugeID == gaugeID }
+                    .where { $0.siteID == driverReading.siteID }
+                    .where { $0.createdAt == driverReading.timestamp }
+                    .where { $0.metric == driverReading.unit.rawValue }
+                    .fetchCount(db)
+                
+                // Only insert if it doesn't already exist
+                if existingCount == 0 {
+                    try #sql("""
+                        INSERT INTO gaugeReadings (siteID, value, metric, gaugeID, createdAt)
+                        VALUES (\(driverReading.siteID), \(driverReading.value), \(driverReading.unit.rawValue), \(gaugeID), \(driverReading.timestamp))
+                    """).execute(db)
+                }
+            }
+            
+            // Update the gauge's updatedAt timestamp
+            let now = Date()
+            try #sql("""
+                UPDATE gauges SET updatedAt = \(now) WHERE id = \(gaugeID)
+            """).execute(db)
         }
     })
 }
@@ -125,6 +198,67 @@ struct GaugeQueryOptions {
     var favorite: Bool?
     var primary: Bool?
 
+}
+
+// MARK: - GaugeReadingQuery
+
+struct GaugeReadingQuery {
+
+    // MARK: Lifecycle
+
+    init(
+        gaugeID: Gauge.ID,
+        dateRange: DateInterval? = nil,
+        metric: String? = nil,
+        limit: Int? = nil) {
+        self.gaugeID = gaugeID
+        self.dateRange = dateRange
+        self.metric = metric
+        self.limit = limit
+    }
+
+    // MARK: Internal
+
+    let gaugeID: Gauge.ID
+    let dateRange: DateInterval?
+    let metric: String?
+    let limit: Int?
+}
+
+// MARK: - GaugeReadingQuery Convenience
+
+extension GaugeReadingQuery {
+    /// Returns all readings for a gauge (up to default limit)
+    static func all(gaugeID: Gauge.ID, limit: Int? = 1000) -> GaugeReadingQuery {
+        GaugeReadingQuery(gaugeID: gaugeID, limit: limit)
+    }
+    
+    /// Returns readings for a specific metric
+    static func forMetric(_ metric: String, gaugeID: Gauge.ID, limit: Int? = 1000) -> GaugeReadingQuery {
+        GaugeReadingQuery(gaugeID: gaugeID, metric: metric, limit: limit)
+    }
+    
+    /// Returns readings in the last N hours
+    static func lastHours(_ hours: Int, gaugeID: Gauge.ID, metric: String? = nil) -> GaugeReadingQuery {
+        let end = Date()
+        let start = end.addingTimeInterval(-Double(hours) * 3600)
+        return GaugeReadingQuery(
+            gaugeID: gaugeID,
+            dateRange: DateInterval(start: start, end: end),
+            metric: metric
+        )
+    }
+    
+    /// Returns readings in the last N days
+    static func lastDays(_ days: Int, gaugeID: Gauge.ID, metric: String? = nil) -> GaugeReadingQuery {
+        let end = Date()
+        let start = end.addingTimeInterval(-Double(days) * 86400)
+        return GaugeReadingQuery(
+            gaugeID: gaugeID,
+            dateRange: DateInterval(start: start, end: end),
+            metric: metric
+        )
+    }
 }
 
 // MARK: - DatabaseServiceError

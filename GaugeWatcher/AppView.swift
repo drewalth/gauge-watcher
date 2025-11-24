@@ -43,7 +43,7 @@ struct AppView: View {
         case .loaded(let isInitialized):
             TabView {
                 GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
-                    GaugeSearchFeature()._printChanges()
+                    GaugeSearchFeature()
                 }))
                 .tabItem {
                     Label("Home", systemImage: "house.fill")

@@ -152,9 +152,9 @@ public struct GaugeDriverFactory {
 
         try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
             for (source, optionsForSource) in groupedBySource {
+                let driver = try driver(for: source)
                 group.addTask {
-                    let driver = try driver(for: source)
-                    return try await driver.fetchReadings(optionsArray: optionsForSource)
+                    try await driver.fetchReadings(optionsArray: optionsForSource)
                 }
             }
 

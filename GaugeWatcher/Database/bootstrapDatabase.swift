@@ -63,7 +63,7 @@ extension DependencyValues {
             // .execute(db)
 
             try #sql("""
-        CREATE TABLE "gauge_readings"(
+        CREATE TABLE "gaugeReadings"(
           "id" INTEGER PRIMARY KEY AUTOINCREMENT,
           "siteID" TEXT NOT NULL,
           "value" REAL NOT NULL,

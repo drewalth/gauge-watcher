@@ -16,9 +16,9 @@ struct GaugeDetail: View {
     @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
-        Group {
+        List {
             content()
-        }
+        }.gaugeWatcherList()
         .task {
             store.send(.load)
         }
@@ -33,6 +33,7 @@ struct GaugeDetail: View {
             ProgressView()
         case .loaded(let gauge), .reloading(let gauge):
             Text(gauge.name)
+            GaugeReadingChart(store: store)
         case .error(let error):
             Text(error.localizedDescription)
         }
