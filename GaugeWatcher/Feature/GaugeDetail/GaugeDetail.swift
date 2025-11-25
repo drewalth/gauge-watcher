@@ -40,6 +40,7 @@ struct GaugeDetail: View {
         case .loaded(let gauge), .reloading(let gauge):
             Text(gauge.name)
             GaugeReadingChart(store: store)
+            LatestGaugeReading(store: store)
         case .error(let error):
             Text(error.localizedDescription)
         }
