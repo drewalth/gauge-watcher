@@ -157,8 +157,7 @@ public struct GaugeDriverFactory {
     /// Returns the appropriate driver for the given source
     /// - Parameter source: The gauge data source
     /// - Returns: A driver instance that conforms to GaugeDriver protocol
-    /// - Throws: GaugeDriverErrors.unsupportedSource if the source is not yet implemented
-    public func driver(for source: GaugeDriverSource) throws -> any GaugeDriver {
+    public func driver(for source: GaugeDriverSource) -> any GaugeDriver {
         switch source {
         case .usgs:
             return GDUnitedStatesGeologicalSurvey()
@@ -167,23 +166,23 @@ public struct GaugeDriverFactory {
         case .dwr:
             return GDColoradoDepartmentWaterResources()
         case .lawa:
-            throw GaugeDriverErrors.unsupportedSource(source)
+            return GDLandAirWaterAotearoa()
         }
     }
 
     /// Convenience method to fetch readings with a single call
     /// - Parameter options: Unified driver options
     /// - Returns: Array of gauge readings
-    /// - Throws: GaugeDriverErrors if driver is unsupported or fetch fails
+    /// - Throws: Driver-specific errors if fetch fails
     public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
-        let driver = try driver(for: options.source)
+        let driver = driver(for: options.source)
         return try await driver.fetchReadings(options: options)
     }
 
     /// Convenience method to fetch readings from multiple sites
     /// - Parameter optionsArray: Array of options for different sites
     /// - Returns: Array of all gauge readings
-    /// - Throws: GaugeDriverErrors if any driver is unsupported or fetch fails
+    /// - Throws: Driver-specific errors if any fetch fails
     public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
         // Group by source for efficient batch fetching
         let groupedBySource = Dictionary(grouping: optionsArray, by: { $0.source })
@@ -192,7 +191,7 @@ public struct GaugeDriverFactory {
 
         try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
             for (source, optionsForSource) in groupedBySource {
-                let driver = try driver(for: source)
+                let driver = driver(for: source)
                 group.addTask {
                     try await driver.fetchReadings(optionsArray: optionsForSource)
                 }
@@ -212,7 +211,6 @@ public struct GaugeDriverFactory {
 public enum GaugeDriverErrors: Error, LocalizedError {
     case missingRequiredMetadata(String)
     case unsupportedParameter(ReadingParameter, GaugeDriverSource)
-    case unsupportedSource(GaugeDriverSource)
     case invalidOptions(String)
 
     public var errorDescription: String? {
@@ -221,8 +219,6 @@ public enum GaugeDriverErrors: Error, LocalizedError {
             return "Missing required metadata: \(detail)"
         case .unsupportedParameter(let param, let source):
             return "Parameter '\(param.rawValue)' is not supported by \(source.rawValue)"
-        case .unsupportedSource(let source):
-            return "Source '\(source.rawValue)' is not yet implemented"
         case .invalidOptions(let detail):
             return "Invalid options: \(detail)"
         }

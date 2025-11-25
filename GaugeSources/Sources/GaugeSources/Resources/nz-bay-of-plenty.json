@@ -2,7 +2,7 @@
   {
     "id": 29957,
     "name": "Raparapahoe at Above Drop Structure",
-    "siteId": "EBOP-00072",
+    "siteId": "29957",
     "latitude": -37.7640687,
     "longitude": 176.30947098,
     "state": "Bay of Plenty",
@@ -11,57 +11,5 @@
     "zone": "Bay of Plenty Kaituna",
     "metric": "CMS",
     "pageUrl": "https://www.lawa.org.nz//explore-data/bay-of-plenty-region/water-quantity/surface-water-zones/kaituna-maketu-pongakawa/raparapahoe-at-above-drop-structure"
-  },
-  {
-    "id": 29959,
-    "name": "Paraiti (Mangorewa) at Saunders",
-    "siteId": "EBOP-00061",
-    "latitude": -37.88449097,
-    "longitude": 176.34840393,
-    "state": "Bay of Plenty",
-    "country": "NZ",
-    "source": "LAWA",
-    "zone": "Bay of Plenty Kaituna",
-    "metric": "CMS",
-    "pageUrl": "https://www.lawa.org.nz//explore-data/bay-of-plenty-region/water-quantity/surface-water-zones/kaituna-maketu-pongakawa/paraiti-mangorewa-at-saunders"
-  },
-  {
-    "id": 29960,
-    "name": "Kaituna at Te Matai",
-    "siteId": "EBOP-00057",
-    "latitude": -37.79341888,
-    "longitude": 176.36380005,
-    "state": "Bay of Plenty",
-    "country": "NZ",
-    "source": "LAWA",
-    "zone": "Bay of Plenty Kaituna",
-    "metric": "CMS",
-    "pageUrl": "https://www.lawa.org.nz//explore-data/bay-of-plenty-region/water-quantity/surface-water-zones/kaituna-maketu-pongakawa/kaituna-at-te-matai"
-  },
-  {
-    "id": 29968,
-    "name": "Pongakawa at Pongakawa Bush Road",
-    "siteId": "EBOP-00068",
-    "latitude": -37.90591049,
-    "longitude": 176.48539734,
-    "state": "Bay of Plenty",
-    "country": "NZ",
-    "source": "LAWA",
-    "zone": "Bay of Plenty Kaituna",
-    "metric": "CMS",
-    "pageUrl": "https://www.lawa.org.nz//explore-data/bay-of-plenty-region/water-quantity/surface-water-zones/kaituna-maketu-pongakawa/pongakawa-at-pongakawa-bush-road"
-  },
-  {
-    "id": 29973,
-    "name": "Paraiti (Mangorewa) at Link",
-    "siteId": "EBOP-00060",
-    "latitude": -37.8857193,
-    "longitude": 176.35110474,
-    "state": "Bay of Plenty",
-    "country": "NZ",
-    "source": "LAWA",
-    "zone": "Bay of Plenty Kaituna",
-    "metric": "CMS",
-    "pageUrl": "https://www.lawa.org.nz//explore-data/bay-of-plenty-region/water-quantity/surface-water-zones/kaituna-maketu-pongakawa/paraiti-mangorewa-at-link"
   }
 ]

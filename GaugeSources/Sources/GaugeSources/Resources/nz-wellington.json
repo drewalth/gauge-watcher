@@ -2,7 +2,7 @@
   {
     "id": 30180,
     "name": "Wainuiomata River at Manuka Track",
-    "siteId": "GW-00028",
+    "siteId": "30180",
     "latitude": -41.25677265,
     "longitude": 175.00892684,
     "state": "Wellington",
@@ -15,7 +15,7 @@
   {
     "id": 30181,
     "name": "Wainuiomata River at Leonard Wood Park",
-    "siteId": "GW-00231",
+    "siteId": "30181",
     "latitude": -41.28400515,
     "longitude": 174.94738309,
     "state": "Wellington",
@@ -28,7 +28,7 @@
   {
     "id": 30185,
     "name": "Orongorongo River at Truss Bridge",
-    "siteId": "GW-00157",
+    "siteId": "30185",
     "latitude": -41.29704076,
     "longitude": 175.0326634,
     "state": "Wellington",
@@ -41,7 +41,7 @@
   {
     "id": 30186,
     "name": "Mangaroa River at Te Marua",
-    "siteId": "GW-00024",
+    "siteId": "30186",
     "latitude": -41.09432204,
     "longitude": 175.1280911,
     "state": "Wellington",
@@ -54,7 +54,7 @@
   {
     "id": 30187,
     "name": "Hutt River at Taita Gorge",
-    "siteId": "GW-00255",
+    "siteId": "30187",
     "latitude": -41.15660826,
     "longitude": 174.984782,
     "state": "Wellington",
@@ -67,7 +67,7 @@
   {
     "id": 30188,
     "name": "Hutt River at Kaitoke",
-    "siteId": "NRWQN-00047",
+    "siteId": "30188",
     "latitude": -41.05101129,
     "longitude": 175.19123118,
     "state": "Wellington",
@@ -80,7 +80,7 @@
   {
     "id": 30189,
     "name": "Hutt River at Birchville",
-    "siteId": "GW-10001",
+    "siteId": "30189",
     "latitude": -41.10017595,
     "longitude": 175.09076014,
     "state": "Wellington",
@@ -93,7 +93,7 @@
   {
     "id": 30206,
     "name": "Akatarawa River at Cemetery",
-    "siteId": "GW-00057",
+    "siteId": "30206",
     "latitude": -41.08584512,
     "longitude": 175.0986985,
     "state": "Wellington",
@@ -106,7 +106,7 @@
   {
     "id": 30177,
     "name": "Waitohu Stream at Water Supply Intake",
-    "siteId": "GW-00241",
+    "siteId": "30177",
     "latitude": -40.76666669,
     "longitude": 175.21423898,
     "state": "Wellington",
@@ -119,7 +119,7 @@
   {
     "id": 30178,
     "name": "Otaki River at Pukehinau",
-    "siteId": "GW-00005",
+    "siteId": "30178",
     "latitude": -40.8220466,
     "longitude": 175.19957526,
     "state": "Wellington",
@@ -132,7 +132,7 @@
   {
     "id": 30179,
     "name": "Mangaone Stream at Ratanui",
-    "siteId": "GW-00133",
+    "siteId": "30179",
     "latitude": -40.82742334,
     "longitude": 175.15669569,
     "state": "Wellington",
@@ -145,7 +145,7 @@
   {
     "id": 30205,
     "name": "Waikanae River at Water Treatment Plant",
-    "siteId": "GW-00228",
+    "siteId": "30205",
     "latitude": -40.88809773,
     "longitude": 175.07274447,
     "state": "Wellington",
@@ -158,7 +158,7 @@
   {
     "id": 30191,
     "name": "Waipoua River at Mikimiki Bridge",
-    "siteId": "GW-00236",
+    "siteId": "30191",
     "latitude": -40.84517651,
     "longitude": 175.61744894,
     "state": "Wellington",
@@ -171,7 +171,7 @@
   {
     "id": 30193,
     "name": "Tauherenikau at Gorge",
-    "siteId": "GW-00201",
+    "siteId": "30193",
     "latitude": -41.06814004,
     "longitude": 175.35741926,
     "state": "Wellington",
@@ -184,7 +184,7 @@
   {
     "id": 30194,
     "name": "Taueru River at Te Whiti Rd Bridge",
-    "siteId": "GW-00199",
+    "siteId": "30194",
     "latitude": -41.06337984,
     "longitude": 175.66805882,
     "state": "Wellington",
@@ -197,7 +197,7 @@
   {
     "id": 30195,
     "name": "Ruamahanga River at Wardells",
-    "siteId": "NRWQN-00048",
+    "siteId": "30195",
     "latitude": -41.00481677,
     "longitude": 175.67236373,
     "state": "Wellington",
@@ -210,7 +210,7 @@
   {
     "id": 30196,
     "name": "Ruamahanga River at Waihenga Bridge",
-    "siteId": "NRWQN-00046",
+    "siteId": "30196",
     "latitude": -41.19685836,
     "longitude": 175.43999678,
     "state": "Wellington",
@@ -223,7 +223,7 @@
   {
     "id": 30197,
     "name": "Papawai Stream at u/s Oxi Pond conf.",
-    "siteId": "GW-00162",
+    "siteId": "30197",
     "latitude": -41.10309313,
     "longitude": 175.49064027,
     "state": "Wellington",
@@ -236,7 +236,7 @@
   {
     "id": 30199,
     "name": "Otukura Stream at Weir",
-    "siteId": "GW-00159",
+    "siteId": "30199",
     "latitude": -41.18728715,
     "longitude": 175.36738907,
     "state": "Wellington",
@@ -249,7 +249,7 @@
   {
     "id": 30200,
     "name": "Mangatarere River at SH 2",
-    "siteId": "GW-00050",
+    "siteId": "30200",
     "latitude": -41.05477704,
     "longitude": 175.49618121,
     "state": "Wellington",
@@ -262,7 +262,7 @@
   {
     "id": 30201,
     "name": "Mangatarere River at Gorge",
-    "siteId": "GW-00138",
+    "siteId": "30201",
     "latitude": -40.93499383,
     "longitude": 175.51186713,
     "state": "Wellington",
@@ -275,7 +275,7 @@
   {
     "id": 30203,
     "name": "Kopuaranga River at Stuarts",
-    "siteId": "GW-00038",
+    "siteId": "30203",
     "latitude": -40.89357041,
     "longitude": 175.69179599,
     "state": "Wellington",
@@ -288,7 +288,7 @@
   {
     "id": 30204,
     "name": "Kopuaranga at Palmers Bridge",
-    "siteId": "GW-00120",
+    "siteId": "30204",
     "latitude": -40.81893375,
     "longitude": 175.67185573,
     "state": "Wellington",
@@ -301,7 +301,7 @@
   {
     "id": 30207,
     "name": "Waiohine River at Gorge",
-    "siteId": "GW-00047",
+    "siteId": "30207",
     "latitude": -41.01636817,
     "longitude": 175.40011859,
     "state": "Wellington",
@@ -314,7 +314,7 @@
   {
     "id": 30208,
     "name": "Waingawa River at Kaituna",
-    "siteId": "GW-10015",
+    "siteId": "30208",
     "latitude": -40.88669021,
     "longitude": 175.5229277,
     "state": "Wellington",
@@ -327,7 +327,7 @@
   {
     "id": 30209,
     "name": "Ruamahanga River at Mt Bruce",
-    "siteId": "GW-00183",
+    "siteId": "30209",
     "latitude": -40.75458017,
     "longitude": 175.59803009,
     "state": "Wellington",
@@ -340,7 +340,7 @@
   {
     "id": 30210,
     "name": "Parkvale Stream at Renalls Weir",
-    "siteId": "GW-00046",
+    "siteId": "30210",
     "latitude": -41.07801993,
     "longitude": 175.54166084,
     "state": "Wellington",
@@ -353,7 +353,7 @@
   {
     "id": 30245,
     "name": "Taueru River at Te Weraiti",
-    "siteId": "GW-00198",
+    "siteId": "30245",
     "latitude": -40.99380965,
     "longitude": 175.75949331,
     "state": "Wellington",

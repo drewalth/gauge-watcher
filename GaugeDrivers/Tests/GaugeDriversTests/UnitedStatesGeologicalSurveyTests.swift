@@ -29,7 +29,7 @@ struct UnitedStatesGeologicalSurveyTests {
         #expect(!results.isEmpty)
 
         let latestDischarge = results.last { $0.unit == .cfs }
-        let latestHeight = results.last { $0.unit == .feet }
+        let latestHeight = results.last { $0.unit == .feetHeight }
 
         #expect(latestDischarge != nil)
         #expect(latestHeight != nil)
@@ -61,10 +61,10 @@ struct UnitedStatesGeologicalSurveyTests {
         #expect(!results.isEmpty)
 
         let site1LatestDischarge = results.last { $0.siteID == "09359500" && $0.unit == .cfs }
-        let site1LatestHeight = results.last { $0.siteID == "09359500" && $0.unit == .feet }
+        let site1LatestHeight = results.last { $0.siteID == "09359500" && $0.unit == .feetHeight }
 
         let site2LatestDischarge = results.last { $0.siteID == "01646500" && $0.unit == .cfs }
-        let site2LatestHeight = results.last { $0.siteID == "01646500" && $0.unit == .feet }
+        let site2LatestHeight = results.last { $0.siteID == "01646500" && $0.unit == .feetHeight }
 
         #expect(site1LatestDischarge != nil)
         #expect(site1LatestHeight != nil)
@@ -132,7 +132,7 @@ struct UnitedStatesGeologicalSurveyTests {
             parameters: [.height, .discharge])
 
         let latestDischarge = results.last { $0.unit == .cfs }
-        let latestHeight = results.last { $0.unit == .feet }
+        let latestHeight = results.last { $0.unit == .feetHeight }
 
         #expect(latestDischarge != nil)
         #expect(latestHeight != nil)

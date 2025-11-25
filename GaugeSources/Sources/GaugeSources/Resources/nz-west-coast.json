@@ -2,7 +2,7 @@
   {
     "id": 30614,
     "name": "Buller Rv @ Woolfs",
-    "siteId": "WCRC-00045",
+    "siteId": "30614",
     "latitude": -41.83517473,
     "longitude": 171.99118984,
     "state": "West Coast",
@@ -15,7 +15,7 @@
   {
     "id": 30619,
     "name": "Buller Rv @ Te Kuha",
-    "siteId": "WCRC-00044",
+    "siteId": "30619",
     "latitude": -41.83490315,
     "longitude": 171.69985299,
     "state": "West Coast",
@@ -28,7 +28,7 @@
   {
     "id": 46068,
     "name": "Inangahua Rv @ Landing",
-    "siteId": "WCRC-00055",
+    "siteId": "46068",
     "latitude": -41.90993066,
     "longitude": 171.8971828,
     "state": "West Coast",
@@ -39,22 +39,9 @@
     "pageUrl": "https://www.lawa.org.nz//explore-data/west-coast-region/water-quantity/surface-water-zones/buller/inangahua-rv-landing-flow"
   },
   {
-    "id": 50871,
-    "name": "Inangahua Rv @ Blacks Pt",
-    "siteId": "LAWA-102793",
-    "latitude": -42.122190862725,
-    "longitude": 171.878081455031,
-    "state": "West Coast",
-    "country": "NZ",
-    "source": "LAWA",
-    "zone": "West Coast Buller",
-    "metric": "CMS",
-    "pageUrl": "https://www.lawa.org.nz//explore-data/west-coast-region/water-quantity/surface-water-zones/buller/inangahua-rv-blacks-pt"
-  },
-  {
     "id": 30626,
     "name": "Hokitika Rv @ Gorge",
-    "siteId": "WCRC-00054",
+    "siteId": "30626",
     "latitude": -42.95501054,
     "longitude": 171.01938191,
     "state": "West Coast",

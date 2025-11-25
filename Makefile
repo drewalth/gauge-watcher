@@ -4,3 +4,7 @@ pretty:
 
 lint:
 	swiftlint . --config .swiftlint.yml
+
+test_packages:
+	swift test --package-path ./GaugeSources
+	swift test --package-path ./GaugeDrivers

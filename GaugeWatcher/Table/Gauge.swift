@@ -30,7 +30,7 @@ protocol GaugeProtocol {
 }
 
 // MARK: - Gauge
-
+// TODO: Check out https://www.gaia-gis.it/fossil/libspatialite/index. Maybe we can improve searching on the map by nearest current location rather than state boundaries.
 @Table
 struct Gauge: Identifiable, Hashable, GaugeProtocol {
     static let databaseTableName = "gauges"

@@ -14,39 +14,24 @@ struct UnifiedAPITests {
 
     // MARK: - Factory Tests
 
-    @Test("Factory: Driver selection for each source")
-    func factoryDriverSelection() throws {
+    @Test("Factory: Driver selection for all sources")
+    func factoryDriverSelection() {
         let factory = GaugeDriverFactory()
 
-        // Test that factory returns correct driver types
-        let usgsDriver = try factory.driver(for: .usgs)
+        // Test that factory returns correct driver types for all sources
+        let usgsDriver = factory.driver(for: .usgs)
         #expect(usgsDriver is GDUnitedStatesGeologicalSurvey)
 
-        let envCanadaDriver = try factory.driver(for: .environmentCanada)
+        let envCanadaDriver = factory.driver(for: .environmentCanada)
         #expect(envCanadaDriver is GDEnvironmentCanada)
 
-        let dwrDriver = try factory.driver(for: .dwr)
+        let dwrDriver = factory.driver(for: .dwr)
         #expect(dwrDriver is GDColoradoDepartmentWaterResources)
 
-        print("✅ Factory correctly returns driver types for all sources")
-    }
+        let lawaDriver = factory.driver(for: .lawa)
+        #expect(lawaDriver is GDLandAirWaterAotearoa)
 
-    @Test("Factory: Unsupported source error")
-    func factoryUnsupportedSource() throws {
-        let factory = GaugeDriverFactory()
-
-        do {
-            _ = try factory.driver(for: .lawa)
-            Issue.record("Expected error for unsupported LAWA source")
-        } catch let error as GaugeDriverErrors {
-            switch error {
-            case .unsupportedSource(let source):
-                #expect(source == .lawa)
-                print("✅ Factory correctly throws error for unsupported source")
-            default:
-                Issue.record("Wrong error type: \(error)")
-            }
-        }
+        print("✅ Factory correctly returns driver types for all 4 sources")
     }
 
     // MARK: - Mixed Source Batch Fetching
@@ -93,7 +78,7 @@ struct UnifiedAPITests {
         #expect(usgs1Readings.allSatisfy { $0.unit == .cfs })
         #expect(usgs2Readings.allSatisfy { $0.unit == .cfs })
         // Environment Canada returns both cms (discharge) and meter (height)
-        #expect(envCanadaReadings.allSatisfy { $0.unit == .cms || $0.unit == .meter })
+        #expect(envCanadaReadings.allSatisfy { $0.unit == .cms || $0.unit == .meterHeight })
 
         print("✅ Mixed source batch fetch:")
         print("   USGS site 1: \(usgs1Readings.count) readings (cfs)")
@@ -194,7 +179,7 @@ struct UnifiedAPITests {
 
         // Should have mix of discharge, height, and possibly temperature
         let dischargeCount = results.filter { $0.unit == .cfs }.count
-        let heightCount = results.filter { $0.unit == .feet }.count
+        let heightCount = results.filter { $0.unit == .feetHeight }.count
 
         #expect(dischargeCount > 0)
         #expect(heightCount > 0)
@@ -206,24 +191,28 @@ struct UnifiedAPITests {
 
     // MARK: - Error Handling Tests
 
-    @Test("Error handling: Invalid source")
-    func errorInvalidSource() async throws {
+    @Test("Error handling: Invalid site ID for LAWA")
+    func errorInvalidLAWASiteID() async throws {
         let factory = GaugeDriverFactory()
 
         let options = GaugeDriverOptions(
-            siteID: "test",
+            siteID: "not-a-number",
             source: .lawa,
             timePeriod: .predefined(.last24Hours),
             parameters: [.discharge])
 
         do {
             _ = try await factory.fetchReadings(options: options)
-            Issue.record("Expected unsupported source error")
-        } catch let error as GaugeDriverErrors {
+            Issue.record("Expected error for invalid LAWA siteID")
+        } catch let error as LAWA.Errors {
+            // Invalid site IDs return empty data from the API, which we catch as invalidSampleDateTime
             switch error {
-            case .unsupportedSource(let source):
-                #expect(source == .lawa)
-                print("✅ Error handling: Unsupported source correctly caught")
+            case .invalidSampleDateTime(let siteID):
+                #expect(siteID == "not-a-number")
+                print("✅ Error handling: Invalid LAWA site ID correctly caught (no data)")
+            case .invalidSiteID(let siteID):
+                #expect(siteID == "not-a-number")
+                print("✅ Error handling: Invalid LAWA site ID correctly caught")
             default:
                 Issue.record("Wrong error type: \(error)")
             }

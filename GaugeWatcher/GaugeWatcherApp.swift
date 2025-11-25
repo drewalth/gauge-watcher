@@ -15,12 +15,18 @@ import SwiftUI
 
 @main
 struct GaugeWatcherApp: App {
+
+    // MARK: Lifecycle
+
     init() {
         AppTelemetry.initialize()
+        loadRocketSimConnect()
         try! prepareDependencies {
             try $0.bootstrapDatabase()
         }
     }
+
+    // MARK: Internal
 
     var body: some Scene {
         WindowGroup {
@@ -28,5 +34,20 @@ struct GaugeWatcherApp: App {
                 AppFeature()
             }))
         }
+    }
+
+    // MARK: Private
+
+    private func loadRocketSimConnect() {
+        #if DEBUG
+        guard
+            Bundle(path: "/Applications/RocketSim.app/Contents/Frameworks/RocketSimConnectLinker.nocache.framework")?
+                .load() == true
+        else {
+            print("Failed to load linker framework")
+            return
+        }
+        print("RocketSim Connect successfully linked")
+        #endif
     }
 }
