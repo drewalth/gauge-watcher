@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIAppearance
 
 // MARK: - GaugeWatcherListModifier
 
@@ -21,6 +22,8 @@ struct GaugeWatcherListModifier: ViewModifier {
         content
             .listRowSpacing(8)
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .imageBackground()
             .if(colorScheme == .light) {
                 $0.shadow(color: Color.gray.opacity(0.15), radius: 4, x: 0, y: 4)
             }

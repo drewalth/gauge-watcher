@@ -1,12 +1,19 @@
+import os
 import PostHog
 
 public enum AppTelemetry {
+    private static let logger = Logger(subsystem: "com.drewalth.GaugeWatcher", category: "AppTelemetry")
     public static func initialize() {
-        let POSTHOG_API_KEY = ""
+        let posthogAPIKey = ""
         // usually 'https://us.i.posthog.com' or 'https://eu.i.posthog.com'
-        let POSTHOG_HOST = ""
+        let posthogHost = ""
 
-        let config = PostHogConfig(apiKey: POSTHOG_API_KEY, host: POSTHOG_HOST)
+        if posthogHost.isEmpty || posthogAPIKey.isEmpty {
+            logger.warning("Missing PostHog credentials")
+            return
+        }
+
+        let config = PostHogConfig(apiKey: posthogAPIKey, host: posthogHost)
         PostHogSDK.shared.setup(config)
     }
 }

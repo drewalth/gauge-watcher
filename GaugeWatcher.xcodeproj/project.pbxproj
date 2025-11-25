@@ -128,6 +128,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A1FB4A302E7B5DCE00A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcher" */;
 			buildPhases = (
+				A1526D992ED589C20063C7FA /* SwiftLint */,
 				A1FB4A212E7B5DCD00A3C7FE /* Sources */,
 				A1FB4A222E7B5DCD00A3C7FE /* Frameworks */,
 				A1FB4A232E7B5DCD00A3C7FE /* Resources */,
@@ -279,6 +280,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A1526D992ED589C20063C7FA /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A1FB4A212E7B5DCD00A3C7FE /* Sources */ = {
@@ -446,6 +468,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2BTKYF3W9D;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app users your location to get gauges near you";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -482,6 +505,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2BTKYF3W9D;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app users your location to get gauges near you";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -18,5 +18,10 @@ excluded:
   - .swiftpackage.resolved
 
 disabled_rules:
-  - non_optional_string_data_conversion
-  - optional_data_string_conversion
+  - trailing_whitespace  # Handled by IDE formatting
+
+# Enables documentation, concurrency, and modern patterns
+documentation: warning
+strict_concurrency: warning
+sendable: warning
+implicitly_unwrapped_optional: error

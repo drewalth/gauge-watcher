@@ -86,7 +86,7 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
 
         var readings = [GDGaugeReading]()
 
-        for result in response.ResultList {
+        for result in response.resultList {
             // Map DWR units to GaugeSourceMetric
             // DWR returns units like "cfs", "ft", etc.
             let unitString = result.units.uppercased()
@@ -115,11 +115,19 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
 // MARK: - DWRResponse
 
 public struct DWRResponse: Codable {
-    public let PageNumber: Int
-    public let PageCount: Int
-    public let ResultCount: Int
-    public let ResultDateTime: String
-    public let ResultList: [DWRResult]
+    public let pageNumber: Int
+    public let pageCount: Int
+    public let resultCount: Int
+    public let resultDateTime: String
+    public let resultList: [DWRResult]
+
+    enum CodingKeys: String, CodingKey {
+        case pageNumber = "PageNumber"
+        case pageCount = "PageCount"
+        case resultCount = "ResultCount"
+        case resultDateTime = "ResultDateTime"
+        case resultList = "ResultList"
+    }
 }
 
 // MARK: - DWRResult
