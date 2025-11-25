@@ -52,7 +52,7 @@ struct GaugeDetailFeature {
         Reduce { state, action in
             switch action {
             case .toggleFavorite:
-                guard let gauge = state.gauge.unwrap() else {
+                guard state.gauge.unwrap() != nil else {
                     return .none
                 }
                 return .concatenate(

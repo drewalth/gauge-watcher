@@ -44,7 +44,6 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
         case invalidURL
         case missingData
         case invalidParameter(String)
-        case unableToAssociateParameterWithFKReadingUnit
         case unableToConvertStringToDate(String)
         case unableToConvertStringToDouble(String)
 
@@ -62,8 +61,6 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
                 "The data returned from the USGS API is missing or incomplete."
             case .invalidParameter(let invalidParameter):
                 "Invalid reading parameter: \(invalidParameter)"
-            case .unableToAssociateParameterWithFKReadingUnit:
-                "Unable to associate ReadingParameter with a FKReadingUnit."
             case .unableToConvertStringToDate(let string):
                 "Unable to convert string to date: \(string)"
             case .unableToConvertStringToDouble(let string):

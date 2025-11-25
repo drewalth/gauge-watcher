@@ -71,7 +71,7 @@ struct GaugeReadingChartControls: View {
                     .labelStyle(IconOnlyLabelStyle())
                     .foregroundColor(.white)
                     .buttonStyle(OutlinedButtonStyle())
-            }.disabled(store.gauge.isLoadingOrReloading() || store.readings.isLoadingOrReloading())
+            }
             .buttonStyle(.borderedProminent)
             .frame(maxWidth: 38, maxHeight: 38)
         }

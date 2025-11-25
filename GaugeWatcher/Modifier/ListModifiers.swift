@@ -12,10 +12,6 @@ import UIAppearance
 
 struct GaugeWatcherListModifier: ViewModifier {
 
-    public init() {
-        //    UINavigationBar.appearance().largeTitleTextAttributes = [.font : Theme.getUIFont(.h1)]
-    }
-
     @Environment(\.colorScheme) var colorScheme
 
     public func body(content: Content) -> some View {
