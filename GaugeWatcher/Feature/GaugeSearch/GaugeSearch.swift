@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/22/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
 import Loadable
 import SwiftUI
@@ -18,6 +19,7 @@ struct GaugeSearch: View {
     var body: some View {
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             content()
+                .trackView("GaugeSearch")
         } destination: { store in
             switch store.case {
             case .gaugeDetail(let gaugeDetailStore):

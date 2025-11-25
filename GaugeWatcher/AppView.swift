@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 9/17/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
 import Loadable
 import SwiftUI
@@ -20,7 +21,7 @@ struct AppView: View {
     var body: some View {
         Group {
             content()
-        }
+        }.trackView("AppView")
         .task {
             store.send(.initialize)
         }
@@ -44,7 +45,7 @@ struct AppView: View {
             if isInitialized {
                 TabView {
                     GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
-                        GaugeSearchFeature()
+                        GaugeSearchFeature()._printChanges()
                     }))
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
@@ -52,7 +53,7 @@ struct AppView: View {
                     .tag(0)
 
                     FavoriteGaugesView(store: Store(initialState: FavoriteGaugesFeature.State(), reducer: {
-                        FavoriteGaugesFeature()._printChanges()
+                        FavoriteGaugesFeature()
                     }))
                     .tabItem {
                         Label("Favorites", systemImage: "star.fill")

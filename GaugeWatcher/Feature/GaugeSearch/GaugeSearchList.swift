@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
 import Loadable
 import SwiftUI
@@ -28,6 +29,7 @@ struct GaugeSearchList: View {
                 Text(String(describing: err.localizedDescription))
             }
         }.gaugeWatcherList()
+        .trackView("GaugeSearchList")
         .searchable(text: Binding<String>(
                         get: {
                             store.queryOptions.name ?? ""
@@ -41,7 +43,7 @@ struct GaugeSearchList: View {
                 Button {
                     store.send(.toggleMode)
                 } label: {
-                    Label("Mode", systemImage: store.mode == .list ? "list.bullet" : "map")
+                    Label("Mode", systemImage: store.mode == .list ? "map": "list.bullet")
                         .labelStyle(.iconOnly)
                 }
             }

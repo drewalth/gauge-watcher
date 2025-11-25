@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 9/17/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
 import GaugeSources
 import SQLiteData
@@ -15,6 +16,7 @@ import SwiftUI
 @main
 struct GaugeWatcherApp: App {
     init() {
+        AppTelemetry.initialize()
         try! prepareDependencies {
             try $0.bootstrapDatabase()
         }

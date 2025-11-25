@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
 import Loadable
 import MapKit
@@ -26,12 +27,13 @@ struct GaugeSearchMap: View {
             }
             UserAnnotation()
         }.ignoresSafeArea(.all)
+        .trackView("GaugeSearchMap")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     store.send(.toggleMode)
                 } label: {
-                    Label("Mode", systemImage: store.mode == .list ? "list.bullet" : "map")
+                    Label("Mode", systemImage: store.mode == .list ? "map": "list.bullet")
                         .labelStyle(.iconOnly)
                 }
             }

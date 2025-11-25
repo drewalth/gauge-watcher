@@ -19,10 +19,6 @@ struct GaugeReadingChartControls: View {
 
     @Bindable var store: StoreOf<GaugeDetailFeature>
 
-    var isDisabled: Bool {
-        store.gauge.isLoadingOrReloading() || store.readings.isLoadingOrReloading()
-    }
-
     var chartDescription: String {
         switch store.readings {
         case .loaded(let readings):
@@ -75,7 +71,7 @@ struct GaugeReadingChartControls: View {
                     .labelStyle(IconOnlyLabelStyle())
                     .foregroundColor(.white)
                     .buttonStyle(OutlinedButtonStyle())
-            }.disabled(isDisabled)
+            }.disabled(store.gauge.isLoadingOrReloading() || store.readings.isLoadingOrReloading())
             .buttonStyle(.borderedProminent)
             .frame(maxWidth: 38, maxHeight: 38)
         }
