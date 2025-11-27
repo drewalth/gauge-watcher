@@ -74,6 +74,26 @@ extension DependencyValues {
         """)
                 .execute(db)
         }
+
+        // Add spatial indexes for efficient bounding box queries
+        migrator.registerMigration("add-spatial-indexes-0.2.0") { db in
+            try #sql("""
+        CREATE INDEX IF NOT EXISTS "idx_gauges_latitude" ON "gauges"("latitude")
+        """)
+                .execute(db)
+
+            try #sql("""
+        CREATE INDEX IF NOT EXISTS "idx_gauges_longitude" ON "gauges"("longitude")
+        """)
+                .execute(db)
+
+            // Composite index for optimal bounding box queries
+            try #sql("""
+        CREATE INDEX IF NOT EXISTS "idx_gauges_lat_lon" ON "gauges"("latitude", "longitude")
+        """)
+                .execute(db)
+        }
+
         try migrator.migrate(database)
         defaultDatabase = database
     }

@@ -32,16 +32,7 @@ struct GaugeMapMarker: View {
                 .frame(width: 22, height: 22)
                 .background(
                     Circle()
-                        .foregroundColor(color)
-                        .scaleEffect(isAnimating ? 2 : 0.5)
-                        .opacity(isAnimating ? 0 : 1)
-                        .animation(
-                            Animation.easeOut(duration: 1.5)
-                                .repeatForever(autoreverses: false),
-                            value: isAnimating)
-                        .onAppear {
-                            isAnimating = true
-                        })
+                        .foregroundColor(color))
         }.onTapGesture {
             popoverVisible.toggle()
         }
@@ -72,7 +63,6 @@ struct GaugeMapMarker: View {
 
     // TODO: add type-safe key
     @AppStorage("gauge-map-marker-color") private var color = Color(hex: "#27F5C2")
-    @State private var isAnimating = false
     @State private var popoverVisible = false
 
     private let gauge: GaugeRef

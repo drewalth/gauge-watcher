@@ -16,31 +16,50 @@ import SwiftUI
 
 struct GaugeSearchMap: View {
 
-    // MARK: Internal
-
     @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
-        Map(position: $viewModel.position, interactionModes: [.pan, .zoom, .rotate]) {
-            ForEach(store.results.unwrap() ?? [], id: \.id) { gauge in
-                Annotation(gauge.name, coordinate: gauge.location.coordinate) {
-                    GaugeMapMarker(store: store, gauge: gauge)
+        ZStack {
+            Map(
+                position: $store.mapPosition.sending(\.setMapPosition),
+                interactionModes: [.pan, .zoom, .rotate]) {
+                ForEach(store.results.unwrap() ?? [], id: \.id) { gauge in
+                    Annotation(gauge.name, coordinate: gauge.location.coordinate) {
+                        GaugeMapMarker(store: store, gauge: gauge)
+                    }
+                    .annotationTitles(.hidden)
                 }
-                .annotationTitles(.hidden)
+                UserAnnotation()
             }
-            UserAnnotation()
-        }.ignoresSafeArea(.all)
-        .onChange(of: store.currentLocation) { prev, next in
-            if prev != next {
-                viewModel.setPosition(next)
+            .ignoresSafeArea(.all)
+            .onMapCameraChange(frequency: .onEnd) { context in
+                // Only report when user stops moving the map (not during animation)
+                store.send(.mapRegionChanged(context.region))
             }
-        }
-        .onAppear {
-            viewModel.handleStateChange(store.queryOptions.state)
+
+            // Show message when zoomed out too far
+            if let region = store.mapRegion, region.span.latitudeDelta > 2.0 {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        Text("Zoom in to view gauges")
+                    }
+                    .font(.subheadline)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(20)
+                    .shadow(radius: 2)
+                    .padding(.bottom, 100)
+                }
+                .transition(.opacity)
+                .animation(.easeInOut, value: store.mapRegion?.span.latitudeDelta)
+            }
         }
         .trackView("GaugeSearchMap")
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     store.send(.toggleMode)
                 } label: {
@@ -48,80 +67,28 @@ struct GaugeSearchMap: View {
                         .labelStyle(.iconOnly)
                 }
             }
-        }
-    }
 
-    // MARK: Private
-
-    @State private var viewModel = ViewModel()
-}
-
-// MARK: GaugeSearchMap.ViewModel
-
-extension GaugeSearchMap {
-    /// Note: We break the state mgmt paradigm here intentionally.
-    /// These values are not placed in the TCA reducer because they will change frequently
-    /// and we don't want to overload the system.
-    /// TCA docs suggest things that update frequently probably shouldn't be placed in state/effect. (needs verify)
-    @Observable
-    final class ViewModel {
-
-        // MARK: Internal
-
-        var position: MapCameraPosition = .region(.init(
-                                                    center: .init(latitude: 39.8283, longitude: -98.5795),
-                                                    span: .init(latitudeDelta: 100, longitudeDelta: 100)))
-
-        func setPosition(_ currentLocation: CurrentLocation?) {
-            guard let currentLocation else { return }
-            withAnimation {
-                position = .region(.init(
-                                    center: .init(
-                                        latitude: currentLocation.latitude,
-                                        longitude: currentLocation.longitude),
-                                    span: defaultSpan))
-            }
-        }
-
-        func handleStateChange(_ state: String?) {
-            Task {
-                do {
-                    guard
-                        let state,
-                        let stateValue = StateValue(rawValue: state)
-                    else {
-                        return
+            // Recenter button - only show if user location is available
+            if let location = store.currentLocation {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.8)) {
+                            let cameraPosition = MapCameraPosition.camera(
+                                MapCamera(
+                                    centerCoordinate: CLLocationCoordinate2D(
+                                        latitude: location.latitude,
+                                        longitude: location.longitude),
+                                    distance: 150_000, // ~93 miles
+                                    heading: 0,
+                                    pitch: 0))
+                            store.send(.setMapPosition(cameraPosition))
+                        }
+                    } label: {
+                        Label("Center on Location", systemImage: "location.fill")
+                            .labelStyle(.iconOnly)
                     }
-                    try Task.checkCancellation()
-                    let address = if StatesProvinces.CanadianProvince.allCases.map({ $0.value }).contains(stateValue) {
-                        "\(stateValue.name), Canada"
-                    } else if StatesProvinces.NewZealandRegion.allCases.map({ $0.value }).contains(stateValue) {
-                        "\(stateValue.name), New Zealand"
-                    } else {
-                        "\(stateValue.name), United States"
-                    }
-
-                    guard let coordinates = try await CLGeocoder().geocodeAddressString(address).first?.location?.coordinate else {
-                        return
-                    }
-
-                    DispatchQueue.main.async {
-                        self.position = .region(.init(
-                                                    center: .init(
-                                                        latitude: coordinates.latitude,
-                                                        longitude: coordinates.longitude),
-                                                    span: self.defaultSpan))
-                    }
-
-                } catch {
-                    print(error)
                 }
             }
         }
-
-        // MARK: Private
-
-        private let defaultSpan = MKCoordinateSpan(latitudeDelta: 2.0, longitudeDelta: 2.0)
-
     }
 }

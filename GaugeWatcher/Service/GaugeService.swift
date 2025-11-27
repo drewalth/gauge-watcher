@@ -28,7 +28,7 @@ extension GaugeService: DependencyKey {
     static let liveValue: GaugeService = Self(loadGauge: { id in
         @Dependency(\.defaultDatabase) var database
         return try await database.read { db in
-            guard let gauge = try Gauge.where { $0.id == id }.fetchOne(db) else {
+            guard let gauge = try Gauge.where({ $0.id == id }).fetchOne(db) else {
                 throw DatabaseServiceError.gaugeNotFound
             }
             return gauge
@@ -60,6 +60,20 @@ extension GaugeService: DependencyKey {
             }
             if let primary = options.primary {
                 query = query.where { $0.primary == primary }
+            }
+
+            // Bounding box spatial query - replaces state-based filtering when provided
+            if let bbox = options.boundingBox {
+                query = query.where {
+                    $0.latitude >= bbox.minLatitude &&
+                        $0.latitude <= bbox.maxLatitude &&
+                        $0.longitude >= bbox.minLongitude &&
+                        $0.longitude <= bbox.maxLongitude
+                }
+
+                // Safety limit: cap results for bounding box queries to prevent UI overload
+                // Even at reasonable zoom, dense areas could have hundreds of gauges
+                return try query.limit(500).fetchAll(db)
             }
 
             return try query.fetchAll(db)
@@ -192,7 +206,8 @@ struct GaugeQueryOptions {
         zone: String? = nil,
         source: GaugeSource? = .usgs,
         favorite: Bool? = nil,
-        primary: Bool? = nil) {
+        primary: Bool? = nil,
+        boundingBox: BoundingBox? = nil) {
         self.name = name
         self.country = country
         self.state = state
@@ -200,6 +215,7 @@ struct GaugeQueryOptions {
         self.source = source
         self.favorite = favorite
         self.primary = primary
+        self.boundingBox = boundingBox
     }
 
     // MARK: Internal
@@ -211,7 +227,17 @@ struct GaugeQueryOptions {
     var source: GaugeSource?
     var favorite: Bool?
     var primary: Bool?
+    var boundingBox: BoundingBox?
 
+}
+
+// MARK: - BoundingBox
+
+struct BoundingBox: Equatable, Sendable {
+    let minLatitude: Double
+    let maxLatitude: Double
+    let minLongitude: Double
+    let maxLongitude: Double
 }
 
 // MARK: - GaugeReadingQuery
