@@ -143,7 +143,7 @@ extension GaugeService: DependencyKey {
         // 5. Fetch readings using unified API
         let factory = GaugeDriverFactory()
         let result = await factory.fetchReadings(options: options)
-        
+
         // 6. Handle the result
         guard case .success(let fetchResult) = result else {
             if case .failure(let error) = result {
@@ -151,7 +151,7 @@ extension GaugeService: DependencyKey {
             }
             throw DatabaseServiceError.unknownError
         }
-        
+
         // 7. Save readings to database
         // Use INSERT OR IGNORE to skip duplicates efficiently (relies on unique index)
         try await database.write { db in

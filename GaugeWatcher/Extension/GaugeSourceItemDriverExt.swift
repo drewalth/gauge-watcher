@@ -79,7 +79,7 @@ extension GaugeSourceItem {
         guard let options = toDriverOptions(timePeriod: timePeriod, parameters: parameters) else {
             throw GaugeDriverErrors.invalidOptions("Unable to create driver options for gauge: \(name)")
         }
-        
+
         let result = await factory.fetchReadings(options: options)
         switch result {
         case .success(let fetchResult):

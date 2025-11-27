@@ -89,15 +89,15 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
                 siteID: options.siteID,
                 timePeriod: options.timePeriod,
                 parameters: parameters)
-            
+
             let status = determineGaugeStatus(from: readings)
             let validReadings = filterOfflineReadings(readings)
-            
+
             let result = GaugeFetchResult(
                 siteID: options.siteID,
                 status: status,
                 readings: validReadings)
-            
+
             return .success(result)
         } catch {
             return .failure(error)
@@ -141,21 +141,21 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
                 for try await readings in group {
                     // Group readings by siteID to create individual results
                     let readingsBySite = Dictionary(grouping: readings, by: { $0.siteID })
-                    
+
                     for (siteID, siteReadings) in readingsBySite {
                         let status = determineGaugeStatus(from: siteReadings)
                         let validReadings = filterOfflineReadings(siteReadings)
-                        
+
                         let result = GaugeFetchResult(
                             siteID: siteID,
                             status: status,
                             readings: validReadings)
-                        
+
                         allResults.append(result)
                     }
                 }
             }
-            
+
             return .success(allResults)
         } catch {
             return .failure(error)
@@ -212,31 +212,31 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
     // MARK: Private
 
     private let logger = Logger(category: "USGS.WaterServices")
-    
+
     // MARK: - Status Detection
-    
+
     /// Determines gauge status based on reading values
     /// USGS uses -999999 to indicate offline/no data
     private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
         guard !readings.isEmpty else {
             return .inactive
         }
-        
+
         // If all readings are offline indicators, mark as inactive
         let allOffline = readings.allSatisfy { $0.value == -999999 }
         if allOffline {
             return .inactive
         }
-        
+
         // If we have some valid readings, consider it active even if some are offline
         let hasValidReadings = readings.contains { $0.value != -999999 }
         if hasValidReadings {
             return .active
         }
-        
+
         return .unknown
     }
-    
+
     /// Filters out offline readings (value == -999999)
     private func filterOfflineReadings(_ readings: [GDGaugeReading]) -> [GDGaugeReading] {
         readings.filter { $0.value != -999999 }

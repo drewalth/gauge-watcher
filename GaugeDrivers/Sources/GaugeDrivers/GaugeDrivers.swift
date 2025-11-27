@@ -212,12 +212,12 @@ public struct GaugeDriverFactory {
         if !allResults.isEmpty {
             return .success(allResults)
         }
-        
+
         // If everything failed, return the first error
         if let firstError = errors.first {
             return .failure(firstError)
         }
-        
+
         // No results and no errors - shouldn't happen but handle gracefully
         return .success([])
     }
@@ -265,11 +265,15 @@ public struct GDGaugeReading: Codable, Identifiable, Sendable {
     }
 }
 
+// MARK: - GaugeStatus
+
 public enum GaugeStatus: String, CaseIterable, Sendable {
-    case active = "active"
-    case inactive = "inactive"
-    case unknown = "unknown"
+    case active
+    case inactive
+    case unknown
 }
+
+// MARK: - GaugeFetchResult
 
 public struct GaugeFetchResult: Sendable {
     public let siteID: String

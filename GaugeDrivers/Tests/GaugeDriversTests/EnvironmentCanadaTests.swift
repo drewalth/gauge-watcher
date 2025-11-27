@@ -26,7 +26,7 @@ struct EnvironmentCanadaTests {
             metadata: .environmentCanada(province: .bc))
 
         let result = await factory.fetchReadings(options: options)
-        
+
         guard case .success(let fetchResult) = result else {
             if case .failure(let error) = result {
                 Issue.record("Failed to fetch readings: \(error)")
@@ -68,7 +68,7 @@ struct EnvironmentCanadaTests {
         ]
 
         let result = await factory.fetchReadings(optionsArray: optionsArray)
-        
+
         guard case .success(let fetchResults) = result else {
             if case .failure(let error) = result {
                 Issue.record("Failed to fetch readings: \(error)")
@@ -87,14 +87,14 @@ struct EnvironmentCanadaTests {
         if let site1 = site1Result {
             let latestDischarge = site1.readings.last { $0.unit == .cms }
             let latestHeight = site1.readings.last { $0.unit == .meterHeight }
-            
+
             #expect(latestDischarge != nil)
             #expect(latestHeight != nil)
-            
+
             print("✅ Unified API - Batch Environment Canada fetch:")
             print("   Site 1 (07EA004): \(latestDischarge!.value) cms, status: \(site1.status.rawValue)")
         }
-        
+
         if let site2 = site2Result {
             let latestDischarge = site2.readings.last { $0.unit == .cms }
             #expect(latestDischarge != nil)
@@ -115,7 +115,7 @@ struct EnvironmentCanadaTests {
         )
 
         let result = await factory.fetchReadings(options: options)
-        
+
         switch result {
         case .success:
             Issue.record("Expected error for missing metadata, but succeeded")
@@ -156,8 +156,10 @@ struct EnvironmentCanadaTests {
         let site1Result = await factory.fetchReadings(options: site1Options)
         let site2Result = await factory.fetchReadings(options: site2Options)
 
-        guard case .success(let site1FetchResult) = site1Result,
-              case .success(let site2FetchResult) = site2Result else {
+        guard
+            case .success(let site1FetchResult) = site1Result,
+            case .success(let site2FetchResult) = site2Result
+        else {
             Issue.record("Failed to fetch one or both sites")
             return
         }
@@ -165,7 +167,8 @@ struct EnvironmentCanadaTests {
         #expect(!site1FetchResult.readings.isEmpty)
         #expect(!site2FetchResult.readings.isEmpty)
 
-        print("✅ Unified API - Metadata correctly passed: \(site1FetchResult.readings.count + site2FetchResult.readings.count) total readings")
+        print(
+            "✅ Unified API - Metadata correctly passed: \(site1FetchResult.readings.count + site2FetchResult.readings.count) total readings")
     }
 
     // MARK: - Legacy API Tests (Backward Compatibility)

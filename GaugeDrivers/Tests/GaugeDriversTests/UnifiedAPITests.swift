@@ -62,7 +62,7 @@ struct UnifiedAPITests {
         ]
 
         let result = await factory.fetchReadings(optionsArray: optionsArray)
-        
+
         guard case .success(let fetchResults) = result else {
             if case .failure(let error) = result {
                 Issue.record("Failed to fetch readings: \(error)")
@@ -99,7 +99,8 @@ struct UnifiedAPITests {
         print("✅ Mixed source batch fetch:")
         print("   USGS site 1: \(usgs1Result?.readings.count ?? 0) readings, status: \(usgs1Result?.status.rawValue ?? "none")")
         print("   USGS site 2: \(usgs2Result?.readings.count ?? 0) readings, status: \(usgs2Result?.status.rawValue ?? "none")")
-        print("   Environment Canada: \(envCanadaResult?.readings.count ?? 0) readings, status: \(envCanadaResult?.status.rawValue ?? "none")")
+        print(
+            "   Environment Canada: \(envCanadaResult?.readings.count ?? 0) readings, status: \(envCanadaResult?.status.rawValue ?? "none")")
     }
 
     // MARK: - Time Period Tests
@@ -124,7 +125,7 @@ struct UnifiedAPITests {
                 parameters: [.discharge])
 
             let result = await factory.fetchReadings(options: options)
-            
+
             guard case .success(let fetchResult) = result else {
                 if case .failure(let error) = result {
                     Issue.record("Failed to fetch readings: \(error)")
@@ -154,7 +155,7 @@ struct UnifiedAPITests {
             parameters: [.discharge])
 
         let result = await factory.fetchReadings(options: options)
-        
+
         guard case .success(let fetchResult) = result else {
             if case .failure(let error) = result {
                 Issue.record("Failed to fetch readings: \(error)")
@@ -186,7 +187,7 @@ struct UnifiedAPITests {
             parameters: [.discharge])
 
         let result = await factory.fetchReadings(options: dischargeOptions)
-        
+
         guard case .success(let fetchResult) = result else {
             if case .failure(let error) = result {
                 Issue.record("Failed to fetch readings: \(error)")
@@ -211,7 +212,7 @@ struct UnifiedAPITests {
             parameters: [.discharge, .height, .temperature])
 
         let result = await factory.fetchReadings(options: options)
-        
+
         guard case .success(let fetchResult) = result else {
             if case .failure(let error) = result {
                 Issue.record("Failed to fetch readings: \(error)")
@@ -247,7 +248,7 @@ struct UnifiedAPITests {
             parameters: [.discharge])
 
         let result = await factory.fetchReadings(options: options)
-        
+
         switch result {
         case .success:
             Issue.record("Expected error for invalid LAWA siteID")
@@ -284,7 +285,7 @@ struct UnifiedAPITests {
         )
 
         let result = await factory.fetchReadings(options: options)
-        
+
         switch result {
         case .success:
             Issue.record("Expected missing metadata error")

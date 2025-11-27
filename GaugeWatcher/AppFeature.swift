@@ -22,11 +22,11 @@ struct AppFeature {
         @Shared(.appStorage(LocalStorageKey.gaugesSeeded.rawValue)) var gaugesSeeded = false
 
         var selectedTab: RootTab = .search
-        
+
         init(initialized: Loadable<Bool> = .initial) {
             self.initialized = initialized
         }
-        
+
         var gaugeSearch: GaugeSearchFeature.State?
         var favorites: FavoriteGaugesFeature.State?
     }
@@ -39,7 +39,7 @@ struct AppFeature {
         case gaugeSearch(GaugeSearchFeature.Action)
         case favorites(FavoriteGaugesFeature.Action)
     }
-    
+
     enum RootTab {
         case search, favorites
     }

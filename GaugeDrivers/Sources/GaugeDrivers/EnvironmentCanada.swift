@@ -76,19 +76,19 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
     public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
         guard case .environmentCanada(let province) = options.metadata else {
             return .failure(GaugeDriverErrors.missingRequiredMetadata(
-                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)"))
+                                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)"))
         }
 
         do {
             let readings = try await fetchGaugeStationData(siteID: options.siteID, province: province)
-            
+
             let status = determineGaugeStatus(from: readings)
-            
+
             let result = GaugeFetchResult(
                 siteID: options.siteID,
                 status: status,
                 readings: readings)
-            
+
             return .success(result)
         } catch {
             return .failure(error)
@@ -125,20 +125,20 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
                 for try await readings in group {
                     // Group readings by siteID to create individual results
                     let readingsBySite = Dictionary(grouping: readings, by: { $0.siteID })
-                    
+
                     for (siteID, siteReadings) in readingsBySite {
                         let status = determineGaugeStatus(from: siteReadings)
-                        
+
                         let result = GaugeFetchResult(
                             siteID: siteID,
                             status: status,
                             readings: siteReadings)
-                        
+
                         allResults.append(result)
                     }
                 }
             }
-            
+
             return .success(allResults)
         } catch {
             return .failure(error)
@@ -182,24 +182,24 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
     // MARK: Private
 
     private let logger = Logger(category: "EnvironmentCanadaAPI")
-    
+
     // MARK: - Status Detection
-    
+
     /// Determines gauge status based on reading availability
     /// Environment Canada gauges are considered inactive if no recent data is available
     private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
         guard !readings.isEmpty else {
             return .inactive
         }
-        
+
         // Check if we have recent readings (within last 48 hours)
         let now = Date()
         let twoDaysAgo = Calendar.current.date(byAdding: .hour, value: -48, to: now)!
-        
+
         let hasRecentReadings = readings.contains { reading in
             reading.timestamp >= twoDaysAgo
         }
-        
+
         return hasRecentReadings ? .active : .inactive
     }
 
@@ -246,22 +246,24 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
                 }
 
                 // Try to parse height reading - add if valid
-                if let heightReading = Double(row[2].trimmingCharacters(in: .whitespaces)),
-                   !heightReading.isNaN {
+                if
+                    let heightReading = Double(row[2].trimmingCharacters(in: .whitespaces)),
+                    !heightReading.isNaN {
                     newReadings.append(.init(id: .init(), value: heightReading, timestamp: createdAt, unit: .meterHeight, siteID: siteID))
                 } else {
                     logger.debug("Skipping height reading for \(siteID): '\(row[2])'")
                 }
 
                 // Try to parse discharge reading - add if valid
-                if let dischargeReading = Double(row[6].trimmingCharacters(in: .whitespaces)),
-                   !dischargeReading.isNaN {
+                if
+                    let dischargeReading = Double(row[6].trimmingCharacters(in: .whitespaces)),
+                    !dischargeReading.isNaN {
                     newReadings.append(.init(id: .init(), value: dischargeReading, timestamp: createdAt, unit: .cms, siteID: siteID))
                 } else {
                     logger.debug("Skipping discharge reading for \(siteID): '\(row[6])'")
                 }
             }
-            
+
             // Only throw error if we got NO readings at all
             if newReadings.isEmpty {
                 logger.warning("No valid readings parsed for \(siteID)")

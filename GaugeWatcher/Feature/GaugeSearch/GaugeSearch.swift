@@ -21,7 +21,7 @@ struct GaugeSearch: View {
             Group {
                 content()
             }
-                .trackView("GaugeSearch")
+            .trackView("GaugeSearch")
         } destination: { store in
             switch store.case {
             case .gaugeDetail(let gaugeDetailStore):

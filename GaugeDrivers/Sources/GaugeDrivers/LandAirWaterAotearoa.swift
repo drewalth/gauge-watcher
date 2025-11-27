@@ -56,14 +56,14 @@ public struct GDLandAirWaterAotearoa: GaugeDriver, Sendable {
     public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
         do {
             let readings = try await fetchLatestReading(siteID: options.siteID)
-            
+
             let status = determineGaugeStatus(from: readings)
-            
+
             let result = GaugeFetchResult(
                 siteID: options.siteID,
                 status: status,
                 readings: readings)
-            
+
             return .success(result)
         } catch {
             return .failure(error)
@@ -86,16 +86,16 @@ public struct GDLandAirWaterAotearoa: GaugeDriver, Sendable {
 
                 for try await (siteID, readings) in group {
                     let status = determineGaugeStatus(from: readings)
-                    
+
                     let result = GaugeFetchResult(
                         siteID: siteID,
                         status: status,
                         readings: readings)
-                    
+
                     allResults.append(result)
                 }
             }
-            
+
             return .success(allResults)
         } catch {
             return .failure(error)
@@ -170,24 +170,24 @@ public struct GDLandAirWaterAotearoa: GaugeDriver, Sendable {
 
     private let decoder = JSONDecoder()
     private let logger = Logger(category: "LAWA")
-    
+
     // MARK: - Status Detection
-    
+
     /// Determines gauge status based on reading availability and timestamp
     /// LAWA provides only the latest reading, so we check if it's recent
     private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
         guard !readings.isEmpty else {
             return .inactive
         }
-        
+
         // LAWA only provides single latest reading, so check if it's recent (within 7 days)
         let now = Date()
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: now)!
-        
+
         let hasRecentReadings = readings.contains { reading in
             reading.timestamp >= sevenDaysAgo
         }
-        
+
         return hasRecentReadings ? .active : .inactive
     }
 

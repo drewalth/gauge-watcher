@@ -40,14 +40,14 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
     public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
         do {
             let readings = try await fetchData(options.siteID)
-            
+
             let status = determineGaugeStatus(from: readings)
-            
+
             let result = GaugeFetchResult(
                 siteID: options.siteID,
                 status: status,
                 readings: readings)
-            
+
             return .success(result)
         } catch {
             return .failure(error)
@@ -69,44 +69,24 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
                 for try await readings in group {
                     // Group readings by siteID to create individual results
                     let readingsBySite = Dictionary(grouping: readings, by: { $0.siteID })
-                    
+
                     for (siteID, siteReadings) in readingsBySite {
                         let status = determineGaugeStatus(from: siteReadings)
-                        
+
                         let result = GaugeFetchResult(
                             siteID: siteID,
                             status: status,
                             readings: siteReadings)
-                        
+
                         allResults.append(result)
                     }
                 }
             }
-            
+
             return .success(allResults)
         } catch {
             return .failure(error)
         }
-    }
-    
-    // MARK: Private
-    
-    /// Determines gauge status based on reading availability and values
-    /// DWR gauges may have stationStatus field indicating active/inactive
-    private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
-        guard !readings.isEmpty else {
-            return .inactive
-        }
-        
-        // Check for recent readings (within last 24 hours for telemetry stations)
-        let now = Date()
-        let oneDayAgo = Calendar.current.date(byAdding: .hour, value: -24, to: now)!
-        
-        let hasRecentReadings = readings.contains { reading in
-            reading.timestamp >= oneDayAgo
-        }
-        
-        return hasRecentReadings ? .active : .inactive
     }
 
     public func fetchData(_ siteId: String) async throws -> [GDGaugeReading] {
@@ -159,6 +139,27 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
 
         return readings
     }
+
+    // MARK: Private
+
+    /// Determines gauge status based on reading availability and values
+    /// DWR gauges may have stationStatus field indicating active/inactive
+    private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
+        guard !readings.isEmpty else {
+            return .inactive
+        }
+
+        // Check for recent readings (within last 24 hours for telemetry stations)
+        let now = Date()
+        let oneDayAgo = Calendar.current.date(byAdding: .hour, value: -24, to: now)!
+
+        let hasRecentReadings = readings.contains { reading in
+            reading.timestamp >= oneDayAgo
+        }
+
+        return hasRecentReadings ? .active : .inactive
+    }
+
 }
 
 // MARK: - DWRResponse

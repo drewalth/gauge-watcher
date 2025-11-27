@@ -53,14 +53,14 @@ struct LAWATests {
                 timePeriod: .predefined(.last24Hours),
                 parameters: [.discharge])
             let result = await factory.fetchReadings(options: opts)
-            
+
             guard case .success(let fetchResult) = result else {
                 if case .failure(let error) = result {
                     print("⚠️ Failed to fetch \(source.siteID): \(error)")
                 }
                 continue
             }
-            
+
             #expect(!fetchResult.readings.isEmpty)
         }
     }
