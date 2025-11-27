@@ -44,6 +44,27 @@ struct GaugeReadingChartControls: View {
                 .foregroundColor(.secondary)
                 .accessibleHeading(level: 2)
             Spacer()
+            primaryAction()
+        }
+    }
+
+    func metricBinding() -> Binding<GaugeSourceMetric> {
+        Binding<GaugeSourceMetric>(
+            get: {
+                store.selectedMetric ?? .cfs
+            },
+            set: { newValue in
+                store.send(.setSelectedMetric(newValue))
+            })
+    }
+
+    // MARK: Private
+
+    @ViewBuilder
+    private func primaryAction() -> some View {
+        if store.readings.isLoadingOrReloading() {
+            ProgressView()
+        } else {
             Menu {
                 Picker("Date Range", selection: $store.selectedTimePeriod.sending(\.setSelectedTimePeriod)) {
                     ForEach(TimePeriod.PredefinedPeriod.allCases, id: \.self) { timePeriod in
@@ -76,18 +97,6 @@ struct GaugeReadingChartControls: View {
             .frame(maxWidth: 38, maxHeight: 38)
         }
     }
-
-    func metricBinding() -> Binding<GaugeSourceMetric> {
-        Binding<GaugeSourceMetric>(
-            get: {
-                store.selectedMetric ?? .cfs
-            },
-            set: { newValue in
-                store.send(.setSelectedMetric(newValue))
-            })
-    }
-
-    // MARK: Private
 
     private func getStartAndEndDates(_ readings: [GaugeReadingRef]) -> (last: String, first: String) {
         // if selected time frame is 24hrs, return just the month, day and time (no year)

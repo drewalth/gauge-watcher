@@ -12,10 +12,11 @@ import os
 
 // MARK: - LocationManagerDelegateAction
 
-public enum LocationManagerDelegateAction {
+public enum LocationManagerDelegateAction: Sendable {
     case didUpdateLocations([CLLocation])
     case didFailWithError(Swift.Error)
     case didChangeAuthorization(CLAuthorizationStatus)
+    case initialState(authorizationStatus: CLAuthorizationStatus, servicesEnabled: Bool)
 
     #if os(iOS) || os(macOS) || targetEnvironment(macCatalyst)
     case didDetermineState(CLRegionState, CLRegion)
@@ -26,13 +27,32 @@ public enum LocationManagerDelegateAction {
 
 // MARK: - LocationService
 
+@MainActor
 class LocationService: NSObject {
 
     // MARK: Public
 
-    public func delegate() async -> AsyncStream<LocationManagerDelegateAction> {
-        AsyncStream { continuation in
-            let subscription = self.delegateSubject.sink { value in
+    /// Current authorization status (safe to access, updated reactively)
+    public private(set) var currentAuthorizationStatus: CLAuthorizationStatus = .notDetermined
+
+    /// Current location (updated when locations are received)
+    public private(set) var currentLocation: CLLocation?
+
+    /// Provides a stream of location manager events, including initial state
+    nonisolated public func delegate() async -> AsyncStream<LocationManagerDelegateAction> {
+        // Safely access MainActor properties
+        let initialAuth = await currentAuthorizationStatus
+        let subject = await delegateSubject
+
+        return AsyncStream { continuation in
+            // Emit initial state immediately
+            let servicesEnabled = CLLocationManager.locationServicesEnabled()
+            continuation.yield(.initialState(
+                                authorizationStatus: initialAuth,
+                                servicesEnabled: servicesEnabled))
+
+            // Subscribe to future updates
+            let subscription = subject.sink { value in
                 continuation.yield(value)
             }
             continuation.onTermination = { _ in subscription.cancel() }
@@ -46,103 +66,118 @@ class LocationService: NSObject {
 
     func initialize() {
         locationManager.delegate = self
+
+        // Initialize current state
+        currentAuthorizationStatus = Self.getAuthorizationStatus(from: locationManager)
     }
 
     // MARK: Private
 
     private let logger = Logger(category: "LocationManager")
+
+    private static func getAuthorizationStatus(from manager: CLLocationManager) -> CLAuthorizationStatus {
+        #if os(macOS)
+        if #available(macOS 11.0, *) {
+            return manager.authorizationStatus
+        } else if #available(macOS 10.12, *) {
+            return manager.authorizationStatus
+        } else {
+            return .notDetermined
+        }
+        #else
+        if #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *) {
+            return manager.authorizationStatus
+        } else {
+            return CLLocationManager.authorizationStatus()
+        }
+        #endif
+    }
 }
 
 // MARK: CLLocationManagerDelegate
 
 extension LocationService: CLLocationManagerDelegate {
-    public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        delegateSubject.send(.didUpdateLocations(locations))
+    nonisolated public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Task { @MainActor in
+            self.currentLocation = locations.last
+            self.delegateSubject.send(.didUpdateLocations(locations))
+        }
     }
 
-    public func locationManager(_: CLLocationManager, didFailWithError error: Swift.Error) {
-        delegateSubject.send(.didFailWithError(error))
+    nonisolated public func locationManager(_: CLLocationManager, didFailWithError error: Swift.Error) {
+        Task { @MainActor in
+            self.delegateSubject.send(.didFailWithError(error))
+        }
     }
 
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, *)
-    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        let status: CLAuthorizationStatus
-        #if os(macOS)
-        status = manager.authorizationStatus
-        #else
-        status = CLLocationManager.authorizationStatus()
-        #endif
-        delegateSubject.send(.didChangeAuthorization(status))
+    nonisolated public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        Task { @MainActor in
+            let status = Self.getAuthorizationStatus(from: manager)
+            self.currentAuthorizationStatus = status
+            self.delegateSubject.send(.didChangeAuthorization(status))
+        }
     }
 
     @available(iOS, introduced: 4.2, deprecated: 14.0)
     @available(tvOS, introduced: 9.0, deprecated: 14.0)
     @available(macOS, introduced: 10.7, deprecated: 11.0)
-    public func locationManager(_: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        delegateSubject.send(.didChangeAuthorization(status))
+    nonisolated public func locationManager(_: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        Task { @MainActor in
+            self.currentAuthorizationStatus = status
+            self.delegateSubject.send(.didChangeAuthorization(status))
+        }
     }
 
     #if os(iOS) || os(macOS)
     @available(iOS 7.0, macOS 10.10, *)
-    public func locationManager(_: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
-        delegateSubject.send(.didDetermineState(state, region))
+    nonisolated public func locationManager(_: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
+        Task { @MainActor in
+            self.delegateSubject.send(.didDetermineState(state, region))
+        }
     }
 
     @available(iOS 5.0, macOS 10.8, *)
-    public func locationManager(_: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        delegateSubject.send(.didStartMonitoringFor(region))
+    nonisolated public func locationManager(_: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        Task { @MainActor in
+            self.delegateSubject.send(.didStartMonitoringFor(region))
+        }
     }
     #endif
 }
 
+// MARK: - Commands (not queries)
+
 extension LocationService {
 
-    public func locationServicesEnabled() -> Bool {
-        let enabled = CLLocationManager.locationServicesEnabled()
-        logger.info("Location services enabled: \(enabled)")
-        return enabled
+    nonisolated public func requestWhenInUseAuthorization() async {
+        await logger.info("Requesting Location Services Authorization")
+        await locationManager.requestWhenInUseAuthorization()
     }
 
-    public func requestWhenInUseAuthorization() {
-        logger.info("Requesting Location Services Authorization")
-        locationManager.requestWhenInUseAuthorization()
-    }
-
-    public func requestLocation() {
-        logger.info("Requesting single location update")
+    nonisolated public func requestLocation() async {
+        await logger.info("Requesting single location update")
         #if os(iOS) || os(macOS)
         if #available(iOS 9.0, macOS 10.12, *) {
-            locationManager.requestLocation()
+            await locationManager.requestLocation()
         } else {
-            // Fallback for earlier versions if necessary
-            locationManager.startUpdatingLocation()
+            // Fallback for earlier versions
+            await locationManager.startUpdatingLocation()
         }
         #endif
     }
 
-    public func startUpdatingLocation() {
-        logger.info("Starting continuous location updates")
+    nonisolated public func startUpdatingLocation() async {
+        await logger.info("Starting continuous location updates")
         #if os(iOS) || os(macOS)
-        locationManager.startUpdatingLocation()
+        await locationManager.startUpdatingLocation()
         #endif
     }
 
-    public func stopUpdatingLocation() {
-        logger.info("Stopping location updates")
+    nonisolated public func stopUpdatingLocation() async {
+        await logger.info("Stopping location updates")
         #if os(iOS) || os(macOS)
-        locationManager.stopUpdatingLocation()
-        #endif
-    }
-
-    public func authorizationStatus() -> CLAuthorizationStatus {
-        #if os(macOS)
-        if #available(macOS 10.12, *) {
-            return locationManager.authorizationStatus
-        } else {
-            return .notDetermined
-        }
-        #else
-        return CLLocationManager.authorizationStatus()
+        await locationManager.stopUpdatingLocation()
         #endif
     }
 }
@@ -150,6 +185,7 @@ extension LocationService {
 // MARK: DependencyKey
 
 extension LocationService: DependencyKey {
+    @MainActor
     public static var liveValue: LocationService = {
         let client = LocationService()
         client.initialize()

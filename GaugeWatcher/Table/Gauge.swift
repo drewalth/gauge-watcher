@@ -120,3 +120,21 @@ extension GaugeRef {
         return updatedAt < thirtyMinutesAgo
     }
 }
+
+extension GaugeRef {
+    nonisolated var sourceURL: URL? {
+        var url: URL?
+        switch source {
+        case .usgs:
+            url =
+                URL(string: "https://waterdata.usgs.gov/monitoring-location/\(siteID)/#parameterCode=00065&period=P7D&showMedian=false")
+        case .dwr:
+            url = URL(string: "https://dwr.state.co.us/Tools/StationsLite/\(siteID)")
+        default: break
+        }
+        if let url {
+            return url
+        }
+        return nil
+    }
+}

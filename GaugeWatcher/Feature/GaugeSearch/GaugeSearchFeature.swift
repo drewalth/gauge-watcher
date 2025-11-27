@@ -79,107 +79,89 @@ struct GaugeSearchFeature {
             case .initialize:
                 state.initialized = .loading
                 return .run { [locationService, logger] send in
-                    // Check if location services are enabled globally on the device
-                    guard locationService.locationServicesEnabled() else {
-                        logger.warning("Location services disabled - loading default gauges")
-                        await send(.setQueryOptions(.init()))
-                        await send(.query)
-                        await send(.setInitialized(.loaded(true)))
-                        return
-                    }
+                    // Subscribe to location service stream (receives initial state immediately)
+                    for await delegateAction in await locationService.delegate() {
+                        switch delegateAction {
+                        case .initialState(let authStatus, let servicesEnabled):
+                            // Handle initial state
+                            guard servicesEnabled else {
+                                logger.warning("Location services disabled - loading default gauges")
+                                await send(.setQueryOptions(.init()))
+                                await send(.query)
+                                await send(.setInitialized(.loaded(true)))
+                                return
+                            }
 
-                    let authStatus = locationService.authorizationStatus()
+                            switch authStatus {
+                            case .notDetermined:
+                                // Request authorization and wait for callback
+                                logger.info("Requesting location authorization")
+                                await locationService.requestWhenInUseAuthorization()
+                            // Continue listening for authorization response
 
-                    // Handle based on current authorization status
-                    switch authStatus {
-                    case .notDetermined:
-                        // Need to request permission - wait for authorization change
-                        logger.info("Requesting location authorization")
-                        locationService.requestWhenInUseAuthorization()
+                            case .authorizedAlways, .authorizedWhenInUse:
+                                // Already authorized - request location immediately
+                                logger.info("Already authorized - fetching location")
+                                await locationService.requestLocation()
+                            // Continue listening for location update
 
-                        // Wait for authorization response
-                        for await delegateAction in await locationService.delegate() {
-                            switch delegateAction {
-                            case .didChangeAuthorization(let newStatus):
-                                switch newStatus {
-                                case .authorizedAlways, .authorizedWhenInUse:
-                                    logger.info("Authorization granted - fetching location")
-                                    locationService.requestLocation()
-                                case .denied, .restricted:
-                                    logger.warning("Authorization denied - loading default gauges")
-                                    await send(.setQueryOptions(.init()))
-                                    await send(.query)
-                                    await send(.setInitialized(.loaded(true)))
-                                    return
-                                case .notDetermined:
-                                    break
-                                @unknown default:
-                                    break
-                                }
-
-                            case .didUpdateLocations(let locations):
-                                do {
-                                    try await handleLocationUpdate(locations: locations, send: send, logger: logger)
-                                    return
-                                } catch {
-                                    logger.error("Failed to handle location: \(error.localizedDescription)")
-                                    await send(.setInitialized(.error(error)))
-                                    return
-                                }
-
-                            case .didFailWithError(let error):
-                                logger.error("Location error: \(error.localizedDescription) - loading default gauges")
+                            case .denied, .restricted:
+                                // User denied or restricted - load default gauges
+                                logger.warning("Location denied/restricted - loading default gauges")
                                 await send(.setQueryOptions(.init()))
                                 await send(.query)
                                 await send(.setInitialized(.loaded(true)))
                                 return
 
-                            case .didDetermineState, .didStartMonitoringFor:
-                                break
+                            @unknown default:
+                                logger.warning("Unknown authorization status - loading default gauges")
+                                await send(.setQueryOptions(.init()))
+                                await send(.query)
+                                await send(.setInitialized(.loaded(true)))
+                                return
                             }
-                        }
 
-                    case .authorizedAlways, .authorizedWhenInUse:
-                        // Already authorized - immediately request location
-                        logger.info("Already authorized - fetching location")
-                        locationService.requestLocation()
+                        case .didChangeAuthorization(let newStatus):
+                            switch newStatus {
+                            case .authorizedAlways, .authorizedWhenInUse:
+                                logger.info("Authorization granted - fetching location")
+                                await locationService.requestLocation()
+                            // Continue listening for location update
 
-                        for await delegateAction in await locationService.delegate() {
-                            switch delegateAction {
-                            case .didUpdateLocations(let locations):
-                                do {
-                                    try await handleLocationUpdate(locations: locations, send: send, logger: logger)
-                                    return
-                                } catch {
-                                    logger.error("Failed to handle location: \(error.localizedDescription)")
-                                    await send(.setInitialized(.error(error)))
-                                    return
-                                }
-
-                            case .didFailWithError(let error):
-                                logger.error("Location error: \(error.localizedDescription) - loading default gauges")
+                            case .denied, .restricted:
+                                logger.warning("Authorization denied - loading default gauges")
                                 await send(.setQueryOptions(.init()))
                                 await send(.query)
                                 await send(.setInitialized(.loaded(true)))
                                 return
 
-                            case .didChangeAuthorization, .didDetermineState, .didStartMonitoringFor:
+                            case .notDetermined:
+                                break
+
+                            @unknown default:
                                 break
                             }
+
+                        case .didUpdateLocations(let locations):
+                            do {
+                                try await handleLocationUpdate(locations: locations, send: send, logger: logger)
+                                return
+                            } catch {
+                                logger.error("Failed to handle location: \(error.localizedDescription)")
+                                await send(.setInitialized(.error(error)))
+                                return
+                            }
+
+                        case .didFailWithError(let error):
+                            logger.error("Location error: \(error.localizedDescription) - loading default gauges")
+                            await send(.setQueryOptions(.init()))
+                            await send(.query)
+                            await send(.setInitialized(.loaded(true)))
+                            return
+
+                        case .didDetermineState, .didStartMonitoringFor:
+                            break
                         }
-
-                    case .denied, .restricted:
-                        // User denied or restricted - load default gauges
-                        logger.warning("Location denied/restricted - loading default gauges")
-                        await send(.setQueryOptions(.init()))
-                        await send(.query)
-                        await send(.setInitialized(.loaded(true)))
-
-                    @unknown default:
-                        logger.warning("Unknown authorization status - loading default gauges")
-                        await send(.setQueryOptions(.init()))
-                        await send(.query)
-                        await send(.setInitialized(.loaded(true)))
                     }
                 }
             case .setInitialized(let newValue):

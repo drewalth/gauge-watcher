@@ -6,10 +6,13 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import GaugeDrivers
 import GaugeSources
 import Loadable
 import os
+
+// MARK: - GaugeDetailFeature
 
 @Reducer
 struct GaugeDetailFeature {
@@ -40,17 +43,37 @@ struct GaugeDetailFeature {
         case setAvailableMetrics([GaugeSourceMetric])
         case setSelectedMetric(GaugeSourceMetric)
         case toggleFavorite
+        case openSource
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
+    @Dependency(\.webBrowserService) var webBrowserService: WebBrowserService
 
     nonisolated enum CancelID {
         case sync
+        case loadReadings
+        case load
     }
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .openSource:
+                return .run { [gauge = state.gauge] _ in
+                    do {
+                        guard
+                            let gaugeRef = gauge.unwrap(),
+                            let sourceURL = gaugeRef.sourceURL
+                        else {
+                            throw Errors.invalidGaugeSourceURL
+                        }
+
+                        try await webBrowserService.open(sourceURL, WebBrowserOptions())
+
+                    } catch {
+                        logger.error("\(#function): \(error.localizedDescription)")
+                    }
+                }
             case .toggleFavorite:
                 guard state.gauge.unwrap() != nil else {
                     return .none
@@ -74,7 +97,7 @@ struct GaugeDetailFeature {
             case .loadReadings:
                 if state.readings.isInitial() || state.readings.isError() {
                     state.readings = .loading
-                } else {
+                } else if state.gauge.isReloading() {
                     state.readings = .reloading(state.readings.unwrap() ?? [])
                 }
 
@@ -93,19 +116,22 @@ struct GaugeDetailFeature {
                     } catch {
                         await send(.setReadings(.error(error)))
                     }
-                }
+                }.cancellable(id: CancelID.loadReadings, cancelInFlight: true)
             case .sync:
                 guard let gauge = state.gauge.unwrap() else {
+                    logger.warning("gauge not set in state")
                     return .none
                 }
 
                 state.gauge = .reloading(gauge)
+                state.readings = .reloading(state.readings.unwrap() ?? [])
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
                         try await gaugeService.sync(gaugeID)
                         await send(.loadReadings)
                     } catch {
                         await send(.setGauge(.error(error)))
+                        await send(.setReadings(.error(error)))
                     }
                 }.cancellable(id: CancelID.sync, cancelInFlight: false)
             case .setGauge(let newValue):
@@ -131,7 +157,7 @@ struct GaugeDetailFeature {
                     } catch {
                         await send(.setGauge(.error(error)))
                     }
-                }, .send(.loadReadings))
+                }.cancellable(id: CancelID.load, cancelInFlight: true), .send(.loadReadings))
             }
         }
     }
@@ -141,5 +167,20 @@ struct GaugeDetailFeature {
         // TODO: usage of .uppercased() here is a design flaw
         let uniqueMetrics = Set(readings.compactMap { GaugeSourceMetric(rawValue: $0.metric.uppercased()) })
         return Array(uniqueMetrics).sorted { $0.rawValue < $1.rawValue }
+    }
+}
+
+// MARK: GaugeDetailFeature.Errors
+
+extension GaugeDetailFeature {
+    enum Errors: Error, LocalizedError {
+        case invalidGaugeSourceURL
+
+        var errorDescription: String? {
+            switch self {
+            case .invalidGaugeSourceURL:
+                "Invalid gauge source URL"
+            }
+        }
     }
 }

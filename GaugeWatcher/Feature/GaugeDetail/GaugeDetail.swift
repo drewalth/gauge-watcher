@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import Loadable
 import SwiftUI
+import UIAppearance
 
 struct GaugeDetail: View {
 
@@ -41,6 +42,12 @@ struct GaugeDetail: View {
             Text(gauge.name)
             GaugeReadingChart(store: store)
             LatestGaugeReading(store: store)
+            if gauge.sourceURL != nil {
+                Button("Source") {
+                    store.send(.openSource)
+                }.buttonStyle(.borderedProminent)
+                .listRowBackground(Color.clear)
+            }
         case .error(let error):
             Text(error.localizedDescription)
         }
