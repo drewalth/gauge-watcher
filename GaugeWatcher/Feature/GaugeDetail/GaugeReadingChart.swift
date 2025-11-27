@@ -25,7 +25,6 @@ struct GaugeReadingChart: View {
     var body: some View {
         VStack {
             content()
-
         }.frame(minHeight: 300)
     }
 
@@ -37,29 +36,34 @@ struct GaugeReadingChart: View {
         case .initial, .loading:
             ProgressView()
         case .loaded, .reloading:
-            VStack(spacing: 16) {
-                let formattedReadings = getReadings(for: store)
-                GaugeReadingChartControls(store: store)
-                Chart(formattedReadings, id: \.id) { reading in
-                    AreaMark(
-                        x: .value("Day", reading.createdAt),
-                        y: .value("Reading", reading.value))
-                        .lineStyle(StrokeStyle(lineWidth: 2.0))
-                        .interpolationMethod(.cardinal)
-                        .foregroundStyle(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.accentColor.opacity(1.0),
-                                    Color.accentColor.opacity(0.5)
-                                ]),
-                                startPoint: .top,
-                                endPoint: .bottom))
-                }.chartXAxis(.automatic)
-                .chartYAxis(.automatic)
-                .animation(.default, value: formattedReadings)
-            }
+            chartContent()
         case .error(let error):
             Text(error.localizedDescription)
+        }
+    }
+
+    @ViewBuilder
+    private func chartContent() -> some View {
+        VStack(spacing: 16) {
+            let formattedReadings = getReadings(for: store)
+            GaugeReadingChartControls(store: store)
+            Chart(formattedReadings, id: \.id) { reading in
+                AreaMark(
+                    x: .value("Day", reading.createdAt),
+                    y: .value("Reading", reading.value))
+                    .lineStyle(StrokeStyle(lineWidth: 2.0))
+                    .interpolationMethod(.cardinal)
+                    .foregroundStyle(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.accentColor.opacity(1.0),
+                                Color.accentColor.opacity(0.5)
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom))
+            }.chartXAxis(.automatic)
+            .chartYAxis(.automatic)
+            .animation(.default, value: formattedReadings)
         }
     }
 }

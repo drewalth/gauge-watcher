@@ -38,18 +38,32 @@ struct GaugeDetail: View {
         switch store.gauge {
         case .initial, .loading:
             ProgressView()
-        case .loaded(let gauge), .reloading(let gauge):
-            Text(gauge.name)
-            GaugeReadingChart(store: store)
-            LatestGaugeReading(store: store)
-            if gauge.sourceURL != nil {
-                Button("Source") {
-                    store.send(.openSource)
-                }.buttonStyle(.borderedProminent)
-                .listRowBackground(Color.clear)
-            }
+        case .loaded(let gauge):
+            gaugeContent(gauge)
+        case .reloading(let gauge):
+            gaugeContent(gauge, reloading: true)
         case .error(let error):
             Text(error.localizedDescription)
+        }
+    }
+
+    @ViewBuilder
+    private func gaugeContent(_ gauge: GaugeRef, reloading: Bool = false) -> some View {
+        HStack {
+            Text(gauge.name)
+                .font(.headline)
+            Spacer()
+            if reloading {
+                ProgressView()
+            }
+        }
+        GaugeReadingChart(store: store)
+        LatestGaugeReading(store: store)
+        if gauge.sourceURL != nil {
+            Button("Source") {
+                store.send(.openSource)
+            }.buttonStyle(.borderedProminent)
+            .listRowBackground(Color.clear)
         }
     }
 }

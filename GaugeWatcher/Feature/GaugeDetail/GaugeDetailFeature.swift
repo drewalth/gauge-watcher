@@ -17,7 +17,7 @@ import os
 @Reducer
 struct GaugeDetailFeature {
 
-    private let logger = Logger(category: "")
+    private let logger = Logger(category: "GaugeDetailFeature")
 
     @ObservableState
     struct State {
@@ -95,10 +95,11 @@ struct GaugeDetailFeature {
                 state.readings = newValue
                 return .none
             case .loadReadings:
-                if state.readings.isInitial() || state.readings.isError() {
+                // If we already have readings, show them while reloading. Otherwise, show loading.
+                if state.readings.isLoaded() {
+                    state.readings = .reloading(state.readings.unwrap()!)
+                } else {
                     state.readings = .loading
-                } else if state.gauge.isReloading() {
-                    state.readings = .reloading(state.readings.unwrap() ?? [])
                 }
 
                 return .run { [gaugeID = state.gaugeID] send in
@@ -127,7 +128,14 @@ struct GaugeDetailFeature {
                 state.readings = .reloading(state.readings.unwrap() ?? [])
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
+                        // Sync with API
                         try await gaugeService.sync(gaugeID)
+
+                        // Reload gauge from database after sync
+                        let updatedGauge = try await gaugeService.loadGauge(gaugeID).ref
+                        await send(.setGauge(.loaded(updatedGauge)))
+
+                        // Now load readings
                         await send(.loadReadings)
                     } catch {
                         await send(.setGauge(.error(error)))
@@ -143,7 +151,7 @@ struct GaugeDetailFeature {
                 } else if state.gauge.isInitial() {
                     state.gauge = .loading
                 }
-                return .concatenate(.run { [state] send in
+                return .run { [state] send in
                     do {
                         let gauge = try await gaugeService.loadGauge(state.gaugeID).ref
 
@@ -152,12 +160,15 @@ struct GaugeDetailFeature {
                         if gauge.isStale() {
                             logger.info("syncing gauge")
                             await send(.sync)
+                        } else {
+                            // Only load readings if we're not syncing (sync will load them after)
+                            await send(.loadReadings)
                         }
 
                     } catch {
                         await send(.setGauge(.error(error)))
                     }
-                }.cancellable(id: CancelID.load, cancelInFlight: true), .send(.loadReadings))
+                }.cancellable(id: CancelID.load, cancelInFlight: true)
             }
         }
     }
