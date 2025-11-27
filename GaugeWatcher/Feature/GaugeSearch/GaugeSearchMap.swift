@@ -14,6 +14,7 @@ import SwiftUI
 
 // MARK: - GaugeSearchMap
 
+// TODO: Map annotations flicker when map position changes. Consider using MKMapView instead.
 struct GaugeSearchMap: View {
 
     @Bindable var store: StoreOf<GaugeSearchFeature>
