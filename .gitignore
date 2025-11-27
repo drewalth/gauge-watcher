@@ -132,3 +132,5 @@ Pods/
 Podfile.lock
 
 *.xcuserstate
+
+GaugeDrivers/gauge_drivers_cache/

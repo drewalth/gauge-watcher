@@ -299,7 +299,7 @@ extension EnvironmentCanada {
         }
 
         func downloadCSV(from url: URL) async throws -> URL {
-            let (tempLocalURL, _) = try await URLSession.shared.download(from: url)
+            let (tempLocalURL, _) = try await sharedSession.download(from: url)
             return tempLocalURL
         }
 

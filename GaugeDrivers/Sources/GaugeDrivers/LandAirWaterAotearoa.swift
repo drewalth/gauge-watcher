@@ -92,7 +92,7 @@ public struct GDLandAirWaterAotearoa: GaugeDriver, Sendable {
             throw Errors.invalidURL
         }
 
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) = try await sharedSession.data(from: url)
 
         // Check if API returned null
         if

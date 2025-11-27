@@ -79,7 +79,7 @@ public struct GDColoradoDepartmentWaterResources: GaugeDriver, Sendable {
             throw Errors.invalidURL
         }
 
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) = try await sharedSession.data(from: url)
 
         let decoder = JSONDecoder()
         let response = try decoder.decode(DWRResponse.self, from: data)
