@@ -117,6 +117,22 @@ extension DependencyValues {
                 .execute(db)
         }
 
+        // Add `status` column to `gauges` table
+        migrator.registerMigration("add-status-column-0.4.0") { db in
+            try #sql("""
+        ALTER TABLE "gauges" ADD COLUMN "status" TEXT NOT NULL DEFAULT "unknown"
+        """)
+                .execute(db)
+        }
+
+        // Add `status` column to `gaugeReadings` table
+        migrator.registerMigration("add-status-column-0.5.0") { db in
+            try #sql("""
+        ALTER TABLE "gaugeReadings" ADD COLUMN "status" TEXT NOT NULL DEFAULT "unknown"
+        """)
+                .execute(db)
+        }
+
         try migrator.migrate(database)
         defaultDatabase = database
     }

@@ -53,28 +53,53 @@ public struct GDLandAirWaterAotearoa: GaugeDriver, Sendable {
 
     /// Unified API: Fetches readings using standardized options
     /// Note: LAWA API only supports fetching the latest single reading per site
-    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
-        try await fetchLatestReading(siteID: options.siteID)
+    public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
+        do {
+            let readings = try await fetchLatestReading(siteID: options.siteID)
+            
+            let status = determineGaugeStatus(from: readings)
+            
+            let result = GaugeFetchResult(
+                siteID: options.siteID,
+                status: status,
+                readings: readings)
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
     }
 
     /// Unified API: Fetches readings for multiple sites
     /// Note: LAWA API fetches each site individually (no batch endpoint)
-    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
-        var allReadings: [GDGaugeReading] = []
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async -> Result<[GaugeFetchResult], Error> {
+        var allResults: [GaugeFetchResult] = []
 
-        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
-            for options in optionsArray {
-                group.addTask {
-                    try await fetchLatestReading(siteID: options.siteID)
+        do {
+            try await withThrowingTaskGroup(of: (String, [GDGaugeReading]).self) { group in
+                for options in optionsArray {
+                    group.addTask {
+                        let readings = try await fetchLatestReading(siteID: options.siteID)
+                        return (options.siteID, readings)
+                    }
+                }
+
+                for try await (siteID, readings) in group {
+                    let status = determineGaugeStatus(from: readings)
+                    
+                    let result = GaugeFetchResult(
+                        siteID: siteID,
+                        status: status,
+                        readings: readings)
+                    
+                    allResults.append(result)
                 }
             }
-
-            for try await readings in group {
-                allReadings.append(contentsOf: readings)
-            }
+            
+            return .success(allResults)
+        } catch {
+            return .failure(error)
         }
-
-        return allReadings
     }
 
     // MARK: - Legacy/Direct API
@@ -145,6 +170,26 @@ public struct GDLandAirWaterAotearoa: GaugeDriver, Sendable {
 
     private let decoder = JSONDecoder()
     private let logger = Logger(category: "LAWA")
+    
+    // MARK: - Status Detection
+    
+    /// Determines gauge status based on reading availability and timestamp
+    /// LAWA provides only the latest reading, so we check if it's recent
+    private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
+        guard !readings.isEmpty else {
+            return .inactive
+        }
+        
+        // LAWA only provides single latest reading, so check if it's recent (within 7 days)
+        let now = Date()
+        let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: now)!
+        
+        let hasRecentReadings = readings.contains { reading in
+            reading.timestamp >= sevenDaysAgo
+        }
+        
+        return hasRecentReadings ? .active : .inactive
+    }
 
     /// Converts LAWA unit string to GaugeSourceMetric
     private func parseUnit(_ unitString: String) -> GaugeSourceMetric {

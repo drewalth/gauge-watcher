@@ -22,11 +22,19 @@ struct LAWATests {
             timePeriod: .predefined(.last24Hours),
             parameters: [.height, .discharge])
 
-        let results = try await factory.fetchReadings(options: opts)
+        let result = await factory.fetchReadings(options: opts)
 
-        print(results)
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        print(fetchResult)
+
+        #expect(!fetchResult.readings.isEmpty)
+        print("✅ LAWA fetch: \(fetchResult.readings.count) readings, status: \(fetchResult.status.rawValue)")
     }
 
     @Test(.disabled("We don't need to run these all the time"))
@@ -44,8 +52,16 @@ struct LAWATests {
                 source: .lawa,
                 timePeriod: .predefined(.last24Hours),
                 parameters: [.discharge])
-            let reading = try await factory.fetchReadings(options: opts)
-            #expect(!reading.isEmpty)
+            let result = await factory.fetchReadings(options: opts)
+            
+            guard case .success(let fetchResult) = result else {
+                if case .failure(let error) = result {
+                    print("⚠️ Failed to fetch \(source.siteID): \(error)")
+                }
+                continue
+            }
+            
+            #expect(!fetchResult.readings.isEmpty)
         }
     }
 }

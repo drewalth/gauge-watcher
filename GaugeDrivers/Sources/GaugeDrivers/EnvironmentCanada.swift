@@ -73,17 +73,30 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
     // MARK: - GaugeDriver Protocol Conformance
 
     /// Unified API: Fetches readings using standardized options
-    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+    public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
         guard case .environmentCanada(let province) = options.metadata else {
-            throw GaugeDriverErrors.missingRequiredMetadata(
-                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)")
+            return .failure(GaugeDriverErrors.missingRequiredMetadata(
+                "Environment Canada requires province metadata. Use SourceMetadata.environmentCanada(province:)"))
         }
 
-        return try await fetchGaugeStationData(siteID: options.siteID, province: province)
+        do {
+            let readings = try await fetchGaugeStationData(siteID: options.siteID, province: province)
+            
+            let status = determineGaugeStatus(from: readings)
+            
+            let result = GaugeFetchResult(
+                siteID: options.siteID,
+                status: status,
+                readings: readings)
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
     }
 
     /// Unified API: Fetches readings for multiple sites
-    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async -> Result<[GaugeFetchResult], Error> {
         // Group by province for efficient batching
         let grouped = Dictionary(grouping: optionsArray) { options -> Province? in
             guard case .environmentCanada(let province) = options.metadata else {
@@ -92,28 +105,44 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
             return province
         }
 
-        var allReadings: [GDGaugeReading] = []
+        var allResults: [GaugeFetchResult] = []
 
-        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
-            for (provinceOpt, optionsGroup) in grouped {
-                guard let province = provinceOpt else {
-                    throw GaugeDriverErrors.missingRequiredMetadata(
-                        "Environment Canada requires province metadata for all sites")
+        do {
+            try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+                for (provinceOpt, optionsGroup) in grouped {
+                    guard let province = provinceOpt else {
+                        throw GaugeDriverErrors.missingRequiredMetadata(
+                            "Environment Canada requires province metadata for all sites")
+                    }
+
+                    let siteIDs = optionsGroup.map { $0.siteID }
+
+                    group.addTask {
+                        try await fetchGaugeStationData(for: siteIDs, province: province)
+                    }
                 }
 
-                let siteIDs = optionsGroup.map { $0.siteID }
-
-                group.addTask {
-                    try await fetchGaugeStationData(for: siteIDs, province: province)
+                for try await readings in group {
+                    // Group readings by siteID to create individual results
+                    let readingsBySite = Dictionary(grouping: readings, by: { $0.siteID })
+                    
+                    for (siteID, siteReadings) in readingsBySite {
+                        let status = determineGaugeStatus(from: siteReadings)
+                        
+                        let result = GaugeFetchResult(
+                            siteID: siteID,
+                            status: status,
+                            readings: siteReadings)
+                        
+                        allResults.append(result)
+                    }
                 }
             }
-
-            for try await readings in group {
-                allReadings.append(contentsOf: readings)
-            }
+            
+            return .success(allResults)
+        } catch {
+            return .failure(error)
         }
-
-        return allReadings
     }
 
     /// Fetches the latest readings for multiple gauge stations from the Environment Canada API concurrently.
@@ -153,6 +182,26 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
     // MARK: Private
 
     private let logger = Logger(category: "EnvironmentCanadaAPI")
+    
+    // MARK: - Status Detection
+    
+    /// Determines gauge status based on reading availability
+    /// Environment Canada gauges are considered inactive if no recent data is available
+    private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
+        guard !readings.isEmpty else {
+            return .inactive
+        }
+        
+        // Check if we have recent readings (within last 48 hours)
+        let now = Date()
+        let twoDaysAgo = Calendar.current.date(byAdding: .hour, value: -48, to: now)!
+        
+        let hasRecentReadings = readings.contains { reading in
+            reading.timestamp >= twoDaysAgo
+        }
+        
+        return hasRecentReadings ? .active : .inactive
+    }
 
     /// Fetches the latest readings for a single gauge station from the Environment Canada API.
     /// - Parameters:
@@ -190,20 +239,33 @@ public struct GDEnvironmentCanada: GaugeDriver, Sendable {
             }
 
             for row in parsedData where row[0] == siteID {
+                // Parse timestamp - skip row if invalid
                 guard let createdAt = dateFromString(row[1]) else {
-                    throw Errors.failedToParseDate(siteID)
+                    logger.warning("Skipping row with invalid date for \(siteID): \(row[1])")
+                    continue
                 }
 
-                guard let heightReading = Double(row[2]) else {
-                    throw Errors.failedToParseWaterLevel(siteID)
+                // Try to parse height reading - add if valid
+                if let heightReading = Double(row[2].trimmingCharacters(in: .whitespaces)),
+                   !heightReading.isNaN {
+                    newReadings.append(.init(id: .init(), value: heightReading, timestamp: createdAt, unit: .meterHeight, siteID: siteID))
+                } else {
+                    logger.debug("Skipping height reading for \(siteID): '\(row[2])'")
                 }
 
-                guard let dischargeReading = Double(row[6]) else {
-                    throw Errors.failedToParseWaterLevel(siteID)
+                // Try to parse discharge reading - add if valid
+                if let dischargeReading = Double(row[6].trimmingCharacters(in: .whitespaces)),
+                   !dischargeReading.isNaN {
+                    newReadings.append(.init(id: .init(), value: dischargeReading, timestamp: createdAt, unit: .cms, siteID: siteID))
+                } else {
+                    logger.debug("Skipping discharge reading for \(siteID): '\(row[6])'")
                 }
-
-                newReadings.append(.init(id: .init(), value: heightReading, timestamp: createdAt, unit: .meterHeight, siteID: siteID))
-                newReadings.append(.init(id: .init(), value: dischargeReading, timestamp: createdAt, unit: .cms, siteID: siteID))
+            }
+            
+            // Only throw error if we got NO readings at all
+            if newReadings.isEmpty {
+                logger.warning("No valid readings parsed for \(siteID)")
+                throw Errors.failedToParseWaterLevel(siteID)
             }
 
             try csvManager.deleteTempDirectory(at: tempDirectory)

@@ -21,15 +21,27 @@ struct AppFeature {
         var initialized: Loadable<Bool>
         @Shared(.appStorage(LocalStorageKey.gaugesSeeded.rawValue)) var gaugesSeeded = false
 
+        var selectedTab: RootTab = .search
+        
         init(initialized: Loadable<Bool> = .initial) {
             self.initialized = initialized
         }
+        
+        var gaugeSearch: GaugeSearchFeature.State?
+        var favorites: FavoriteGaugesFeature.State?
     }
 
     enum Action {
         case initialize
         case setInitialized(Loadable<Bool>)
         case setGaugesSeeded(Bool)
+        case setSelectedTab(RootTab)
+        case gaugeSearch(GaugeSearchFeature.Action)
+        case favorites(FavoriteGaugesFeature.Action)
+    }
+    
+    enum RootTab {
+        case search, favorites
     }
 
     @Dependency(\.defaultDatabase)
@@ -40,6 +52,11 @@ struct AppFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .gaugeSearch, .favorites:
+                return .none
+            case .setSelectedTab(let newValue):
+                state.selectedTab = newValue
+                return .none
             case .setInitialized(let newValue):
                 state.initialized = newValue
                 return .none
@@ -50,6 +67,8 @@ struct AppFeature {
                 // TODO: update this so that we can easily add new gauge sources and update existing gauge sources
                 guard !state.gaugesSeeded else {
                     state.initialized = .loaded(true)
+                    state.gaugeSearch = GaugeSearchFeature.State()
+                    state.favorites = FavoriteGaugesFeature.State()
                     return .none
                 }
                 state.initialized = .loading
@@ -73,6 +92,11 @@ struct AppFeature {
                     }
                 }
             }
+        }.ifLet(\.gaugeSearch, action: \.gaugeSearch) {
+            GaugeSearchFeature()
+        }
+        .ifLet(\.favorites, action: \.favorites) {
+            FavoriteGaugesFeature()
         }
     }
 }

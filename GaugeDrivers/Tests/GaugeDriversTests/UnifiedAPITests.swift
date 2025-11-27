@@ -61,29 +61,45 @@ struct UnifiedAPITests {
                 metadata: .environmentCanada(province: .bc))
         ]
 
-        let results = try await factory.fetchReadings(optionsArray: optionsArray)
+        let result = await factory.fetchReadings(optionsArray: optionsArray)
+        
+        guard case .success(let fetchResults) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResults.isEmpty)
 
-        // Verify we got readings from all three gauges
-        let usgs1Readings = results.filter { $0.siteID == "09359500" }
-        let usgs2Readings = results.filter { $0.siteID == "01646500" }
-        let envCanadaReadings = results.filter { $0.siteID == "07EA004" }
+        // Verify we got results from all three gauges
+        let usgs1Result = fetchResults.first { $0.siteID == "09359500" }
+        let usgs2Result = fetchResults.first { $0.siteID == "01646500" }
+        let envCanadaResult = fetchResults.first { $0.siteID == "07EA004" }
 
-        #expect(!usgs1Readings.isEmpty)
-        #expect(!usgs2Readings.isEmpty)
-        #expect(!envCanadaReadings.isEmpty)
+        #expect(usgs1Result != nil)
+        #expect(usgs2Result != nil)
+        #expect(envCanadaResult != nil)
 
         // Verify correct units for each source
-        #expect(usgs1Readings.allSatisfy { $0.unit == .cfs })
-        #expect(usgs2Readings.allSatisfy { $0.unit == .cfs })
-        // Environment Canada returns both cms (discharge) and meter (height)
-        #expect(envCanadaReadings.allSatisfy { $0.unit == .cms || $0.unit == .meterHeight })
+        if let usgs1 = usgs1Result {
+            #expect(usgs1.readings.allSatisfy { $0.unit == .cfs })
+            #expect(usgs1.status == .active || usgs1.status == .inactive)
+        }
+        if let usgs2 = usgs2Result {
+            #expect(usgs2.readings.allSatisfy { $0.unit == .cfs })
+            #expect(usgs2.status == .active || usgs2.status == .inactive)
+        }
+        if let envCanada = envCanadaResult {
+            // Environment Canada returns both cms (discharge) and meter (height)
+            #expect(envCanada.readings.allSatisfy { $0.unit == .cms || $0.unit == .meterHeight })
+            #expect(envCanada.status == .active || envCanada.status == .inactive)
+        }
 
         print("✅ Mixed source batch fetch:")
-        print("   USGS site 1: \(usgs1Readings.count) readings (cfs)")
-        print("   USGS site 2: \(usgs2Readings.count) readings (cfs)")
-        print("   Environment Canada: \(envCanadaReadings.count) readings (cms/meter)")
+        print("   USGS site 1: \(usgs1Result?.readings.count ?? 0) readings, status: \(usgs1Result?.status.rawValue ?? "none")")
+        print("   USGS site 2: \(usgs2Result?.readings.count ?? 0) readings, status: \(usgs2Result?.status.rawValue ?? "none")")
+        print("   Environment Canada: \(envCanadaResult?.readings.count ?? 0) readings, status: \(envCanadaResult?.status.rawValue ?? "none")")
     }
 
     // MARK: - Time Period Tests
@@ -107,12 +123,19 @@ struct UnifiedAPITests {
                 timePeriod: period,
                 parameters: [.discharge])
 
-            let results = try await factory.fetchReadings(options: options)
+            let result = await factory.fetchReadings(options: options)
+            
+            guard case .success(let fetchResult) = result else {
+                if case .failure(let error) = result {
+                    Issue.record("Failed to fetch readings: \(error)")
+                }
+                continue
+            }
 
-            #expect(!results.isEmpty)
+            #expect(!fetchResult.readings.isEmpty)
 
             if case .predefined(let predefined) = period {
-                print("✅ Time period \(predefined): \(results.count) readings")
+                print("✅ Time period \(predefined): \(fetchResult.readings.count) readings, status: \(fetchResult.status.rawValue)")
             }
         }
     }
@@ -130,17 +153,24 @@ struct UnifiedAPITests {
             timePeriod: .custom(start: startDate, end: endDate),
             parameters: [.discharge])
 
-        let results = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResult.readings.isEmpty)
 
         // Verify all readings are within the custom range
-        for reading in results {
+        for reading in fetchResult.readings {
             #expect(reading.timestamp >= startDate)
             #expect(reading.timestamp <= endDate)
         }
 
-        print("✅ Custom date range (6 hours): \(results.count) readings")
+        print("✅ Custom date range (6 hours): \(fetchResult.readings.count) readings, status: \(fetchResult.status.rawValue)")
     }
 
     // MARK: - Parameter Tests
@@ -155,12 +185,19 @@ struct UnifiedAPITests {
             timePeriod: .predefined(.last24Hours),
             parameters: [.discharge])
 
-        let dischargeResults = try await factory.fetchReadings(options: dischargeOptions)
+        let result = await factory.fetchReadings(options: dischargeOptions)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!dischargeResults.isEmpty)
-        #expect(dischargeResults.allSatisfy { $0.unit == .cfs })
+        #expect(!fetchResult.readings.isEmpty)
+        #expect(fetchResult.readings.allSatisfy { $0.unit == .cfs })
 
-        print("✅ Single parameter (discharge): \(dischargeResults.count) readings")
+        print("✅ Single parameter (discharge): \(fetchResult.readings.count) readings, status: \(fetchResult.status.rawValue)")
     }
 
     @Test("Parameters: Multiple parameters")
@@ -173,13 +210,20 @@ struct UnifiedAPITests {
             timePeriod: .predefined(.last24Hours),
             parameters: [.discharge, .height, .temperature])
 
-        let results = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResult.readings.isEmpty)
 
         // Should have mix of discharge, height, and possibly temperature
-        let dischargeCount = results.filter { $0.unit == .cfs }.count
-        let heightCount = results.filter { $0.unit == .feetHeight }.count
+        let dischargeCount = fetchResult.readings.filter { $0.unit == .cfs }.count
+        let heightCount = fetchResult.readings.filter { $0.unit == .feetHeight }.count
 
         #expect(dischargeCount > 0)
         #expect(heightCount > 0)
@@ -187,6 +231,7 @@ struct UnifiedAPITests {
         print("✅ Multiple parameters:")
         print("   Discharge: \(dischargeCount) readings")
         print("   Height: \(heightCount) readings")
+        print("   Status: \(fetchResult.status.rawValue)")
     }
 
     // MARK: - Error Handling Tests
@@ -201,20 +246,26 @@ struct UnifiedAPITests {
             timePeriod: .predefined(.last24Hours),
             parameters: [.discharge])
 
-        do {
-            _ = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        switch result {
+        case .success:
             Issue.record("Expected error for invalid LAWA siteID")
-        } catch let error as LAWA.Errors {
-            // Invalid site IDs return empty data from the API, which we catch as invalidSampleDateTime
-            switch error {
-            case .invalidSampleDateTime(let siteID):
-                #expect(siteID == "not-a-number")
-                print("✅ Error handling: Invalid LAWA site ID correctly caught (no data)")
-            case .invalidSiteID(let siteID):
-                #expect(siteID == "not-a-number")
-                print("✅ Error handling: Invalid LAWA site ID correctly caught")
-            default:
-                Issue.record("Wrong error type: \(error)")
+        case .failure(let error):
+            if let lawaError = error as? LAWA.Errors {
+                // Invalid site IDs return empty data from the API, which we catch as invalidSampleDateTime
+                switch lawaError {
+                case .invalidSampleDateTime(let siteID):
+                    #expect(siteID == "not-a-number")
+                    print("✅ Error handling: Invalid LAWA site ID correctly caught (no data)")
+                case .invalidSiteID(let siteID):
+                    #expect(siteID == "not-a-number")
+                    print("✅ Error handling: Invalid LAWA site ID correctly caught")
+                default:
+                    Issue.record("Wrong error type: \(lawaError)")
+                }
+            } else {
+                Issue.record("Expected LAWA.Errors but got: \(error)")
             }
         }
     }
@@ -232,15 +283,21 @@ struct UnifiedAPITests {
             // No metadata provided
         )
 
-        do {
-            _ = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        switch result {
+        case .success:
             Issue.record("Expected missing metadata error")
-        } catch let error as GaugeDriverErrors {
-            switch error {
-            case .missingRequiredMetadata:
-                print("✅ Error handling: Missing metadata correctly caught")
-            default:
-                Issue.record("Wrong error type: \(error)")
+        case .failure(let error):
+            if let driverError = error as? GaugeDriverErrors {
+                switch driverError {
+                case .missingRequiredMetadata:
+                    print("✅ Error handling: Missing metadata correctly caught")
+                default:
+                    Issue.record("Wrong error type: \(driverError)")
+                }
+            } else {
+                Issue.record("Expected GaugeDriverErrors but got: \(error)")
             }
         }
     }

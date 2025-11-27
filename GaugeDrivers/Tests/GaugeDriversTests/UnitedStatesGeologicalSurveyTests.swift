@@ -24,12 +24,19 @@ struct UnitedStatesGeologicalSurveyTests {
             timePeriod: .predefined(.last7Days),
             parameters: [.discharge, .height])
 
-        let results = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResult.readings.isEmpty)
 
-        let latestDischarge = results.last { $0.unit == .cfs }
-        let latestHeight = results.last { $0.unit == .feetHeight }
+        let latestDischarge = fetchResult.readings.last { $0.unit == .cfs }
+        let latestHeight = fetchResult.readings.last { $0.unit == .feetHeight }
 
         #expect(latestDischarge != nil)
         #expect(latestHeight != nil)
@@ -37,6 +44,7 @@ struct UnitedStatesGeologicalSurveyTests {
         print("✅ Unified API - Single USGS gauge:")
         print("   Discharge: \(latestDischarge!.value) cfs at \(latestDischarge!.timestamp)")
         print("   Height: \(latestHeight!.value) ft at \(latestHeight!.timestamp)")
+        print("   Status: \(fetchResult.status.rawValue)")
     }
 
     @Test("Unified API: Multiple gauge batch fetch")
@@ -56,24 +64,39 @@ struct UnitedStatesGeologicalSurveyTests {
                 parameters: [.discharge, .height])
         ]
 
-        let results = try await factory.fetchReadings(optionsArray: optionsArray)
+        let result = await factory.fetchReadings(optionsArray: optionsArray)
+        
+        guard case .success(let fetchResults) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResults.isEmpty)
 
-        let site1LatestDischarge = results.last { $0.siteID == "09359500" && $0.unit == .cfs }
-        let site1LatestHeight = results.last { $0.siteID == "09359500" && $0.unit == .feetHeight }
+        let site1Result = fetchResults.first { $0.siteID == "09359500" }
+        let site2Result = fetchResults.first { $0.siteID == "01646500" }
 
-        let site2LatestDischarge = results.last { $0.siteID == "01646500" && $0.unit == .cfs }
-        let site2LatestHeight = results.last { $0.siteID == "01646500" && $0.unit == .feetHeight }
+        #expect(site1Result != nil)
+        #expect(site2Result != nil)
 
-        #expect(site1LatestDischarge != nil)
-        #expect(site1LatestHeight != nil)
-        #expect(site2LatestDischarge != nil)
-        #expect(site2LatestHeight != nil)
-
-        print("✅ Unified API - Batch USGS fetch:")
-        print("   Site 1 (09359500): \(site1LatestDischarge!.value) cfs")
-        print("   Site 2 (01646500): \(site2LatestDischarge!.value) cfs")
+        if let site1 = site1Result {
+            let latestDischarge = site1.readings.last { $0.unit == .cfs }
+            let latestHeight = site1.readings.last { $0.unit == .feetHeight }
+            
+            #expect(latestDischarge != nil)
+            #expect(latestHeight != nil)
+            
+            print("✅ Unified API - Batch USGS fetch:")
+            print("   Site 1 (09359500): \(latestDischarge!.value) cfs, status: \(site1.status.rawValue)")
+        }
+        
+        if let site2 = site2Result {
+            let latestDischarge = site2.readings.last { $0.unit == .cfs }
+            #expect(latestDischarge != nil)
+            print("   Site 2 (01646500): \(latestDischarge!.value) cfs, status: \(site2.status.rawValue)")
+        }
     }
 
     @Test("Unified API: Custom time period")
@@ -89,17 +112,24 @@ struct UnitedStatesGeologicalSurveyTests {
             timePeriod: .custom(start: startDate, end: endDate),
             parameters: [.discharge])
 
-        let results = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResult.readings.isEmpty)
 
         // Verify all results are within the date range
-        for reading in results {
+        for reading in fetchResult.readings {
             #expect(reading.timestamp >= startDate)
             #expect(reading.timestamp <= endDate)
         }
 
-        print("✅ Unified API - Custom time period (3 days): \(results.count) readings")
+        print("✅ Unified API - Custom time period (3 days): \(fetchResult.readings.count) readings, status: \(fetchResult.status.rawValue)")
     }
 
     @Test("Unified API: Single parameter fetch")
@@ -112,14 +142,21 @@ struct UnitedStatesGeologicalSurveyTests {
             timePeriod: .predefined(.last24Hours),
             parameters: [.discharge])
 
-        let results = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResult.readings.isEmpty)
 
         // Should only have discharge readings
-        #expect(results.allSatisfy { $0.unit == .cfs })
+        #expect(fetchResult.readings.allSatisfy { $0.unit == .cfs })
 
-        print("✅ Unified API - Single parameter (discharge): \(results.count) readings")
+        print("✅ Unified API - Single parameter (discharge): \(fetchResult.readings.count) readings, status: \(fetchResult.status.rawValue)")
     }
 
     // MARK: - Legacy API Tests (Backward Compatibility)

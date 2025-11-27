@@ -43,18 +43,26 @@ struct AppView: View {
             }
         case .loaded(let isInitialized):
             if isInitialized {
-                TabView {
-                    GaugeSearch(store: Store(initialState: GaugeSearchFeature.State(), reducer: {
-                        GaugeSearchFeature()
-                    }))
+                TabView(selection: $store.selectedTab.sending(\.setSelectedTab)) {
+                    Group {
+                        if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
+                            GaugeSearch(store: gaugeSearchStore)
+                        } else {
+                            ProgressView()
+                        }
+                    }
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }
                     .tag(0)
 
-                    FavoriteGaugesView(store: Store(initialState: FavoriteGaugesFeature.State(), reducer: {
-                        FavoriteGaugesFeature()
-                    }))
+                    Group {
+                        if let favoriteGaugesStore = store.scope(state: \.favorites, action: \.favorites) {
+                            FavoriteGaugesView(store: favoriteGaugesStore)
+                        } else {
+                            ProgressView()
+                        }
+                    }
                     .tabItem {
                         Label("Favorites", systemImage: "star.fill")
                     }

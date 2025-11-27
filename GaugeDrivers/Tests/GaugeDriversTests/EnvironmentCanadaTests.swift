@@ -25,12 +25,19 @@ struct EnvironmentCanadaTests {
             parameters: [.discharge, .height],
             metadata: .environmentCanada(province: .bc))
 
-        let results = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResult.readings.isEmpty)
 
-        let latestDischarge = results.last { $0.unit == .cms }
-        let latestHeight = results.last { $0.unit == .meterHeight }
+        let latestDischarge = fetchResult.readings.last { $0.unit == .cms }
+        let latestHeight = fetchResult.readings.last { $0.unit == .meterHeight }
 
         #expect(latestDischarge != nil)
         #expect(latestHeight != nil)
@@ -38,6 +45,7 @@ struct EnvironmentCanadaTests {
         print("✅ Unified API - Single Environment Canada gauge:")
         print("   Discharge: \(latestDischarge!.value) cms at \(latestDischarge!.timestamp)")
         print("   Height: \(latestHeight!.value) m at \(latestHeight!.timestamp)")
+        print("   Status: \(fetchResult.status.rawValue)")
     }
 
     @Test("Unified API: Multiple gauge batch fetch")
@@ -59,24 +67,39 @@ struct EnvironmentCanadaTests {
                 metadata: .environmentCanada(province: .bc))
         ]
 
-        let results = try await factory.fetchReadings(optionsArray: optionsArray)
+        let result = await factory.fetchReadings(optionsArray: optionsArray)
+        
+        guard case .success(let fetchResults) = result else {
+            if case .failure(let error) = result {
+                Issue.record("Failed to fetch readings: \(error)")
+            }
+            return
+        }
 
-        #expect(!results.isEmpty)
+        #expect(!fetchResults.isEmpty)
 
-        let site1LatestDischarge = results.last { $0.siteID == "07EA004" && $0.unit == .cms }
-        let site1LatestHeight = results.last { $0.siteID == "07EA004" && $0.unit == .meterHeight }
+        let site1Result = fetchResults.first { $0.siteID == "07EA004" }
+        let site2Result = fetchResults.first { $0.siteID == "07EA005" }
 
-        let site2LatestDischarge = results.last { $0.siteID == "07EA005" && $0.unit == .cms }
-        let site2LatestHeight = results.last { $0.siteID == "07EA005" && $0.unit == .meterHeight }
+        #expect(site1Result != nil)
+        #expect(site2Result != nil)
 
-        #expect(site1LatestDischarge != nil)
-        #expect(site1LatestHeight != nil)
-        #expect(site2LatestDischarge != nil)
-        #expect(site2LatestHeight != nil)
-
-        print("✅ Unified API - Batch Environment Canada fetch:")
-        print("   Site 1 (07EA004): \(site1LatestDischarge!.value) cms")
-        print("   Site 2 (07EA005): \(site2LatestDischarge!.value) cms")
+        if let site1 = site1Result {
+            let latestDischarge = site1.readings.last { $0.unit == .cms }
+            let latestHeight = site1.readings.last { $0.unit == .meterHeight }
+            
+            #expect(latestDischarge != nil)
+            #expect(latestHeight != nil)
+            
+            print("✅ Unified API - Batch Environment Canada fetch:")
+            print("   Site 1 (07EA004): \(latestDischarge!.value) cms, status: \(site1.status.rawValue)")
+        }
+        
+        if let site2 = site2Result {
+            let latestDischarge = site2.readings.last { $0.unit == .cms }
+            #expect(latestDischarge != nil)
+            print("   Site 2 (07EA005): \(latestDischarge!.value) cms, status: \(site2.status.rawValue)")
+        }
     }
 
     @Test("Unified API: Missing metadata error")
@@ -88,18 +111,24 @@ struct EnvironmentCanadaTests {
             source: .environmentCanada,
             timePeriod: .predefined(.last24Hours),
             parameters: [.discharge, .height]
-            // Note: No metadata provided - should throw error
+            // Note: No metadata provided - should return error
         )
 
-        do {
-            _ = try await factory.fetchReadings(options: options)
+        let result = await factory.fetchReadings(options: options)
+        
+        switch result {
+        case .success:
             Issue.record("Expected error for missing metadata, but succeeded")
-        } catch let error as GaugeDriverErrors {
-            switch error {
-            case .missingRequiredMetadata:
-                print("✅ Unified API - Correctly throws error for missing metadata")
-            default:
-                Issue.record("Wrong error type: \(error)")
+        case .failure(let error):
+            if let driverError = error as? GaugeDriverErrors {
+                switch driverError {
+                case .missingRequiredMetadata:
+                    print("✅ Unified API - Correctly returns error for missing metadata")
+                default:
+                    Issue.record("Wrong error type: \(driverError)")
+                }
+            } else {
+                Issue.record("Expected GaugeDriverErrors but got: \(error)")
             }
         }
     }
@@ -124,13 +153,19 @@ struct EnvironmentCanadaTests {
             metadata: .environmentCanada(province: .bc))
 
         // Verify both work with the same metadata
-        let site1Results = try await factory.fetchReadings(options: site1Options)
-        let site2Results = try await factory.fetchReadings(options: site2Options)
+        let site1Result = await factory.fetchReadings(options: site1Options)
+        let site2Result = await factory.fetchReadings(options: site2Options)
 
-        #expect(!site1Results.isEmpty)
-        #expect(!site2Results.isEmpty)
+        guard case .success(let site1FetchResult) = site1Result,
+              case .success(let site2FetchResult) = site2Result else {
+            Issue.record("Failed to fetch one or both sites")
+            return
+        }
 
-        print("✅ Unified API - Metadata correctly passed: \(site1Results.count + site2Results.count) total readings")
+        #expect(!site1FetchResult.readings.isEmpty)
+        #expect(!site2FetchResult.readings.isEmpty)
+
+        print("✅ Unified API - Metadata correctly passed: \(site1FetchResult.readings.count + site2FetchResult.readings.count) total readings")
     }
 
     // MARK: - Legacy API Tests (Backward Compatibility)

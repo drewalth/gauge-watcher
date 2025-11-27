@@ -142,12 +142,20 @@ extension GaugeService: DependencyKey {
 
         // 5. Fetch readings using unified API
         let factory = GaugeDriverFactory()
-        let driverReadings = try await factory.fetchReadings(options: options)
-
-        // 6. Save readings to database
+        let result = await factory.fetchReadings(options: options)
+        
+        // 6. Handle the result
+        guard case .success(let fetchResult) = result else {
+            if case .failure(let error) = result {
+                throw error
+            }
+            throw DatabaseServiceError.unknownError
+        }
+        
+        // 7. Save readings to database
         // Use INSERT OR IGNORE to skip duplicates efficiently (relies on unique index)
         try await database.write { db in
-            for driverReading in driverReadings {
+            for driverReading in fetchResult.readings {
                 try #sql("""
               INSERT OR IGNORE INTO gaugeReadings (siteID, value, metric, gaugeID, createdAt)
               VALUES (\(driverReading.siteID), \(driverReading.value), \(driverReading.unit.rawValue), \(gaugeID), \(driverReading
@@ -155,10 +163,10 @@ extension GaugeService: DependencyKey {
           """).execute(db)
             }
 
-            // Update the gauge's updatedAt timestamp
+            // Update the gauge's updatedAt timestamp and status
             let now = Date()
             try #sql("""
-            UPDATE gauges SET updatedAt = \(now) WHERE id = \(gaugeID)
+            UPDATE gauges SET updatedAt = \(now), status = \(fetchResult.status.rawValue) WHERE id = \(gaugeID)
         """).execute(db)
         }
     }, toggleFavorite: { gaugeID in
@@ -293,4 +301,5 @@ extension GaugeReadingQuery {
 
 enum DatabaseServiceError: Error {
     case gaugeNotFound
+    case unknownError
 }

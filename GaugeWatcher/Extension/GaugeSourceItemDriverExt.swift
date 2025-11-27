@@ -69,17 +69,24 @@ extension GaugeSourceItem {
     ///   - timePeriod: Time period for data retrieval (defaults to last 7 days)
     ///   - parameters: Which parameters to fetch (defaults to all)
     ///   - factory: Optional custom factory (defaults to new instance)
-    /// - Returns: Array of gauge readings
+    /// - Returns: GaugeFetchResult containing readings and status
     /// - Throws: GaugeDriverErrors if options are invalid or fetch fails
     func fetchReadings(
         timePeriod: TimePeriod = .predefined(.last7Days),
         parameters: [ReadingParameter] = ReadingParameter.allCases,
         factory: GaugeDriverFactory = GaugeDriverFactory())
-    async throws -> [GDGaugeReading] {
+    async throws -> GaugeFetchResult {
         guard let options = toDriverOptions(timePeriod: timePeriod, parameters: parameters) else {
             throw GaugeDriverErrors.invalidOptions("Unable to create driver options for gauge: \(name)")
         }
-        return try await factory.fetchReadings(options: options)
+        
+        let result = await factory.fetchReadings(options: options)
+        switch result {
+        case .success(let fetchResult):
+            return fetchResult
+        case .failure(let error):
+            throw error
+        }
     }
 }
 
@@ -91,13 +98,13 @@ extension [GaugeSourceItem] {
     ///   - timePeriod: Time period for data retrieval (defaults to last 7 days)
     ///   - parameters: Which parameters to fetch (defaults to all)
     ///   - factory: Optional custom factory (defaults to new instance)
-    /// - Returns: Array of all gauge readings from all sources
+    /// - Returns: Array of GaugeFetchResult containing readings and status for each gauge
     /// - Throws: GaugeDriverErrors if any fetch fails
     func fetchReadings(
         timePeriod: TimePeriod = .predefined(.last7Days),
         parameters: [ReadingParameter] = ReadingParameter.allCases,
         factory: GaugeDriverFactory = GaugeDriverFactory())
-    async throws -> [GDGaugeReading] {
+    async throws -> [GaugeFetchResult] {
         let optionsArray = compactMap { item in
             item.toDriverOptions(timePeriod: timePeriod, parameters: parameters)
         }
@@ -106,6 +113,12 @@ extension [GaugeSourceItem] {
             throw GaugeDriverErrors.invalidOptions("No valid gauge source items to fetch")
         }
 
-        return try await factory.fetchReadings(optionsArray: optionsArray)
+        let result = await factory.fetchReadings(optionsArray: optionsArray)
+        switch result {
+        case .success(let fetchResults):
+            return fetchResults
+        case .failure(let error):
+            throw error
+        }
     }
 }

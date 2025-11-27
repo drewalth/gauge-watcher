@@ -72,7 +72,7 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
     // MARK: - GaugeDriver Protocol Conformance
 
     /// Unified API: Fetches readings using standardized options
-    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+    public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
         let parameters = options.parameters.compactMap { param -> USGSParameter? in
             switch param {
             case .discharge:
@@ -84,51 +84,82 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
             }
         }
 
-        return try await fetchGaugeStationData(
-            siteID: options.siteID,
-            timePeriod: options.timePeriod,
-            parameters: parameters)
+        do {
+            let readings = try await fetchGaugeStationData(
+                siteID: options.siteID,
+                timePeriod: options.timePeriod,
+                parameters: parameters)
+            
+            let status = determineGaugeStatus(from: readings)
+            let validReadings = filterOfflineReadings(readings)
+            
+            let result = GaugeFetchResult(
+                siteID: options.siteID,
+                status: status,
+                readings: validReadings)
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
     }
 
     /// Unified API: Fetches readings for multiple sites
-    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async -> Result<[GaugeFetchResult], Error> {
         // Group by time period and parameters for efficient batching
         let grouped = Dictionary(grouping: optionsArray) { options in
             "\(options.timePeriod)-\(options.parameters.map { $0.rawValue }.joined())"
         }
 
-        var allReadings: [GDGaugeReading] = []
+        var allResults: [GaugeFetchResult] = []
 
-        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
-            for (_, optionsGroup) in grouped {
-                guard let firstOptions = optionsGroup.first else { continue }
+        do {
+            try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+                for (_, optionsGroup) in grouped {
+                    guard let firstOptions = optionsGroup.first else { continue }
 
-                let siteIDs = optionsGroup.map { $0.siteID }
-                let parameters = firstOptions.parameters.compactMap { param -> USGSParameter? in
-                    switch param {
-                    case .discharge:
-                        return .discharge
-                    case .height:
-                        return .height
-                    case .temperature:
-                        return .temperature
+                    let siteIDs = optionsGroup.map { $0.siteID }
+                    let parameters = firstOptions.parameters.compactMap { param -> USGSParameter? in
+                        switch param {
+                        case .discharge:
+                            return .discharge
+                        case .height:
+                            return .height
+                        case .temperature:
+                            return .temperature
+                        }
+                    }
+
+                    group.addTask {
+                        try await fetchGaugeStationData(
+                            for: siteIDs,
+                            timePeriod: firstOptions.timePeriod,
+                            parameters: parameters)
                     }
                 }
 
-                group.addTask {
-                    try await fetchGaugeStationData(
-                        for: siteIDs,
-                        timePeriod: firstOptions.timePeriod,
-                        parameters: parameters)
+                for try await readings in group {
+                    // Group readings by siteID to create individual results
+                    let readingsBySite = Dictionary(grouping: readings, by: { $0.siteID })
+                    
+                    for (siteID, siteReadings) in readingsBySite {
+                        let status = determineGaugeStatus(from: siteReadings)
+                        let validReadings = filterOfflineReadings(siteReadings)
+                        
+                        let result = GaugeFetchResult(
+                            siteID: siteID,
+                            status: status,
+                            readings: validReadings)
+                        
+                        allResults.append(result)
+                    }
                 }
             }
-
-            for try await readings in group {
-                allReadings.append(contentsOf: readings)
-            }
+            
+            return .success(allResults)
+        } catch {
+            return .failure(error)
         }
-
-        return allReadings
     }
 
     /// Fetches data from the USGS Water Services API for a single gauge station.
@@ -181,6 +212,35 @@ public struct GDUnitedStatesGeologicalSurvey: GaugeDriver, Sendable {
     // MARK: Private
 
     private let logger = Logger(category: "USGS.WaterServices")
+    
+    // MARK: - Status Detection
+    
+    /// Determines gauge status based on reading values
+    /// USGS uses -999999 to indicate offline/no data
+    private func determineGaugeStatus(from readings: [GDGaugeReading]) -> GaugeStatus {
+        guard !readings.isEmpty else {
+            return .inactive
+        }
+        
+        // If all readings are offline indicators, mark as inactive
+        let allOffline = readings.allSatisfy { $0.value == -999999 }
+        if allOffline {
+            return .inactive
+        }
+        
+        // If we have some valid readings, consider it active even if some are offline
+        let hasValidReadings = readings.contains { $0.value != -999999 }
+        if hasValidReadings {
+            return .active
+        }
+        
+        return .unknown
+    }
+    
+    /// Filters out offline readings (value == -999999)
+    private func filterOfflineReadings(_ readings: [GDGaugeReading]) -> [GDGaugeReading] {
+        readings.filter { $0.value != -999999 }
+    }
 
     // MARK: - fetchData
 

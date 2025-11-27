@@ -16,13 +16,13 @@ public protocol GaugeDriver: Sendable {
     /// - Parameter options: Unified options that work across all drivers
     /// - Returns: Array of gauge readings
     /// - Throws: Driver-specific errors
-    func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading]
+    func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error>
 
     /// Fetches readings for multiple sites concurrently
     /// - Parameter optionsArray: Array of options for each site
     /// - Returns: Array of gauge readings from all sites
     /// - Throws: Driver-specific errors
-    func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading]
+    func fetchReadings(optionsArray: [GaugeDriverOptions]) async -> Result<[GaugeFetchResult], Error>
 }
 
 // MARK: - GaugeDriverOptions
@@ -174,35 +174,52 @@ public struct GaugeDriverFactory {
     /// - Parameter options: Unified driver options
     /// - Returns: Array of gauge readings
     /// - Throws: Driver-specific errors if fetch fails
-    public func fetchReadings(options: GaugeDriverOptions) async throws -> [GDGaugeReading] {
+    public func fetchReadings(options: GaugeDriverOptions) async -> Result<GaugeFetchResult, Error> {
         let driver = driver(for: options.source)
-        return try await driver.fetchReadings(options: options)
+        return await driver.fetchReadings(options: options)
     }
 
     /// Convenience method to fetch readings from multiple sites
     /// - Parameter optionsArray: Array of options for different sites
-    /// - Returns: Array of all gauge readings
-    /// - Throws: Driver-specific errors if any fetch fails
-    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async throws -> [GDGaugeReading] {
+    /// - Returns: Result containing array of all gauge fetch results, or error if any critical failure
+    public func fetchReadings(optionsArray: [GaugeDriverOptions]) async -> Result<[GaugeFetchResult], Error> {
         // Group by source for efficient batch fetching
         let groupedBySource = Dictionary(grouping: optionsArray, by: { $0.source })
 
-        var allReadings: [GDGaugeReading] = []
+        var allResults: [GaugeFetchResult] = []
+        var errors: [Error] = []
 
-        try await withThrowingTaskGroup(of: [GDGaugeReading].self) { group in
+        await withTaskGroup(of: Result<[GaugeFetchResult], Error>.self) { group in
             for (source, optionsForSource) in groupedBySource {
                 let driver = driver(for: source)
                 group.addTask {
-                    try await driver.fetchReadings(optionsArray: optionsForSource)
+                    await driver.fetchReadings(optionsArray: optionsForSource)
                 }
             }
 
-            for try await readings in group {
-                allReadings.append(contentsOf: readings)
+            for await result in group {
+                switch result {
+                case .success(let results):
+                    allResults.append(contentsOf: results)
+                case .failure(let error):
+                    errors.append(error)
+                }
             }
         }
 
-        return allReadings
+        // If we have any results, return success even if some failed
+        // This allows partial success scenarios
+        if !allResults.isEmpty {
+            return .success(allResults)
+        }
+        
+        // If everything failed, return the first error
+        if let firstError = errors.first {
+            return .failure(firstError)
+        }
+        
+        // No results and no errors - shouldn't happen but handle gracefully
+        return .success([])
     }
 }
 
@@ -245,5 +262,23 @@ public struct GDGaugeReading: Codable, Identifiable, Sendable {
         self.timestamp = timestamp
         self.unit = unit
         self.siteID = siteID
+    }
+}
+
+public enum GaugeStatus: String, CaseIterable, Sendable {
+    case active = "active"
+    case inactive = "inactive"
+    case unknown = "unknown"
+}
+
+public struct GaugeFetchResult: Sendable {
+    public let siteID: String
+    public let status: GaugeStatus
+    public let readings: [GDGaugeReading]
+
+    public init(siteID: String, status: GaugeStatus, readings: [GDGaugeReading]) {
+        self.siteID = siteID
+        self.status = status
+        self.readings = readings
     }
 }
