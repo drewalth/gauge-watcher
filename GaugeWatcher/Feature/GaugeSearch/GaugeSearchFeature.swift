@@ -32,9 +32,9 @@ struct GaugeSearchFeature {
 
         // Map region tracking for viewport-based queries
         var mapRegion: MKCoordinateRegion?
-        
+
         // Flag to trigger recenter animation in MKMapView
-        var shouldRecenterMap: Bool = false
+        var shouldRecenterMap = false
     }
 
     enum Action {

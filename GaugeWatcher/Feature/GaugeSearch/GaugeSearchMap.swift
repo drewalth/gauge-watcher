@@ -24,20 +24,20 @@ struct GaugeSearchMap: View {
             store: store,
             userLocation: store.currentLocation,
             shouldRecenter: store.shouldRecenterMap)
-        .ignoresSafeArea(.all)
-        .trackView("GaugeSearchMap")
-        .toolbar {
-            // Recenter button - only show if user location is available
-            if store.currentLocation != nil {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        store.send(.recenterOnUserLocation)
-                    } label: {
-                        Label("Center on Location", systemImage: "location.fill")
-                            .labelStyle(.iconOnly)
+            .ignoresSafeArea(.all)
+            .trackView("GaugeSearchMap")
+            .toolbar {
+                // Recenter button - only show if user location is available
+                if store.currentLocation != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            store.send(.recenterOnUserLocation)
+                        } label: {
+                            Label("Center on Location", systemImage: "location.fill")
+                                .labelStyle(.iconOnly)
+                        }
                     }
                 }
             }
-        }
     }
 }
