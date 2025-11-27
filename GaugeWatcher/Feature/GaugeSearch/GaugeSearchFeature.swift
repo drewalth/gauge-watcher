@@ -26,7 +26,6 @@ struct GaugeSearchFeature {
     struct State {
         var results: Loadable<[GaugeRef]> = .initial
         var queryOptions = GaugeQueryOptions()
-        var mode: Mode = .map
         var initialized: Loadable<Bool> = .initial
         @Shared(.appStorage(LocalStorageKey.currentLocation.rawValue)) var currentLocation: CurrentLocation?
         var path = StackState<Path.State>()
@@ -44,7 +43,6 @@ struct GaugeSearchFeature {
         case query
         case setQueryOptions(GaugeQueryOptions)
         case setResults(Loadable<[GaugeRef]>)
-        case toggleMode
         case initialize
         case setInitialized(Loadable<Bool>)
         case setCurrentLocation(CurrentLocation?)
@@ -234,13 +232,6 @@ struct GaugeSearchFeature {
                 }
             case .setInitialized(let newValue):
                 state.initialized = newValue
-                return .none
-            case .toggleMode:
-                if state.mode == .list {
-                    state.mode = .map
-                } else {
-                    state.mode = .list
-                }
                 return .none
             case .setQueryOptions(let newValue):
                 state.queryOptions = newValue

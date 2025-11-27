@@ -94,6 +94,29 @@ extension DependencyValues {
                 .execute(db)
         }
 
+        // Add indexes and constraints for gaugeReadings performance
+        migrator.registerMigration("add-gauge-readings-indexes-0.3.0") { db in
+            // Index for query performance (reading by gaugeID)
+            try #sql("""
+        CREATE INDEX IF NOT EXISTS "idx_gaugeReadings_gaugeID" ON "gaugeReadings"("gaugeID")
+        """)
+                .execute(db)
+
+            // Composite index for duplicate detection and time-range queries
+            try #sql("""
+        CREATE INDEX IF NOT EXISTS "idx_gaugeReadings_gaugeID_createdAt" ON "gaugeReadings"("gaugeID", "createdAt")
+        """)
+                .execute(db)
+
+            // Unique constraint to prevent duplicate readings
+            // This allows INSERT OR IGNORE to work efficiently
+            try #sql("""
+        CREATE UNIQUE INDEX IF NOT EXISTS "idx_gaugeReadings_unique"
+        ON "gaugeReadings"("gaugeID", "siteID", "createdAt", "metric")
+        """)
+                .execute(db)
+        }
+
         try migrator.migrate(database)
         defaultDatabase = database
     }

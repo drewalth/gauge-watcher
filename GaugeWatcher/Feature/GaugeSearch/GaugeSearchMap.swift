@@ -31,7 +31,6 @@ struct GaugeSearchMap: View {
                 }
                 UserAnnotation()
             }
-            .ignoresSafeArea(.all)
             .onMapCameraChange(frequency: .onEnd) { context in
                 // Only report when user stops moving the map (not during animation)
                 store.send(.mapRegionChanged(context.region))
@@ -59,15 +58,6 @@ struct GaugeSearchMap: View {
         }
         .trackView("GaugeSearchMap")
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    store.send(.toggleMode)
-                } label: {
-                    Label("Mode", systemImage: store.mode == .list ? "map": "list.bullet")
-                        .labelStyle(.iconOnly)
-                }
-            }
-
             // Recenter button - only show if user location is available
             if let location = store.currentLocation {
                 ToolbarItem(placement: .topBarTrailing) {

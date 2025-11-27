@@ -18,7 +18,9 @@ struct GaugeSearch: View {
 
     var body: some View {
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            content()
+            Group {
+                content()
+            }
                 .trackView("GaugeSearch")
         } destination: { store in
             switch store.case {
@@ -40,13 +42,7 @@ struct GaugeSearch: View {
                 }
         case .loaded(let isInitialized), .reloading(let isInitialized):
             if isInitialized {
-                Group {
-                    if store.mode == .list {
-                        GaugeSearchList(store: store)
-                    } else {
-                        GaugeSearchMap(store: store)
-                    }
-                }
+                GaugeSearchMap(store: store)
             } else {
                 ProgressView()
             }

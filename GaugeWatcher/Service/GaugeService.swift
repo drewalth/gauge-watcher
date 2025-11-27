@@ -136,8 +136,8 @@ extension GaugeService: DependencyKey {
         let options = GaugeDriverOptions(
             siteID: gauge.siteID,
             source: driverSource,
-            timePeriod: .predefined(.last30Days), // Fetch last 24 hours for sync
-            parameters: [.discharge, .height], // Fetch both discharge and height
+            timePeriod: .predefined(.last30Days),
+            parameters: [.discharge, .height],
             metadata: metadata)
 
         // 5. Fetch readings using unified API
@@ -145,24 +145,14 @@ extension GaugeService: DependencyKey {
         let driverReadings = try await factory.fetchReadings(options: options)
 
         // 6. Save readings to database
+        // Use INSERT OR IGNORE to skip duplicates efficiently (relies on unique index)
         try await database.write { db in
             for driverReading in driverReadings {
-                // Check if reading already exists (by siteID, timestamp, and metric)
-                let existingCount = try GaugeReading
-                    .where { $0.gaugeID == gaugeID }
-                    .where { $0.siteID == driverReading.siteID }
-                    .where { $0.createdAt == driverReading.timestamp }
-                    .where { $0.metric == driverReading.unit.rawValue }
-                    .fetchCount(db)
-
-                // Only insert if it doesn't already exist
-                if existingCount == 0 {
-                    try #sql("""
-                INSERT INTO gaugeReadings (siteID, value, metric, gaugeID, createdAt)
-                VALUES (\(driverReading.siteID), \(driverReading.value), \(driverReading.unit
-                                                                            .rawValue), \(gaugeID), \(driverReading.timestamp))
-            """).execute(db)
-                }
+                try #sql("""
+              INSERT OR IGNORE INTO gaugeReadings (siteID, value, metric, gaugeID, createdAt)
+              VALUES (\(driverReading.siteID), \(driverReading.value), \(driverReading.unit.rawValue), \(gaugeID), \(driverReading
+                                                                                                                        .timestamp))
+          """).execute(db)
             }
 
             // Update the gauge's updatedAt timestamp
