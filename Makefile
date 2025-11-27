@@ -8,3 +8,6 @@ lint:
 test_packages:
 	swift test --package-path ./GaugeSources
 	swift test --package-path ./GaugeDrivers
+
+check_leaks:
+	gitleaks detect --source . -v
