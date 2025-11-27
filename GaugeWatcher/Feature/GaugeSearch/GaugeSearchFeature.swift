@@ -30,13 +30,11 @@ struct GaugeSearchFeature {
         @Shared(.appStorage(LocalStorageKey.currentLocation.rawValue)) var currentLocation: CurrentLocation?
         var path = StackState<Path.State>()
 
-        // Map position and region tracking for viewport-based queries
-        var mapPosition: MapCameraPosition = .automatic
+        // Map region tracking for viewport-based queries
         var mapRegion: MKCoordinateRegion?
-
-        static let defaultMapPosition: MapCameraPosition = .region(MKCoordinateRegion(
-                                                                    center: CLLocationCoordinate2D(latitude: 39.8283, longitude: -98.5795),
-                                                                    span: MKCoordinateSpan(latitudeDelta: 100, longitudeDelta: 100)))
+        
+        // Flag to trigger recenter animation in MKMapView
+        var shouldRecenterMap: Bool = false
     }
 
     enum Action {
@@ -53,7 +51,8 @@ struct GaugeSearchFeature {
         // Map viewport actions
         case mapRegionChanged(MKCoordinateRegion)
         case mapRegionChangeDebounced(MKCoordinateRegion)
-        case setMapPosition(MapCameraPosition)
+        case recenterOnUserLocation
+        case recenterCompleted
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
@@ -91,8 +90,12 @@ struct GaugeSearchFeature {
             case .setCurrentLocation(let newValue):
                 state.$currentLocation.withLock { $0 = newValue }
                 return .none
-            case .setMapPosition(let position):
-                state.mapPosition = position
+            case .recenterOnUserLocation:
+                guard state.currentLocation != nil else { return .none }
+                state.shouldRecenterMap = true
+                return .none
+            case .recenterCompleted:
+                state.shouldRecenterMap = false
                 return .none
             case .mapRegionChanged(let region):
                 // Don't update state immediately - only store when debounce fires
@@ -109,20 +112,6 @@ struct GaugeSearchFeature {
 
                 let span = region.span
                 let center = region.center
-
-                // Check zoom level - only show gauges when zoomed in enough
-                // latitudeDelta represents the visible height in degrees
-                // ~5.0 degrees = ~350 miles (viewing entire large state)
-                // ~1.0 degree = ~70 miles (viewing metro area)
-                // ~0.5 degrees = ~35 miles (good detail level)
-                let maxSpanForGauges = 3.5 // About 250 miles - reasonable for viewing gauges
-
-                if span.latitudeDelta > maxSpanForGauges {
-                    // Too zoomed out - clear results and show message via state
-                    logger.info("Map too zoomed out (span: \(span.latitudeDelta)°) - clearing gauges")
-                    state.results = .loaded([])
-                    return .none
-                }
 
                 // Calculate bounding box from map region
                 let boundingBox = BoundingBox(
@@ -142,8 +131,6 @@ struct GaugeSearchFeature {
                 return .send(.query)
             case .initialize:
                 state.initialized = .loading
-                // Set initial map position
-                state.mapPosition = State.defaultMapPosition
                 return .run { [locationService, logger] send in
                     // Subscribe to location service stream (receives initial state immediately)
                     for await delegateAction in await locationService.delegate() {
@@ -276,20 +263,6 @@ async throws {
         longitude: location.coordinate.longitude)
 
     await send(.setCurrentLocation(currentLocation))
-
-    // Fly camera to user's location with smooth animation
-    // Using .camera for a nice "fly to" effect with altitude
-    //
-    // this doesnt seem to work as expected.
-    let cameraPosition = MapCameraPosition.camera(
-        MapCamera(
-            centerCoordinate: CLLocationCoordinate2D(
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude),
-            distance: 150_000, // ~93 miles altitude - good overview distance
-            heading: 0,
-            pitch: 0))
-    await send(.setMapPosition(cameraPosition))
 
     // Using CLGeocoder - deprecated in iOS 26 but haven't gotten MapKit replacement working yet
     let geocoder = CLGeocoder()
