@@ -4,7 +4,7 @@ from .router.router import app_router
 from .usgs.router import usgs_router
 
 app = FastAPI(
-        servers=[
+    servers=[
         {"url": "http://localhost:8000", "description": "Development"},
     ]
 )

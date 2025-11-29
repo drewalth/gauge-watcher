@@ -11,7 +11,9 @@ def format_output(data: pd.DataFrame = None) -> List[ForecastDataPoint]:
 
     error_message = {"error": "No data found for this site"}
 
-    body = error_message if data is None else data.reset_index().to_json(orient="records")
+    body = (
+        error_message if data is None else data.reset_index().to_json(orient="records")
+    )
 
     result = ForecastResult(data=[])
 

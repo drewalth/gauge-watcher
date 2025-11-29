@@ -1,15 +1,10 @@
-import asyncio
+"""Flow Forecast API - USGS water flow forecasting service"""
 
-from hypercorn.asyncio import serve
-from hypercorn.config import Config
-
-from flow_forecast.app import app
-
-config = Config()
-config.bind = ["0.0.0.0:8000"]
-asyncio.run(serve(app, config=config))
+__version__ = "0.1.0"
 
 
+def main() -> None:
+    """Entry point for running the Flow Forecast API server"""
+    from flow_forecast.__main__ import main as _main
 
-# def main() -> None:
-#     print("Hello from flow-forecast!")
+    _main()
