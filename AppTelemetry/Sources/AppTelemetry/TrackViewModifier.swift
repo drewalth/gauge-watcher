@@ -23,7 +23,7 @@ public struct TrackViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .postHogScreenView()
+            .postHogScreenView(screenName, properties)
     }
 }
 

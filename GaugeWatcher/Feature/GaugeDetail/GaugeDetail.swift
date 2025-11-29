@@ -5,7 +5,9 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
+import GaugeSources
 import Loadable
 import SwiftUI
 import UIAppearance
@@ -20,6 +22,18 @@ struct GaugeDetail: View {
         List {
             content()
         }.gaugeWatcherList()
+        .trackView("GaugeDetail", {
+            if let gauge = store.gauge.unwrap() {
+                return [
+                    "Name": gauge.name,
+                    "Source": gauge.source.rawValue,
+                    "SiteID": gauge.siteID,
+                    "Country": gauge.country,
+                    "State": gauge.state
+                ]
+            }
+            return nil
+        }())
         .task {
             store.send(.load)
         }.toolbar {

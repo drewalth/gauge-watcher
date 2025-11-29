@@ -22,7 +22,8 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "AppTelemetry",
-      dependencies: [.product(name: "PostHog", package: "posthog-ios")]),
+      dependencies: [.product(name: "PostHog", package: "posthog-ios")],
+      resources: [.process("config.plist")]),
     .testTarget(
       name: "AppTelemetryTests",
       dependencies: ["AppTelemetry"]),

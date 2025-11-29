@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+#
+# Reset AppTelemetry/config.plist back to placeholder values before committing.
+#
+# This prevents secrets from being committed to the repository.
+# The placeholders will be replaced with actual values when running scripts/setup.sh
+
+CONFIG_FILE="AppTelemetry/Sources/AppTelemetry/config.plist"
+
+if [ -f "$CONFIG_FILE" ]; then
+    # Check if file is missing placeholders (meaning it has real values)
+    if ! grep -q '{{posthog_api_key}}' "$CONFIG_FILE" || ! grep -q '{{posthog_host}}' "$CONFIG_FILE"; then
+        echo "⚠️  Detected secrets in config.plist - resetting to placeholders"
+        
+        # Create temp file with placeholders
+        cat > "$CONFIG_FILE" <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>POSTHOG_API_KEY</key>
+	<string>{{posthog_api_key}}</string>
+	<key>POSTHOG_HOST</key>
+	<string>{{posthog_host}}</string>
+</dict>
+</plist>
+EOF
+        
+        # Stage the reset file
+        git add "$CONFIG_FILE"
+        echo "✓ Config reset to placeholders and staged"
+    fi
+fi

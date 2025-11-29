@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
+import AppTelemetry
 import ComposableArchitecture
 import Foundation
 import Loadable
@@ -86,6 +87,7 @@ struct AppFeature {
                         await send(.setGaugesSeeded(true))
                         await send(.setInitialized(.loaded(true)))
                     } catch {
+                        AppTelemetry.captureEvent(error.localizedDescription)
                         // Log error but don't crash the app
                         logger.error("Failed to seed database: \(error.localizedDescription)")
                         await send(.setInitialized(.error(error)))
