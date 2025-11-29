@@ -24,6 +24,8 @@ An open source iOS app for monitoring real-time river flow gauge data across mul
 - iOS 26.0+ / macOS 26.0+
 - Xcode 26.0+
 - Swift 6.0+
+- Docker
+- [openapi-generator](https://openapi-generator.tech/) (for generating the forecast server's Swift client)
 
 ## Installation
 
@@ -155,6 +157,8 @@ make test_packages
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or pull request.
+
+You'll need to install [gitleaks](https://github.com/gitleaks/gitleaks) to check for secrets/leaks in the code before pushing changes.
 
 > Note. This is a small hobby project that is mostly an excuse to learn new things. I'm not looking for a lot of contributions, but I'm happy to accept them if you want to help.
 > If you're interested in working on a project with real-world impact, consider contributing to [American Whitewater](https://americanwhitewater.org/).
