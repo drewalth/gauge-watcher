@@ -17,6 +17,10 @@ An open source iOS app for monitoring real-time river flow gauge data across mul
 - **Offline-First Architecture**: Local SQLite database with intelligent caching
 - **Location-Aware**: Discover gauges near your current location
 
+## Features to ReImplement
+
+- [ ] Gauge flow forecasting.
+
 ## Requirements
 
 - iOS 18.4+ / macOS 15.4+

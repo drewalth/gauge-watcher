@@ -27,6 +27,7 @@ struct GaugeDetailFeature {
         var selectedTimePeriod: TimePeriod.PredefinedPeriod = .last7Days
         var availableMetrics: [GaugeSourceMetric]?
         var selectedMetric: GaugeSourceMetric?
+        var forecast: GaugeFlowForecastFeature.State?
 
         init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
@@ -44,6 +45,7 @@ struct GaugeDetailFeature {
         case setSelectedMetric(GaugeSourceMetric)
         case toggleFavorite
         case openSource
+        case forecast(GaugeFlowForecastFeature.Action)
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
@@ -58,6 +60,8 @@ struct GaugeDetailFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .forecast:
+                return .none
             case .openSource:
                 return .run { [gauge = state.gauge] _ in
                     do {
@@ -144,6 +148,18 @@ struct GaugeDetailFeature {
                 }.cancellable(id: CancelID.sync, cancelInFlight: false)
             case .setGauge(let newValue):
                 state.gauge = newValue
+                
+                if let gaugeRefNewValue = newValue.unwrap() {
+                    if state.forecast == nil {
+                        state.forecast = .init(gauge: gaugeRefNewValue)
+                    }
+                    // reset
+                    if state.forecast != nil, state.forecast?.gauge.id != gaugeRefNewValue.id {
+                        state.forecast = nil
+                        state.forecast = .init(gauge: gaugeRefNewValue)
+                    }
+                }
+                
                 return .none
             case .load:
                 if state.gauge.isLoaded() {
@@ -170,6 +186,8 @@ struct GaugeDetailFeature {
                     }
                 }.cancellable(id: CancelID.load, cancelInFlight: true)
             }
+        }.ifLet(\.forecast, action: \.forecast) {
+            GaugeFlowForecastFeature()
         }
     }
 

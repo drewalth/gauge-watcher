@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A112A01C2EDAAF0100019370 /* FlowForecast in Frameworks */ = {isa = PBXBuildFile; productRef = A112A01B2EDAAF0100019370 /* FlowForecast */; };
 		A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C292ED4D4BD0063C7FA /* GaugeDrivers */; };
 		A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C5F2ED4EAA00063C7FA /* Algorithms */; };
 		A1526C722ED51C490063C7FA /* AccessibleUI in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C712ED51C490063C7FA /* AccessibleUI */; };
@@ -71,6 +72,7 @@
 				A1526CAD2ED526D30063C7FA /* AppTelemetry in Frameworks */,
 				A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */,
 				A1526C722ED51C490063C7FA /* AccessibleUI in Frameworks */,
+				A112A01C2EDAAF0100019370 /* FlowForecast in Frameworks */,
 				A1526C912ED51FCC0063C7FA /* UIAppearance in Frameworks */,
 				A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */,
 				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
@@ -151,6 +153,7 @@
 				A1526C712ED51C490063C7FA /* AccessibleUI */,
 				A1526C902ED51FCC0063C7FA /* UIAppearance */,
 				A1526CAC2ED526D30063C7FA /* AppTelemetry */,
+				A112A01B2EDAAF0100019370 /* FlowForecast */,
 			);
 			productName = GaugeWatcher;
 			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
@@ -244,6 +247,7 @@
 				A1526C702ED51C490063C7FA /* XCRemoteSwiftPackageReference "accessible-ui" */,
 				A1526C8F2ED51FCC0063C7FA /* XCLocalSwiftPackageReference "UIAppearance" */,
 				A1526CAB2ED526D30063C7FA /* XCLocalSwiftPackageReference "AppTelemetry" */,
+				A112A01A2EDAAF0100019370 /* XCLocalSwiftPackageReference "server/flow-forecast/sdks/FlowForecast" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1FB4A262E7B5DCD00A3C7FE /* Products */;
@@ -655,6 +659,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		A112A01A2EDAAF0100019370 /* XCLocalSwiftPackageReference "server/flow-forecast/sdks/FlowForecast" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "server/flow-forecast/sdks/FlowForecast";
+		};
 		A1526C282ED4D4BD0063C7FA /* XCLocalSwiftPackageReference "GaugeDrivers" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = GaugeDrivers;
@@ -717,6 +725,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A112A01B2EDAAF0100019370 /* FlowForecast */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlowForecast;
+		};
 		A1526C292ED4D4BD0063C7FA /* GaugeDrivers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GaugeDrivers;
