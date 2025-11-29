@@ -4,6 +4,8 @@
 
 An open source iOS app for monitoring real-time river flow gauge data across multiple water resources agencies. This is a complete reboot of the original [GaugeWatcher](https://apps.apple.com/us/app/gaugewatcher/id6498313776) app, rebuilt from scratch to explore iOS 26 and Liquid Glass design patterns.
 
+> This is very much a work in progress. There will be bugs, incomplete features, and other issues. Please report them!
+
 ## Features
 
 - **Multi-Source Gauge Data**: Access real-time water flow data from:
@@ -17,14 +19,10 @@ An open source iOS app for monitoring real-time river flow gauge data across mul
 - **Offline-First Architecture**: Local SQLite database with intelligent caching
 - **Location-Aware**: Discover gauges near your current location
 
-## Features to ReImplement
-
-- [ ] Gauge flow forecasting.
-
 ## Requirements
 
-- iOS 18.4+ / macOS 15.4+
-- Xcode 16.0+
+- iOS 26.0+ / macOS 26.0+
+- Xcode 26.0+
 - Swift 6.0+
 
 ## Installation
@@ -32,15 +30,25 @@ An open source iOS app for monitoring real-time river flow gauge data across mul
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/gauge-watcher.git
+git clone https://github.com/drewalth/gauge-watcher.git
 cd gauge-watcher
 ```
 
 ### Open in Xcode
 
 ```bash
-open GaugeWatcher.xcodeproj
+xed .
 ```
+
+### Start Forecasting Server
+
+```bash
+cd server/flow-forecast
+./run.sh
+```
+
+> If you run into an issue loading the `FlowForecast` Swift package, you may need to run `make generate_clients` to generate the Swift client.
+
 
 The project uses Swift Package Manager for dependencies. Xcode will automatically resolve and download required packages on first build.
 
@@ -146,11 +154,10 @@ make test_packages
 
 ## Contributing
 
-Contributions are welcome. This project prioritizes:
-- **Code quality over speed**: Maintain high standards
-- **Modularity**: Keep concerns separated
-- **Performance**: The app must feel fast, especially on older devices
-- **Accessibility**: VoiceOver and Dynamic Type support required
+Contributions are welcome! Feel free to open an issue or pull request.
+
+> Note. This is a small hobby project that is mostly an excuse to learn new things. I'm not looking for a lot of contributions, but I'm happy to accept them if you want to help.
+> If you're interested in working on a project with real-world impact, consider contributing to [American Whitewater](https://americanwhitewater.org/).
 
 ### Adding New Gauge Sources
 
