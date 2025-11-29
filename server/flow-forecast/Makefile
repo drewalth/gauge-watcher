@@ -6,7 +6,7 @@ SERVER_HOST=http://localhost:8000
 generate_clients: swift_client validate_swift_client
 
 swift_client:
-	npx @openapitools/openapi-generator-cli generate \
+	openapi-generator generate \
 	-i $(SERVER_HOST)/openapi.json \
 	-g swift5 \
 	-o ./sdks/FlowForecast/ \
