@@ -12,7 +12,7 @@ import FoundationNetworking
 // MARK: - FlowForecastAPI
 
 open class FlowForecastAPI {
-  public static var basePath = "http://localhost"
+  public static var basePath = "http://localhost:8000"
   public static var customHeaders: [String: String] = [:]
   public static var credential: URLCredential?
   public static var requestBuilderFactory: RequestBuilderFactory = URLSessionRequestBuilderFactory()

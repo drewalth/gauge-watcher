@@ -3,7 +3,7 @@
 
 SERVER_HOST=http://localhost:8000
 
-generate_clients: clean swift_client validate_swift_client
+generate_clients: swift_client validate_swift_client
 
 swift_client:
 	npx @openapitools/openapi-generator-cli generate \
@@ -15,9 +15,6 @@ swift_client:
 	--additional-properties responseAs=AsyncAwait \
 	--additional-properties swiftToolsVersion=5.9 \
 	--additional-properties validatable=false
-
-clean:
-	rm -rf ./sdks
 
 validate_swift_client:
 	cd ./sdks/FlowForecast && swift build

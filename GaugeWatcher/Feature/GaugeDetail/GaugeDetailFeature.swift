@@ -148,7 +148,7 @@ struct GaugeDetailFeature {
                 }.cancellable(id: CancelID.sync, cancelInFlight: false)
             case .setGauge(let newValue):
                 state.gauge = newValue
-                
+
                 if let gaugeRefNewValue = newValue.unwrap() {
                     if state.forecast == nil {
                         state.forecast = .init(gauge: gaugeRefNewValue)
@@ -159,7 +159,7 @@ struct GaugeDetailFeature {
                         state.forecast = .init(gauge: gaugeRefNewValue)
                     }
                 }
-                
+
                 return .none
             case .load:
                 if state.gauge.isLoaded() {
