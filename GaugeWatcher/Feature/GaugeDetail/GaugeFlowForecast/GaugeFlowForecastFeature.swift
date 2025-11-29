@@ -47,22 +47,14 @@ struct GaugeFlowForecastFeature {
 
                 return .run { [gauge = state.gauge] send in
                     do {
-                        // intentional redundant check
                         guard gauge.source == .usgs else {
                             return
                         }
 
-                        // Configure the SDK to use date-only formatting (yyyy-MM-dd)
-                        // The Python API expects date format, not ISO8601 datetime
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy-MM-dd"
-                        dateFormatter.calendar = Calendar(identifier: .iso8601)
-                        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-                        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-                        FlowForecast.CodableHelper.dateFormatter = dateFormatter
+                        // Configure once per run, not per data point
+                        FlowForecast.CodableHelper.dateFormatter = forecastDateFormatter
 
                         let now = Date()
-                        // one year ago
                         let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
 
                         let result = try await UsgsAPI.forecastUsgsForecastPost(uSGSFlowForecastRequest: .init(
@@ -71,16 +63,34 @@ struct GaugeFlowForecastFeature {
                                                                                     startDate: oneYearAgo,
                                                                                     endDate: now))
 
-                        await Task.yield()
-                        let cleanedForecast = try result.map { value in
-                            let index = try getDateFromForecastIndex(index: value.index)
+                        // Use compactMap to combine transformation and filtering
+                        // Reuse a single calendar for all date parsing
+                        let calendar = Calendar.current
+                        let year = calendar.component(.year, from: now)
+
+                        let cleanedForecast: [CleanForecastDataPoint] = result.compactMap { value in
+                            // Filter out invalid values early
+                            guard
+                                let forecast = value.forecast,
+                                let lower = value.lowerErrorBound,
+                                let upper = value.upperErrorBound,
+                                forecast != 0, lower != 0, upper != 0
+                            else {
+                                return nil
+                            }
+
+                            // Parse date efficiently with shared calendar
+                            guard let index = parseForecastDate(value.index, year: year, calendar: calendar) else {
+                                return nil
+                            }
+
                             return CleanForecastDataPoint(
                                 index: index,
-                                value: value.forecast ?? 0,
-                                lowerErrorBound: value.lowerErrorBound ?? 0,
-                                upperErrorBound: value.upperErrorBound ?? 0)
-                        }.filter { $0.value != 0 && $0.lowerErrorBound != 0 && $0.upperErrorBound != 0 }
-                        
+                                value: forecast,
+                                lowerErrorBound: lower,
+                                upperErrorBound: upper)
+                        }
+
                         await send(.setForecast(.loaded(cleanedForecast)))
                     } catch {
                         logger.error("Forecast error: \(error.localizedDescription)")
@@ -94,7 +104,6 @@ struct GaugeFlowForecastFeature {
     // MARK: Private
 
     private let logger = Logger(category: "GaugeFlowForecastFeature")
-
 }
 
 // MARK: - CleanForecastDataPoint
@@ -116,37 +125,19 @@ nonisolated struct CleanForecastDataPoint: Identifiable, Equatable, Sendable {
     let upperErrorBound: Double
 }
 
-private nonisolated func getDateFromForecastIndex(index: String) throws -> Date {
-    // index string is 8/28.
-    // where 8 is the month and 28 is the day
-
+// Optimized to accept calendar and year as parameters to avoid repeated allocations
+private nonisolated func parseForecastDate(_ index: String, year: Int, calendar: Calendar) -> Date? {
     let components = index.split(separator: "/")
 
-    guard let month = Int(components[0]) else {
-        throw ForecastError.failedToGetIndexDate
+    guard
+        components.count == 2,
+        let month = Int(components[0]),
+        let day = Int(components[1])
+    else {
+        return nil
     }
 
-    guard let day = Int(components[1]) else {
-        throw ForecastError.failedToGetIndexDate
-    }
-
-    let calendar = Calendar.current
-
-    let year = calendar.component(.year, from: Date())
-
-    var dateComponents = DateComponents()
-
-    dateComponents.year = year
-
-    dateComponents.month = month
-
-    dateComponents.day = day
-
-    guard let date = calendar.date(from: dateComponents) else {
-        throw ForecastError.failedToGetIndexDate
-    }
-
-    return date
+    return calendar.date(from: DateComponents(year: year, month: month, day: day))
 }
 
 // MARK: - ForecastError
@@ -155,3 +146,13 @@ public enum ForecastError: Error {
     case failedToGetIndexDate
     case failedToGetForecast
 }
+
+// Move outside the reducer to avoid MainActor isolation
+private let forecastDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd"
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    return formatter
+}()
