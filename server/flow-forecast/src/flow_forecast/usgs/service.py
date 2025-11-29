@@ -1,5 +1,6 @@
 import datetime
 import datetime as dt
+import gc
 import json
 import logging
 
@@ -51,7 +52,7 @@ def get_daily_average_data(
 
         # Validate response structure
         if "value" not in response_json:
-            log.error(f"Unexpected API response structure: missing 'value' key")
+            log.error("Unexpected API response structure: missing 'value' key")
             raise KeyError("API response missing 'value' field")
 
         time_series = response_json["value"].get("timeSeries", [])
@@ -190,6 +191,13 @@ def generate_prophet_forecast(
     final_df.index = [date.strftime("%-m/%-d") for date in dates]
 
     log.info(f"Generated forecast with {len(final_df)} data points")
+
+    # Clean up intermediate DataFrames to prevent memory leaks in long-running server
+    # These can be substantial in size and Python's GC won't necessarily clean them
+    # up promptly between requests in resource-constrained environments
+    del site_data, clean_data, forecast_df, historic_df
+    gc.collect()
+
     return final_df
 
 
@@ -249,16 +257,27 @@ def generate_forecast(historic_data: pd.DataFrame) -> pd.DataFrame:
 
     model = Prophet(interval_width=0.50)
 
-    model.fit(historic_data)
-    forecast = model.predict(
-        model.make_future_dataframe(
-            periods=get_forecast_length(historic_data.iloc[-1]["ds"].date()),
-            include_history=False,
+    try:
+        model.fit(historic_data)
+        forecast = model.predict(
+            model.make_future_dataframe(
+                periods=get_forecast_length(historic_data.iloc[-1]["ds"].date()),
+                include_history=False,
+            )
         )
-    )
-    forecast = forecast.round()
+        forecast = forecast.round()
 
-    return forecast[["yhat", "yhat_lower", "yhat_upper"]]
+        # Create a copy of just the columns we need to ensure we don't keep
+        # references to the full forecast DataFrame
+        result = forecast[["yhat", "yhat_lower", "yhat_upper"]].copy()
+
+        return result
+    finally:
+        # Explicitly destroy the Prophet model and force garbage collection
+        # Prophet uses PyStan internally which has C++ components that don't
+        # play nicely with Python's automatic garbage collector
+        del model
+        gc.collect()
 
 
 def get_forecast_length(last_data_day: dt.date) -> int:

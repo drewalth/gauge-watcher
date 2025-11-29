@@ -10,6 +10,7 @@ import Foundation
 import GaugeDrivers
 import GaugeSources
 import SQLiteData
+import FlowForecast
 
 // MARK: - GaugeService
 
@@ -20,6 +21,7 @@ struct GaugeService {
     var sync: (Gauge.ID) async throws -> Void
     var toggleFavorite: (Gauge.ID) async throws -> Void
     var loadFavoriteGauges: () async throws -> [Gauge]
+    var forecast: (String, USGS.USGSParameter) async throws -> [ForecastDataPoint]
 }
 
 // MARK: DependencyKey
@@ -181,6 +183,55 @@ extension GaugeService: DependencyKey {
         return try await database.read { db in
             try Gauge.where { $0.favorite == true }.fetchAll(db)
         }
+    }, forecast: { siteID, readingParam in
+    
+        
+        guard readingParam != .temperature else {
+            throw GaugeServiceError.unsupportedForecastReadingParam
+        }
+        
+        FlowForecast.CodableHelper.dateFormatter = forecastDateFormatter
+
+        let now = Date()
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
+
+        // "00060"
+        // or
+        // 
+        let result = try await UsgsAPI.forecastUsgsForecastPost(uSGSFlowForecastRequest: .init(
+                                                                    siteId: siteID,
+                                                                    readingParameter: readingParam.rawValue,
+                                                                    startDate: oneYearAgo,
+                                                                    endDate: now))
+        
+        // Use compactMap to combine transformation and filtering
+        // Reuse a single calendar for all date parsing
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: now)
+
+        let cleanedForecast: [ForecastDataPoint] = result.compactMap { value in
+            // Filter out invalid values early
+            guard
+                let forecast = value.forecast,
+                let lower = value.lowerErrorBound,
+                let upper = value.upperErrorBound,
+                forecast != 0, lower != 0, upper != 0
+            else {
+                return nil
+            }
+
+            // Parse date efficiently with shared calendar
+            guard let index = parseForecastDate(value.index, year: year, calendar: calendar) else {
+                return nil
+            }
+
+            return ForecastDataPoint(
+                index: index,
+                value: forecast,
+                lowerErrorBound: lower,
+                upperErrorBound: upper)
+        }
+        return cleanedForecast
     })
 }
 
@@ -302,4 +353,49 @@ extension GaugeReadingQuery {
 enum DatabaseServiceError: Error {
     case gaugeNotFound
     case unknownError
+}
+
+// Move outside the reducer to avoid MainActor isolation
+private let forecastDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd"
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    return formatter
+}()
+
+nonisolated struct ForecastDataPoint: Identifiable, Equatable, Sendable {
+
+    init(id: UUID = UUID(), index: Date, value: Double, lowerErrorBound: Double, upperErrorBound: Double) {
+        self.id = id
+        self.index = index
+        self.value = value
+        self.lowerErrorBound = lowerErrorBound
+        self.upperErrorBound = upperErrorBound
+    }
+
+    let id: UUID
+    let index: Date
+    let value: Double
+    let lowerErrorBound: Double
+    let upperErrorBound: Double
+}
+
+private nonisolated func parseForecastDate(_ index: String, year: Int, calendar: Calendar) -> Date? {
+    let components = index.split(separator: "/")
+
+    guard
+        components.count == 2,
+        let month = Int(components[0]),
+        let day = Int(components[1])
+    else {
+        return nil
+    }
+
+    return calendar.date(from: DateComponents(year: year, month: month, day: day))
+}
+
+enum GaugeServiceError: Error {
+    case unsupportedForecastReadingParam
 }

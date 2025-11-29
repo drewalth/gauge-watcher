@@ -76,7 +76,7 @@ struct GaugeFlowForecast: View {
         )
     }
     
-    private func forecastChart(_ forecast: [CleanForecastDataPoint]) -> some View {
+    private func forecastChart(_ forecast: [ForecastDataPoint]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Flow Forecast")
