@@ -3,16 +3,17 @@
 import asyncio
 
 from hypercorn.asyncio import serve
-from hypercorn.config import Config
+from hypercorn.config import Config as HypercornConfig
 
 from flow_forecast.app import app
+from flow_forecast.config import config
 
 
 def main() -> None:
     """Start the Flow Forecast API server"""
-    config = Config()
-    config.bind = ["0.0.0.0:8000"]
-    asyncio.run(serve(app, config=config))
+    app_config = HypercornConfig()
+    app_config.bind = [f"{config.host}:{config.port}"]
+    asyncio.run(serve(app, config=app_config))
 
 
 if __name__ == "__main__":

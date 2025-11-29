@@ -4,12 +4,14 @@ import time
 
 from .router.router import app_router
 from .usgs.router import usgs_router
+from .config import config
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=config.log_level,
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
 )
 logger = logging.getLogger(__name__)
+logger.setLevel(config.log_level)
 
 app = FastAPI(
     title="Flow Forecast API",
@@ -20,7 +22,7 @@ app = FastAPI(
         "url": "https://opensource.org/licenses/MIT",
     },
     servers=[
-        {"url": "http://localhost:8000", "description": "Development"},
+        {"url": config.server_url, "description": "Development"},
     ]
 )
 

@@ -27,7 +27,8 @@ struct GaugeDetailFeature {
         var selectedTimePeriod: TimePeriod.PredefinedPeriod = .last7Days
         var availableMetrics: [GaugeSourceMetric]?
         var selectedMetric: GaugeSourceMetric?
-        var forecast: GaugeFlowForecastFeature.State?
+        var forecast: Loadable<[ForecastDataPoint]> = .initial
+        var forecastAvailable: Loadable<Bool> = .initial
 
         init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
@@ -45,7 +46,9 @@ struct GaugeDetailFeature {
         case setSelectedMetric(GaugeSourceMetric)
         case toggleFavorite
         case openSource
-        case forecast(GaugeFlowForecastFeature.Action)
+        case getForecast
+        case setForecast(Loadable<[ForecastDataPoint]>)
+        case setForecastAvailable(Loadable<Bool>)
     }
 
     @Dependency(\.gaugeService) var gaugeService: GaugeService
@@ -60,8 +63,35 @@ struct GaugeDetailFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .forecast:
+            case .setForecastAvailable(let newValue):
+                state.forecastAvailable = newValue
                 return .none
+            case .setForecast(let newValue):
+                state.forecast = newValue
+                return .none
+            case .getForecast:
+                guard state.gauge.isLoaded(), state.forecastAvailable.unwrap() == true else {
+                    logger.warning("gauge not loaded or unable to determine forecastability...")
+                    return .none
+                }
+                return .run { [gauge = state.gauge] send in
+                    do {
+                        guard
+                            let gauge = gauge.unwrap(),
+                            gauge.source == .usgs
+                        else {
+                            logger.info("Forecast not available")
+                            return
+                        }
+
+                        let result = try await gaugeService.forecast(gauge.siteID, USGS.USGSParameter.discharge)
+
+                        await send(.setForecast(.loaded(result)))
+                    } catch {
+                        logger.error("Forecast error: \(error.localizedDescription)")
+                        await send(.setForecast(.error(error)))
+                    }
+                }
             case .openSource:
                 return .run { [gauge = state.gauge] _ in
                     do {
@@ -148,18 +178,6 @@ struct GaugeDetailFeature {
                 }.cancellable(id: CancelID.sync, cancelInFlight: false)
             case .setGauge(let newValue):
                 state.gauge = newValue
-
-                if let gaugeRefNewValue = newValue.unwrap() {
-                    if state.forecast == nil {
-                        state.forecast = .init(gauge: gaugeRefNewValue)
-                    }
-                    // reset
-                    if state.forecast != nil, state.forecast?.gauge.id != gaugeRefNewValue.id {
-                        state.forecast = nil
-                        state.forecast = .init(gauge: gaugeRefNewValue)
-                    }
-                }
-
                 return .none
             case .load:
                 if state.gauge.isLoaded() {
@@ -172,6 +190,10 @@ struct GaugeDetailFeature {
                         let gauge = try await gaugeService.loadGauge(state.gaugeID).ref
 
                         await send(.setGauge(.loaded(gauge)))
+
+                        if gauge.source == .usgs {
+                            await send(.setForecastAvailable(.loaded(true)))
+                        }
 
                         if gauge.isStale() {
                             logger.info("syncing gauge")
@@ -186,8 +208,6 @@ struct GaugeDetailFeature {
                     }
                 }.cancellable(id: CancelID.load, cancelInFlight: true)
             }
-        }.ifLet(\.forecast, action: \.forecast) {
-            GaugeFlowForecastFeature()
         }
     }
 

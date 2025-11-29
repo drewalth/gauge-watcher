@@ -13,6 +13,7 @@ dependencies = [
     "pandas>=2.3.3",
     "prophet>=1.2.1",
     "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
 ]
 
 [project.scripts]

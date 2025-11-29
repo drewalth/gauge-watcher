@@ -6,11 +6,11 @@
 //
 
 import ComposableArchitecture
+import FlowForecast
 import Foundation
 import GaugeDrivers
 import GaugeSources
 import SQLiteData
-import FlowForecast
 
 // MARK: - GaugeService
 
@@ -184,12 +184,10 @@ extension GaugeService: DependencyKey {
             try Gauge.where { $0.favorite == true }.fetchAll(db)
         }
     }, forecast: { siteID, readingParam in
-    
-        
         guard readingParam != .temperature else {
             throw GaugeServiceError.unsupportedForecastReadingParam
         }
-        
+
         FlowForecast.CodableHelper.dateFormatter = forecastDateFormatter
 
         let now = Date()
@@ -197,13 +195,13 @@ extension GaugeService: DependencyKey {
 
         // "00060"
         // or
-        // 
+        //
         let result = try await UsgsAPI.forecastUsgsForecastPost(uSGSFlowForecastRequest: .init(
                                                                     siteId: siteID,
                                                                     readingParameter: readingParam.rawValue,
                                                                     startDate: oneYearAgo,
                                                                     endDate: now))
-        
+
         // Use compactMap to combine transformation and filtering
         // Reuse a single calendar for all date parsing
         let calendar = Calendar.current
@@ -365,6 +363,8 @@ private let forecastDateFormatter: DateFormatter = {
     return formatter
 }()
 
+// MARK: - ForecastDataPoint
+
 nonisolated struct ForecastDataPoint: Identifiable, Equatable, Sendable {
 
     init(id: UUID = UUID(), index: Date, value: Double, lowerErrorBound: Double, upperErrorBound: Double) {
@@ -395,6 +395,8 @@ private nonisolated func parseForecastDate(_ index: String, year: Int, calendar:
 
     return calendar.date(from: DateComponents(year: year, month: month, day: day))
 }
+
+// MARK: - GaugeServiceError
 
 enum GaugeServiceError: Error {
     case unsupportedForecastReadingParam

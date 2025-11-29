@@ -59,9 +59,7 @@ struct GaugeDetail: View {
         }
         GaugeReadingChart(store: store)
         LatestGaugeReading(store: store)
-        if let forecastStore = store.scope(state: \.forecast, action: \.forecast) {
-            GaugeFlowForecast(store: forecastStore)
-        }
+        GaugeFlowForecast(store: store)
         if gauge.sourceURL != nil {
             Button("Source") {
                 store.send(.openSource)

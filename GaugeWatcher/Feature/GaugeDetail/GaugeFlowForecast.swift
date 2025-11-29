@@ -5,35 +5,32 @@
 //  Created by Andrew Althage on 11/28/25.
 //
 
-import ComposableArchitecture
-import SwiftUI
 import Charts
+import ComposableArchitecture
 import Loadable
+import SwiftUI
 
 struct GaugeFlowForecast: View {
-    var store: StoreOf<GaugeFlowForecastFeature>
+
+    // MARK: Internal
+
+    var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
         VStack(spacing: 0) {
-            if !store.available {
-                unavailableView
-            } else {
-                forecastContent
-            }
-        }
-        .task {
-            store.send(.load)
+            mainContent()
         }
     }
-    
+
+    // MARK: Private
+
     private var unavailableView: some View {
         ContentUnavailableView(
             "Forecast Not Available",
             systemImage: "chart.line.downtrend.xyaxis",
-            description: Text("Flow forecasting is currently only available for USGS gauges.")
-        )
+            description: Text("Flow forecasting is currently only available for USGS gauges."))
     }
-    
+
     @ViewBuilder
     private var forecastContent: some View {
         switch store.forecast {
@@ -49,7 +46,7 @@ struct GaugeFlowForecast: View {
             errorView(error)
         }
     }
-    
+
     private var loadingView: some View {
         VStack(spacing: 16) {
             ProgressView()
@@ -59,23 +56,40 @@ struct GaugeFlowForecast: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    
+
     private var emptyForecastView: some View {
         ContentUnavailableView(
             "No Forecast Data",
             systemImage: "chart.line.flattrend.xyaxis",
-            description: Text("Unable to generate forecast with available historical data.")
-        )
+            description: Text("Unable to generate forecast with available historical data."))
     }
-    
+
+    @ViewBuilder
+    private func mainContent() -> some View {
+        switch store.forecastAvailable {
+        case .initial, .loading:
+            ProgressView()
+        case .loaded(let isAvailable), .reloading(let isAvailable):
+            if isAvailable {
+                forecastContent
+                    .task {
+                        store.send(.getForecast)
+                    }
+            } else {
+                unavailableView
+            }
+        case .error(let err):
+            Text(err.localizedDescription)
+        }
+    }
+
     private func errorView(_ error: Error) -> some View {
         ContentUnavailableView(
             "Failed to Load Forecast",
             systemImage: "exclamationmark.triangle",
-            description: Text(error.localizedDescription)
-        )
+            description: Text(error.localizedDescription))
     }
-    
+
     private func forecastChart(_ forecast: [ForecastDataPoint]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
@@ -87,33 +101,30 @@ struct GaugeFlowForecast: View {
             }
             .padding(.horizontal)
             .padding(.top, 8)
-            
+
             Chart(forecast) { dataPoint in
                 // Error bound area (confidence interval)
                 AreaMark(
                     x: .value("Date", dataPoint.index),
                     yStart: .value("Lower Bound", dataPoint.lowerErrorBound),
-                    yEnd: .value("Upper Bound", dataPoint.upperErrorBound)
-                )
-                .foregroundStyle(.blue.opacity(0.2))
-                .interpolationMethod(.catmullRom)
-                
+                    yEnd: .value("Upper Bound", dataPoint.upperErrorBound))
+                    .foregroundStyle(.blue.opacity(0.2))
+                    .interpolationMethod(.catmullRom)
+
                 // Forecast line
                 LineMark(
                     x: .value("Date", dataPoint.index),
-                    y: .value("Flow", dataPoint.value)
-                )
-                .foregroundStyle(.blue)
-                .lineStyle(StrokeStyle(lineWidth: 2))
-                .interpolationMethod(.catmullRom)
-                
+                    y: .value("Flow", dataPoint.value))
+                    .foregroundStyle(.blue)
+                    .lineStyle(StrokeStyle(lineWidth: 2))
+                    .interpolationMethod(.catmullRom)
+
                 // Data points
                 PointMark(
                     x: .value("Date", dataPoint.index),
-                    y: .value("Flow", dataPoint.value)
-                )
-                .foregroundStyle(.blue)
-                .symbolSize(30)
+                    y: .value("Flow", dataPoint.value))
+                    .foregroundStyle(.blue)
+                    .symbolSize(30)
             }
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 1)) { value in
@@ -146,7 +157,7 @@ struct GaugeFlowForecast: View {
             .chartYAxisLabel("Flow (CFS)", position: .leading, alignment: .center)
             .frame(height: 300)
             .padding(.horizontal)
-            
+
             // Legend
             HStack(spacing: 20) {
                 Label {
@@ -157,7 +168,7 @@ struct GaugeFlowForecast: View {
                         .fill(.blue)
                         .frame(width: 20, height: 2)
                 }
-                
+
                 Label {
                     Text("Confidence Interval")
                         .font(.caption)
@@ -172,7 +183,7 @@ struct GaugeFlowForecast: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
-    
+
     private func formatFlowValue(_ value: Double) -> String {
         if value >= 1000 {
             return String(format: "%.1fk", value / 1000)
