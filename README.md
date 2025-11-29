@@ -34,6 +34,7 @@ An open source iOS app for monitoring near-real-time river flow gauge data acros
 ```bash
 git clone https://github.com/drewalth/gauge-watcher.git
 cd gauge-watcher
+./scripts/setup.sh
 ```
 
 ### Open in Xcode
