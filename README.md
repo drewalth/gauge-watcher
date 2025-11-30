@@ -172,12 +172,10 @@ You'll need to install [gitleaks](https://github.com/gitleaks/gitleaks) to check
 4. Add comprehensive tests for your driver
 5. Update documentation
 
-## Acknowledgments
+## Data Sources
 
-- Original GaugeWatcher app concept and design
-- Data providers: USGS, Environment Canada, Colorado DWR, LAWA
-- The Point-Free team for The Composable Architecture
+- [USGS](https://waterservices.usgs.gov)
+- [Environment Canada](https://dd.weather.gc.ca)
+- [Colorado DWR](https://dwr.state.co.us/Tools)
+- [Land, Air, Water Aotearoa (LAWA)](https://www.lawa.org.nz)
 
----
-
-**Status**: Active development | **Version**: 4.0 (reboot) | **Platform**: iOS 18.4+
