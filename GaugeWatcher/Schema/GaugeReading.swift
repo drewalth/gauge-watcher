@@ -32,34 +32,6 @@ struct GaugeReading: Identifiable, Hashable, GaugeReadingProtocol {
     var createdAt: Date
 }
 
-// MARK: - GaugeReadingRef
-
-nonisolated struct GaugeReadingRef: Identifiable, Hashable, GaugeReadingProtocol {
-    let id: Int
-    let siteID: String
-    let value: Double
-    let metric: String
-    let gaugeID: Gauge.ID
-    let createdAt: Date
-}
-
-// MARK: CustomStringConvertible
-
-extension GaugeReadingRef: CustomStringConvertible {
-    var description: String {
-        """
-    GaugeReadingRef(
-        id: \(id),
-        siteID: \(siteID),
-        value: \(value),
-        metric: \(metric),
-        gaugeID: \(gaugeID),
-        createdAt: \(createdAt)
-    )
-    """
-    }
-}
-
 extension GaugeReading {
     nonisolated var ref: GaugeReadingRef {
         GaugeReadingRef(

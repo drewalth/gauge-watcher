@@ -15,6 +15,7 @@
 		A1526CAD2ED526D30063C7FA /* AppTelemetry in Frameworks */ = {isa = PBXBuildFile; productRef = A1526CAC2ED526D30063C7FA /* AppTelemetry */; };
 		A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEB9A2ED2187400DAD9D4 /* ComposableArchitecture */; };
 		A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */ = {isa = PBXBuildFile; productRef = A16CEBA52ED2193400DAD9D4 /* Loadable */; };
+		A18830252EDE27FB0033F911 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = A18830242EDE27FB0033F911 /* UIComponents */; };
 		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
 		A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2B42E7B711F004253ED /* GaugeSources */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 /* Begin PBXFileReference section */
 		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1526CAA2ED5263D0063C7FA /* AppTelemetry */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppTelemetry; sourceTree = "<group>"; };
+		A18830222EDE27540033F911 /* UIComponents */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIComponents; sourceTree = "<group>"; };
 		A1AAF29A2E7B6F72004253ED /* GaugeSources */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeSources; sourceTree = "<group>"; };
 		A1F9E3A12ED4C60C00676AB1 /* GaugeDrivers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeDrivers; sourceTree = "<group>"; };
 		A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GaugeWatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,9 +48,25 @@
 		A1FB4A522E7B620000A3C7FE /* GaugeWatcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A1047C9A2EDE288F00AA564E /* Exceptions for "GaugeWatcher" folder in "GaugeWatcher" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Components/README.md,
+				Feature/README.md,
+				Model/README.md,
+				Schema/README.md,
+			);
+			target = A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A1047C9A2EDE288F00AA564E /* Exceptions for "GaugeWatcher" folder in "GaugeWatcher" target */,
+			);
 			path = GaugeWatcher;
 			sourceTree = "<group>";
 		};
@@ -76,6 +94,7 @@
 				A1526C912ED51FCC0063C7FA /* UIAppearance in Frameworks */,
 				A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */,
 				A16CEB9B2ED2187400DAD9D4 /* ComposableArchitecture in Frameworks */,
+				A18830252EDE27FB0033F911 /* UIComponents in Frameworks */,
 				A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */,
 				A16CEBA62ED2193400DAD9D4 /* Loadable in Frameworks */,
 				A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */,
@@ -99,9 +118,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A18830232EDE27FB0033F911 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A18830222EDE27540033F911 /* UIComponents */,
 				A1526CAA2ED5263D0063C7FA /* AppTelemetry */,
 				A1526C762ED51F410063C7FA /* UIAppearance */,
 				A1F9E3A12ED4C60C00676AB1 /* GaugeDrivers */,
@@ -109,6 +136,7 @@
 				A1FB4A272E7B5DCD00A3C7FE /* GaugeWatcher */,
 				A1FB4A462E7B61EA00A3C7FE /* GaugeWatcherTests */,
 				A1FB4A532E7B620000A3C7FE /* GaugeWatcherUITests */,
+				A18830232EDE27FB0033F911 /* Frameworks */,
 				A1FB4A262E7B5DCD00A3C7FE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -154,6 +182,7 @@
 				A1526C902ED51FCC0063C7FA /* UIAppearance */,
 				A1526CAC2ED526D30063C7FA /* AppTelemetry */,
 				A112A01B2EDAAF0100019370 /* FlowForecast */,
+				A18830242EDE27FB0033F911 /* UIComponents */,
 			);
 			productName = GaugeWatcher;
 			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
@@ -760,6 +789,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A16CEBA42ED2193400DAD9D4 /* XCRemoteSwiftPackageReference "swift-loadable" */;
 			productName = Loadable;
+		};
+		A18830242EDE27FB0033F911 /* UIComponents */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UIComponents;
 		};
 		A1AAF2802E7B63A2004253ED /* SQLiteData */ = {
 			isa = XCSwiftPackageProductDependency;

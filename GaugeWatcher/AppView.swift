@@ -9,6 +9,7 @@ import AppTelemetry
 import ComposableArchitecture
 import Loadable
 import SwiftUI
+import UIComponents
 
 // MARK: - AppView
 
@@ -33,14 +34,9 @@ struct AppView: View {
     private func content() -> some View {
         switch store.initialized {
         case .initial, .reloading, .loading:
-            ProgressView()
+            ContinuousSpinner()
         case .error(let error):
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Something went wrong")
-                Text(error.localizedDescription)
-                    .lineLimit(3)
-                    .multilineTextAlignment(.leading)
-            }
+            UtilityBlockView(kind: .error("Something went wrong"))
         case .loaded(let isInitialized):
             if isInitialized {
                 TabView(selection: $store.selectedTab.sending(\.setSelectedTab)) {
@@ -48,7 +44,7 @@ struct AppView: View {
                         if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
                             GaugeSearch(store: gaugeSearchStore)
                         } else {
-                            ProgressView()
+                            ContinuousSpinner()
                         }
                     }
                     .tabItem {
@@ -60,7 +56,7 @@ struct AppView: View {
                         if let favoriteGaugesStore = store.scope(state: \.favorites, action: \.favorites) {
                             FavoriteGaugesView(store: favoriteGaugesStore)
                         } else {
-                            ProgressView()
+                            ContinuousSpinner()
                         }
                     }
                     .tabItem {
@@ -69,12 +65,7 @@ struct AppView: View {
                     .tag(1)
                 }
             } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("And you may ask yourself, well, how did I get here?")
-                        .font(.caption)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
-                }
+                UtilityBlockView(kind: .error("Something went wrong"))
             }
         }
     }

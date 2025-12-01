@@ -1,5 +1,5 @@
 {
-  "originHash" : "c68f0c40039fda44fb6e0803ed19e083ded4c54f0cf92d4b408e0214f127edcd",
+  "originHash" : "eb39b41b4a66555f7b95baffb8a05cb61c73bc0cd72d07dc2aff189ed494b686",
   "pins" : [
     {
       "identity" : "accessible-ui",
@@ -124,7 +124,7 @@
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
         "revision" : "a10f9feeb214bc72b5337b6ef6d5a029360db4cc",
-        "version" : "1.9.5"
+        "version" : "1.10.0"
       }
     },
     {
@@ -204,8 +204,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
-        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
-        "version" : "602.0.0"
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
+      }
+    },
+    {
+      "identity" : "vcomponents",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/VakhoKontridze/VComponents",
+      "state" : {
+        "revision" : "751e87e9f9b35ca8963edd8fde2f79987cdbbbd3",
+        "version" : "7.2.5"
+      }
+    },
+    {
+      "identity" : "vcore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/VakhoKontridze/VCore",
+      "state" : {
+        "revision" : "7684c077ff0bba6cebd3ea42b2694cef2b0fefb8",
+        "version" : "7.5.2"
       }
     },
     {

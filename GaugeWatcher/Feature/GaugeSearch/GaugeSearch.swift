@@ -9,6 +9,7 @@ import AppTelemetry
 import ComposableArchitecture
 import Loadable
 import SwiftUI
+import UIComponents
 
 struct GaugeSearch: View {
 
@@ -36,7 +37,7 @@ struct GaugeSearch: View {
     private func content() -> some View {
         switch store.initialized {
         case .initial, .loading:
-            ProgressView()
+            ContinuousSpinner()
                 .task {
                     store.send(.initialize)
                 }
@@ -44,10 +45,10 @@ struct GaugeSearch: View {
             if isInitialized {
                 GaugeSearchMap(store: store)
             } else {
-                ProgressView()
+                ContinuousSpinner()
             }
         case .error(let error):
-            Text(error.localizedDescription)
+            UtilityBlockView(kind: .error(error.localizedDescription))
         }
     }
 }

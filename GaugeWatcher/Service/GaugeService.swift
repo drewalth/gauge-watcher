@@ -10,11 +10,14 @@ import FlowForecast
 import Foundation
 import GaugeDrivers
 import GaugeSources
+import os
 import SQLiteData
 
 // MARK: - GaugeService
 
 struct GaugeService {
+    var seeded: () async -> Result<Bool, Error>
+    var loadAllSources: () async throws -> [GaugeSourceItem]
     var loadGauge: (Gauge.ID) async throws -> Gauge
     var loadGauges: (GaugeQueryOptions) async throws -> [Gauge]
     var loadGaugeReadings: (GaugeReadingQuery) async throws -> [GaugeReading]
@@ -27,210 +30,230 @@ struct GaugeService {
 // MARK: DependencyKey
 
 extension GaugeService: DependencyKey {
-    static let liveValue: GaugeService = Self(loadGauge: { id in
-        @Dependency(\.defaultDatabase) var database
-        return try await database.read { db in
-            guard let gauge = try Gauge.where({ $0.id == id }).fetchOne(db) else {
-                throw DatabaseServiceError.gaugeNotFound
-            }
-            return gauge
-        }
-    }, loadGauges: { options in
-        @Dependency(\.defaultDatabase)
-        var database
-        return try await database.read { db in
-            // implement the query options
-            var query = Gauge.all
-            if let name = options.name {
-                // where name contains the query string
-                query = query.where { $0.name.lower().contains(name.lowercased()) }
-            }
-            if let country = options.country {
-                query = query.where { $0.country == country }
-            }
-            if let state = options.state {
-                query = query.where { $0.state == state }
-            }
-            if let zone = options.zone {
-                query = query.where { $0.zone == zone }
-            }
-            if let source = options.source {
-                query = query.where { $0.source == source }
-            }
-            if let favorite = options.favorite {
-                query = query.where { $0.favorite == favorite }
-            }
-            if let primary = options.primary {
-                query = query.where { $0.primary == primary }
-            }
-
-            // Bounding box spatial query - replaces state-based filtering when provided
-            if let bbox = options.boundingBox {
-                query = query.where {
-                    $0.latitude >= bbox.minLatitude &&
-                        $0.latitude <= bbox.maxLatitude &&
-                        $0.longitude >= bbox.minLongitude &&
-                        $0.longitude <= bbox.maxLongitude
+    static let liveValue: GaugeService = Self(
+        seeded: {
+            do {
+                @Dependency(\.defaultDatabase) var database
+                let gaugeSources = try await GaugeSources.loadAll()
+                let numberOfSources = gaugeSources.count
+                let numberOfGauges = try await database.read { db in
+                    try Gauge.all.fetchCount(db)
                 }
 
-                // Safety limit: cap results for bounding box queries to prevent UI overload
-                // Even at reasonable zoom, dense areas could have hundreds of gauges
-                return try query.limit(500).fetchAll(db)
+                return .success(numberOfGauges == numberOfSources)
+            } catch {
+                logger.error("Error checking if gauges have already been seeded: \(error.localizedDescription)")
+                return .failure(error)
+            }
+        },
+        loadAllSources: {
+            try await GaugeSources.loadAll()
+        },
+        loadGauge: { id in
+            @Dependency(\.defaultDatabase) var database
+            return try await database.read { db in
+                guard let gauge = try Gauge.where({ $0.id == id }).fetchOne(db) else {
+                    throw DatabaseServiceError.gaugeNotFound
+                }
+                return gauge
+            }
+        }, loadGauges: { options in
+            @Dependency(\.defaultDatabase)
+            var database
+            return try await database.read { db in
+                // implement the query options
+                var query = Gauge.all
+                if let name = options.name {
+                    // where name contains the query string
+                    query = query.where { $0.name.lower().contains(name.lowercased()) }
+                }
+                if let country = options.country {
+                    query = query.where { $0.country == country }
+                }
+                if let state = options.state {
+                    query = query.where { $0.state == state }
+                }
+                if let zone = options.zone {
+                    query = query.where { $0.zone == zone }
+                }
+                if let source = options.source {
+                    query = query.where { $0.source == source }
+                }
+                if let favorite = options.favorite {
+                    query = query.where { $0.favorite == favorite }
+                }
+                if let primary = options.primary {
+                    query = query.where { $0.primary == primary }
+                }
+
+                // Bounding box spatial query - replaces state-based filtering when provided
+                if let bbox = options.boundingBox {
+                    query = query.where {
+                        $0.latitude >= bbox.minLatitude &&
+                            $0.latitude <= bbox.maxLatitude &&
+                            $0.longitude >= bbox.minLongitude &&
+                            $0.longitude <= bbox.maxLongitude
+                    }
+
+                    // Safety limit: cap results for bounding box queries to prevent UI overload
+                    // Even at reasonable zoom, dense areas could have hundreds of gauges
+                    return try query.limit(500).fetchAll(db)
+                }
+
+                return try query.fetchAll(db)
             }
 
-            return try query.fetchAll(db)
-        }
+        }, loadGaugeReadings: { query in
+            @Dependency(\.defaultDatabase) var database
+            return try await database.read { db in
+                var dbQuery = GaugeReading
+                    .where { $0.gaugeID == query.gaugeID }
+                    .order { $0.createdAt.desc() } // Most recent first
 
-    }, loadGaugeReadings: { query in
-        @Dependency(\.defaultDatabase) var database
-        return try await database.read { db in
-            var dbQuery = GaugeReading
-                .where { $0.gaugeID == query.gaugeID }
-                .order { $0.createdAt.desc() } // Most recent first
+                // Apply date range filter if provided
+                if let dateRange = query.dateRange {
+                    dbQuery = dbQuery
+                        .where { $0.createdAt >= dateRange.start }
+                        .where { $0.createdAt <= dateRange.end }
+                }
 
-            // Apply date range filter if provided
-            if let dateRange = query.dateRange {
-                dbQuery = dbQuery
-                    .where { $0.createdAt >= dateRange.start }
-                    .where { $0.createdAt <= dateRange.end }
+                // Apply metric filter if provided
+                if let metric = query.metric {
+                    dbQuery = dbQuery.where { $0.metric == metric }
+                }
+
+                // Apply limit if provided, otherwise default to 1000
+                let limit = query.limit ?? 1000
+                dbQuery = dbQuery.limit(limit)
+
+                return try dbQuery.fetchAll(db)
+            }
+        }, sync: { gaugeID in
+            @Dependency(\.defaultDatabase) var database
+
+            // 1. Load gauge from database
+            let gauge = try await database.read { db in
+                guard let gauge = try Gauge.where { $0.id == gaugeID }.fetchOne(db) else {
+                    throw DatabaseServiceError.gaugeNotFound
+                }
+                return gauge
             }
 
-            // Apply metric filter if provided
-            if let metric = query.metric {
-                dbQuery = dbQuery.where { $0.metric == metric }
-            }
+            // 2. Convert GaugeSource to GaugeDriverSource
+            let driverSource = gauge.source.toDriverSource
 
-            // Apply limit if provided, otherwise default to 1000
-            let limit = query.limit ?? 1000
-            dbQuery = dbQuery.limit(limit)
-
-            return try dbQuery.fetchAll(db)
-        }
-    }, sync: { gaugeID in
-        @Dependency(\.defaultDatabase) var database
-
-        // 1. Load gauge from database
-        let gauge = try await database.read { db in
-            guard let gauge = try Gauge.where { $0.id == gaugeID }.fetchOne(db) else {
-                throw DatabaseServiceError.gaugeNotFound
-            }
-            return gauge
-        }
-
-        // 2. Convert GaugeSource to GaugeDriverSource
-        let driverSource = gauge.source.toDriverSource
-
-        // 3. Create metadata for sources that need it (e.g., Environment Canada needs province)
-        let metadata: SourceMetadata? = {
-            switch gauge.source {
-            case .environmentCanada:
-                let provinceCode = gauge.state.lowercased()
-                guard let province = EnvironmentCanada.Province(rawValue: provinceCode) else {
+            // 3. Create metadata for sources that need it (e.g., Environment Canada needs province)
+            let metadata: SourceMetadata? = {
+                switch gauge.source {
+                case .environmentCanada:
+                    let provinceCode = gauge.state.lowercased()
+                    guard let province = EnvironmentCanada.Province(rawValue: provinceCode) else {
+                        return nil
+                    }
+                    return .environmentCanada(province: province)
+                case .usgs, .dwr, .lawa:
                     return nil
                 }
-                return .environmentCanada(province: province)
-            case .usgs, .dwr, .lawa:
-                return nil
+            }()
+
+            // 4. Create driver options
+            let options = GaugeDriverOptions(
+                siteID: gauge.siteID,
+                source: driverSource,
+                timePeriod: .predefined(.last30Days),
+                parameters: [.discharge, .height],
+                metadata: metadata)
+
+            // 5. Fetch readings using unified API
+            let factory = GaugeDriverFactory()
+            let result = await factory.fetchReadings(options: options)
+
+            // 6. Handle the result
+            guard case .success(let fetchResult) = result else {
+                if case .failure(let error) = result {
+                    throw error
+                }
+                throw DatabaseServiceError.unknownError
             }
-        }()
 
-        // 4. Create driver options
-        let options = GaugeDriverOptions(
-            siteID: gauge.siteID,
-            source: driverSource,
-            timePeriod: .predefined(.last30Days),
-            parameters: [.discharge, .height],
-            metadata: metadata)
+            // 7. Save readings to database
+            // Use INSERT OR IGNORE to skip duplicates efficiently (relies on unique index)
+            try await database.write { db in
+                for driverReading in fetchResult.readings {
+                    try #sql("""
+                INSERT OR IGNORE INTO gaugeReadings (siteID, value, metric, gaugeID, createdAt)
+                VALUES (\(driverReading.siteID), \(driverReading.value), \(driverReading.unit
+                                                                            .rawValue), \(gaugeID), \(driverReading
+                                                                                                        .timestamp))
+            """).execute(db)
+                }
 
-        // 5. Fetch readings using unified API
-        let factory = GaugeDriverFactory()
-        let result = await factory.fetchReadings(options: options)
-
-        // 6. Handle the result
-        guard case .success(let fetchResult) = result else {
-            if case .failure(let error) = result {
-                throw error
-            }
-            throw DatabaseServiceError.unknownError
-        }
-
-        // 7. Save readings to database
-        // Use INSERT OR IGNORE to skip duplicates efficiently (relies on unique index)
-        try await database.write { db in
-            for driverReading in fetchResult.readings {
+                // Update the gauge's updatedAt timestamp and status
+                let now = Date()
                 try #sql("""
-              INSERT OR IGNORE INTO gaugeReadings (siteID, value, metric, gaugeID, createdAt)
-              VALUES (\(driverReading.siteID), \(driverReading.value), \(driverReading.unit.rawValue), \(gaugeID), \(driverReading
-                                                                                                                        .timestamp))
+              UPDATE gauges SET updatedAt = \(now), status = \(fetchResult.status.rawValue) WHERE id = \(gaugeID)
           """).execute(db)
             }
+        }, toggleFavorite: { gaugeID in
+            @Dependency(\.defaultDatabase) var database
+            try await database.write { db in
+                try #sql("""
+              UPDATE gauges SET favorite = NOT favorite WHERE id = \(gaugeID)
+          """).execute(db)
+            }
+        }, loadFavoriteGauges: {
+            @Dependency(\.defaultDatabase) var database
+            return try await database.read { db in
+                try Gauge.where { $0.favorite == true }.fetchAll(db)
+            }
+        }, forecast: { siteID, readingParam in
+            guard readingParam != .temperature else {
+                throw GaugeServiceError.unsupportedForecastReadingParam
+            }
 
-            // Update the gauge's updatedAt timestamp and status
+            FlowForecast.CodableHelper.dateFormatter = forecastDateFormatter
+
             let now = Date()
-            try #sql("""
-            UPDATE gauges SET updatedAt = \(now), status = \(fetchResult.status.rawValue) WHERE id = \(gaugeID)
-        """).execute(db)
-        }
-    }, toggleFavorite: { gaugeID in
-        @Dependency(\.defaultDatabase) var database
-        try await database.write { db in
-            try #sql("""
-            UPDATE gauges SET favorite = NOT favorite WHERE id = \(gaugeID)
-        """).execute(db)
-        }
-    }, loadFavoriteGauges: {
-        @Dependency(\.defaultDatabase) var database
-        return try await database.read { db in
-            try Gauge.where { $0.favorite == true }.fetchAll(db)
-        }
-    }, forecast: { siteID, readingParam in
-        guard readingParam != .temperature else {
-            throw GaugeServiceError.unsupportedForecastReadingParam
-        }
+            let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
 
-        FlowForecast.CodableHelper.dateFormatter = forecastDateFormatter
+            // "00060"
+            // or
+            //
+            let result = try await UsgsAPI.forecastUsgsForecastPost(uSGSFlowForecastRequest: .init(
+                                                                        siteId: siteID,
+                                                                        readingParameter: readingParam.rawValue,
+                                                                        startDate: oneYearAgo,
+                                                                        endDate: now))
 
-        let now = Date()
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: now)!
+            // Use compactMap to combine transformation and filtering
+            // Reuse a single calendar for all date parsing
+            let calendar = Calendar.current
+            let year = calendar.component(.year, from: now)
 
-        // "00060"
-        // or
-        //
-        let result = try await UsgsAPI.forecastUsgsForecastPost(uSGSFlowForecastRequest: .init(
-                                                                    siteId: siteID,
-                                                                    readingParameter: readingParam.rawValue,
-                                                                    startDate: oneYearAgo,
-                                                                    endDate: now))
+            let cleanedForecast: [ForecastDataPoint] = result.compactMap { value in
+                // Filter out invalid values early
+                guard
+                    let forecast = value.forecast,
+                    let lower = value.lowerErrorBound,
+                    let upper = value.upperErrorBound,
+                    forecast != 0, lower != 0, upper != 0
+                else {
+                    return nil
+                }
 
-        // Use compactMap to combine transformation and filtering
-        // Reuse a single calendar for all date parsing
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: now)
+                // Parse date efficiently with shared calendar
+                guard let index = parseForecastDate(value.index, year: year, calendar: calendar) else {
+                    return nil
+                }
 
-        let cleanedForecast: [ForecastDataPoint] = result.compactMap { value in
-            // Filter out invalid values early
-            guard
-                let forecast = value.forecast,
-                let lower = value.lowerErrorBound,
-                let upper = value.upperErrorBound,
-                forecast != 0, lower != 0, upper != 0
-            else {
-                return nil
+                return ForecastDataPoint(
+                    index: index,
+                    value: forecast,
+                    lowerErrorBound: lower,
+                    upperErrorBound: upper)
             }
-
-            // Parse date efficiently with shared calendar
-            guard let index = parseForecastDate(value.index, year: year, calendar: calendar) else {
-                return nil
-            }
-
-            return ForecastDataPoint(
-                index: index,
-                value: forecast,
-                lowerErrorBound: lower,
-                upperErrorBound: upper)
-        }
-        return cleanedForecast
-    })
+            return cleanedForecast
+        })
 }
 
 extension DependencyValues {
@@ -401,3 +424,5 @@ private nonisolated func parseForecastDate(_ index: String, year: Int, calendar:
 enum GaugeServiceError: Error {
     case unsupportedForecastReadingParam
 }
+
+private let logger = Logger(category: "GaugeService")

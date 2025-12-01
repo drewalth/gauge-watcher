@@ -20,7 +20,6 @@ struct AppFeature {
     @ObservableState
     struct State {
         var initialized: Loadable<Bool>
-        @Shared(.appStorage(LocalStorageKey.gaugesSeeded.rawValue)) var gaugesSeeded = false
 
         var selectedTab: RootTab = .search
 
@@ -35,7 +34,6 @@ struct AppFeature {
     enum Action {
         case initialize
         case setInitialized(Loadable<Bool>)
-        case setGaugesSeeded(Bool)
         case setSelectedTab(RootTab)
         case gaugeSearch(GaugeSearchFeature.Action)
         case favorites(FavoriteGaugesFeature.Action)
@@ -48,7 +46,7 @@ struct AppFeature {
     @Dependency(\.defaultDatabase)
     var database
 
-    @Dependency(\.gaugeSourceService) var gaugeSourceService: GaugeSourceService
+    @Dependency(\.gaugeService) var gaugeService: GaugeService
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -60,31 +58,32 @@ struct AppFeature {
                 return .none
             case .setInitialized(let newValue):
                 state.initialized = newValue
-                return .none
-            case .setGaugesSeeded(let newValue):
-                state.$gaugesSeeded.withLock { $0 = newValue }
-                return .none
-            case .initialize:
-                // TODO: update this so that we can easily add new gauge sources and update existing gauge sources
-                guard !state.gaugesSeeded else {
-                    state.initialized = .loaded(true)
+                if
+                    let isInitialized = newValue.unwrap(),
+                    isInitialized == true {
                     state.gaugeSearch = GaugeSearchFeature.State()
                     state.favorites = FavoriteGaugesFeature.State()
-                    return .none
                 }
+                return .none
+            case .initialize:
                 state.initialized = .loading
                 return .run { send in
                     do {
-                        // Load gauge data asynchronously
-                        let gaugeData = try await gaugeSourceService.loadAll()
+                        let isSeededResult = try await gaugeService.seeded().get()
 
-                        try await Task { @MainActor in
-                            try database.write { db in
-                                try db.seedGaugeData(gaugeData)
-                            }
-                        }.value
+                        if !isSeededResult {
+                            let gaugeData = try await gaugeService.loadAllSources()
 
-                        await send(.setGaugesSeeded(true))
+                            try await Task { @MainActor in
+                                try database.write { db in
+                                    try db.seedGaugeData(gaugeData)
+                                }
+                            }.value
+                        } else {
+                            logger.info("Gauges have already been seeded in database")
+                            // TODO: need mechanism for identifying and adding new gauge sources. It's probably best to manage and serve sources from remote rather than local JSON files.
+                        }
+
                         await send(.setInitialized(.loaded(true)))
                     } catch {
                         AppTelemetry.captureEvent(error.localizedDescription)
