@@ -92,7 +92,7 @@ The project uses Swift Package Manager for dependencies. Xcode will automaticall
 
 The project uses the following Swift packages:
 - [swift-composable-architecture](https://github.com/pointfreeco/swift-composable-architecture) - App architecture
-- [SQLiteData](https://github.com/yourusername/SQLiteData) - Database layer
+- [SQLiteData](https://github.com/pointfreeco/sqlite-data) - Database layer
 - Custom local packages for modularity (GaugeSources, GaugeDrivers, AppTelemetry, UIAppearance)
 
 ## Building & Running
