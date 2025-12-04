@@ -9,6 +9,7 @@ import Charts
 import ComposableArchitecture
 import Loadable
 import SwiftUI
+import UIComponents
 
 struct GaugeFlowForecast: View {
 
@@ -43,32 +44,29 @@ struct GaugeFlowForecast: View {
                 forecastChart(forecast)
             }
         case .error(let error):
-            errorView(error)
+            UtilityBlockView(kind: .error(error.localizedDescription))
         }
     }
 
     private var loadingView: some View {
-        VStack(spacing: 16) {
-            ProgressView()
-            Text("Loading forecast...")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .center) {
+            ContinuousSpinner()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var emptyForecastView: some View {
-        ContentUnavailableView(
-            "No Forecast Data",
-            systemImage: "chart.line.flattrend.xyaxis",
-            description: Text("Unable to generate forecast with available historical data."))
+        UtilityBlockView(
+            title: "No forecast data",
+            message: "Unable to generate forecast with available historical data.",
+            kind: .empty)
     }
 
     @ViewBuilder
     private func mainContent() -> some View {
         switch store.forecastAvailable {
         case .initial, .loading:
-            ProgressView()
+            loadingView
         case .loaded(let isAvailable), .reloading(let isAvailable):
             if isAvailable {
                 forecastContent
@@ -79,15 +77,8 @@ struct GaugeFlowForecast: View {
                 unavailableView
             }
         case .error(let err):
-            Text(err.localizedDescription)
+            UtilityBlockView(kind: .error(err.localizedDescription))
         }
-    }
-
-    private func errorView(_ error: Error) -> some View {
-        ContentUnavailableView(
-            "Failed to Load Forecast",
-            systemImage: "exclamationmark.triangle",
-            description: Text(error.localizedDescription))
     }
 
     private func forecastChart(_ forecast: [ForecastDataPoint]) -> some View {

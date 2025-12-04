@@ -11,6 +11,7 @@ import GaugeSources
 import Loadable
 import SwiftUI
 import UIAppearance
+import UIComponents
 
 struct GaugeDetail: View {
 
@@ -51,25 +52,20 @@ struct GaugeDetail: View {
     private func content() -> some View {
         switch store.gauge {
         case .initial, .loading:
-            ProgressView()
-        case .loaded(let gauge):
+            ContinuousSpinner()
+        case .loaded(let gauge), .reloading(let gauge):
             gaugeContent(gauge)
-        case .reloading(let gauge):
-            gaugeContent(gauge, reloading: true)
         case .error(let error):
-            Text(error.localizedDescription)
+            UtilityBlockView(kind: .error(error.localizedDescription))
         }
     }
 
     @ViewBuilder
-    private func gaugeContent(_ gauge: GaugeRef, reloading: Bool = false) -> some View {
+    private func gaugeContent(_ gauge: GaugeRef) -> some View {
         HStack {
             Text(gauge.name)
                 .font(.headline)
             Spacer()
-            if reloading {
-                ProgressView()
-            }
         }
         GaugeReadingChart(store: store)
         LatestGaugeReading(store: store)

@@ -13,6 +13,7 @@ import GaugeDrivers
 import GaugeSources
 import Loadable
 import SwiftUI
+import UIComponents
 
 // MARK: - GaugeReadingChart
 
@@ -23,7 +24,7 @@ struct GaugeReadingChart: View {
     @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
             content()
         }.frame(minHeight: 300)
     }
@@ -34,7 +35,9 @@ struct GaugeReadingChart: View {
     private func content() -> some View {
         switch store.readings {
         case .initial, .loading:
-            ProgressView()
+            VStack(alignment: .center) {
+                ContinuousSpinner()
+            }.frame(maxWidth: .infinity, alignment: .center)
         case .loaded, .reloading:
             chartContent()
         case .error(let error):

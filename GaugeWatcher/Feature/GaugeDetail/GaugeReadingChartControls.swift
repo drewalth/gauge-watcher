@@ -12,6 +12,7 @@ import GaugeSources
 import Loadable
 import SwiftUI
 import UIAppearance
+import UIComponents
 
 struct GaugeReadingChartControls: View {
 
@@ -62,8 +63,8 @@ struct GaugeReadingChartControls: View {
 
     @ViewBuilder
     private func primaryAction() -> some View {
-        if store.readings.isLoadingOrReloading() {
-            ProgressView()
+        if store.readings.isLoading() {
+            ContinuousSpinner()
         } else {
             Menu {
                 Picker("Date Range", selection: $store.selectedTimePeriod.sending(\.setSelectedTimePeriod)) {

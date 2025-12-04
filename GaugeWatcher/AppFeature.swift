@@ -21,7 +21,7 @@ struct AppFeature {
     struct State {
         var initialized: Loadable<Bool>
 
-        var selectedTab: RootTab = .search
+        var selectedTab: RootTab = .favorites
 
         init(initialized: Loadable<Bool> = .initial) {
             self.initialized = initialized
@@ -46,7 +46,8 @@ struct AppFeature {
     @Dependency(\.defaultDatabase)
     var database
 
-    @Dependency(\.gaugeService) var gaugeService: GaugeService
+    @Dependency(\.gaugeService)
+    var gaugeService: GaugeService
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in

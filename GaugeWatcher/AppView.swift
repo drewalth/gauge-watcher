@@ -48,7 +48,7 @@ struct AppView: View {
                         }
                     }
                     .tabItem {
-                        Label("Home", systemImage: "house.fill")
+                        Label("Search", systemImage: "magnifyingglass")
                     }
                     .tag(0)
 

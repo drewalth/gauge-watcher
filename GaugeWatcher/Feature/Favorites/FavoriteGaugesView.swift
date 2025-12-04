@@ -10,6 +10,8 @@ import Loadable
 import SwiftUI
 import UIComponents
 
+// MARK: - FavoriteGaugesView
+
 struct FavoriteGaugesView: View {
 
     // MARK: Internal
@@ -25,7 +27,7 @@ struct FavoriteGaugesView: View {
                 case .loaded(let gauges), .reloading(let gauges):
                     listContent(gauges)
                 case .error(let error):
-                    Text(error.localizedDescription)
+                    UtilityBlockView(kind: .error(error.localizedDescription))
                 }
             }.gaugeWatcherList()
             .onAppear {
@@ -48,11 +50,9 @@ struct FavoriteGaugesView: View {
             UtilityBlockView(title: "No favorites", kind: .empty)
                 .listRowBackground(Color.clear)
         } else {
-            ForEach(gauges, id: \.id) { gauge in
-                Text(gauge.name)
-                    .onTapGesture {
-                        store.send(.goToGaugeDetail(gauge.id))
-                    }
+            ForEach(store.scope(state: \.rows, action: \.rows)) { rowStore in
+                @Bindable var rowStore = rowStore
+                FavoriteGaugeTile(store: rowStore)
             }
         }
     }
