@@ -84,7 +84,7 @@ cd server/flow-forecast
 
 The server runs on `http://localhost:8000` by default. If you don't run the forecast server, the app will still work - the forecast feature will simply show as unavailable for gauges.
 
-> If you run into an issue loading the `FlowForecast` Swift package, you may need to run `make generate_clients` to generate the Swift client.
+> If you run into an issue loading the `FlowForecast` Swift package, you may need to run `make generate_clients` from the `server/flow-forecast` directory to regenerate the Swift client.
 
 The project uses Swift Package Manager for dependencies. Xcode will automatically resolve and download required packages on first build.
 
@@ -103,9 +103,9 @@ Select the `GaugeWatcher` scheme and run (⌘R) in Xcode.
 
 ### Testing
 
-Run tests for the entire workspace:
+Run tests for the Swift packages:
 ```bash
-make test_packages
+./scripts/test.sh
 ```
 
 Or run tests directly in Xcode (⌘U).
@@ -114,17 +114,17 @@ Or run tests directly in Xcode (⌘U).
 
 Format and lint code:
 ```bash
-make pretty
+./scripts/format.sh
 ```
 
-Run linter:
+Run linter only:
 ```bash
-make lint
+./scripts/lint.sh
 ```
 
 Check for secrets/leaks:
 ```bash
-make check_leaks
+./scripts/check-leaks.sh
 ```
 
 ## Project Structure
@@ -167,7 +167,7 @@ Key patterns:
 
 1. **Branch Strategy**: Create feature branches from `main`
 2. **Code Style**: Project uses SwiftFormat (Airbnb config) and SwiftLint
-3. **Run `make pretty`** before committing to ensure consistent formatting
+3. **Run `./scripts/format.sh`** before committing to ensure consistent formatting
 4. **Write tests** for new gauge drivers and core business logic
 5. **Update documentation** for significant changes
 
@@ -180,12 +180,12 @@ Key patterns:
 
 ### Running Tests
 ```bash
-# Test individual packages
+# Test all packages
+./scripts/test.sh
+
+# Or test individual packages
 swift test --package-path ./GaugeSources
 swift test --package-path ./GaugeDrivers
-
-# Or use the convenience target
-make test_packages
 ```
 
 ## Contributing
