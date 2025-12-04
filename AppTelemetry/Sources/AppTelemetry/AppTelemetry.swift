@@ -11,9 +11,6 @@ public enum AppTelemetry {
         let posthogAPIKey = config["POSTHOG_API_KEY"] ?? ""
         let posthogHost = config["POSTHOG_HOST"] ?? ""
 
-        logger.info("PostHog API Key: \(posthogAPIKey)")
-        logger.info("PostHog Host: \(posthogHost)")
-
         if posthogHost.isEmpty || posthogAPIKey.isEmpty {
             logger.warning("Missing PostHog credentials")
             return

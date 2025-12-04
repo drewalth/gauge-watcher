@@ -1,5 +1,7 @@
 # Gauge Watcher
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ![Gauge Watcher Hero Image](docs/gw@0.5x.png)
 
 An open source iOS app for monitoring near-real-time river flow gauge data across multiple water resource agencies. This is a complete reboot of the original [GaugeWatcher](https://apps.apple.com/us/app/gaugewatcher/id6498313776) app, rebuilt from scratch to explore iOS 26 and Liquid Glass design patterns.
@@ -34,8 +36,27 @@ An open source iOS app for monitoring near-real-time river flow gauge data acros
 ```bash
 git clone https://github.com/drewalth/gauge-watcher.git
 cd gauge-watcher
-./scripts/setup.sh
 ```
+
+### Configuration
+
+1. **Copy the environment template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure analytics (optional):**
+   Edit `.env` and add your PostHog credentials if you want analytics:
+   ```
+   POSTHOG_API_KEY=phc_your_api_key_here
+   POSTHOG_HOST=https://us.i.posthog.com
+   ```
+   > The app works without analytics configured - telemetry will simply be disabled.
+
+3. **Run the setup script:**
+   ```bash
+   ./scripts/setup.sh
+   ```
 
 ### Open in Xcode
 
@@ -43,15 +64,27 @@ cd gauge-watcher
 xed .
 ```
 
-### Start Forecasting Server
+### Configure Development Team
+
+Before building, you'll need to set your Apple Development Team:
+
+1. Open the project in Xcode
+2. Select the `GaugeWatcher` target
+3. Go to **Signing & Capabilities**
+4. Select your Development Team from the dropdown
+
+### Flow Forecast Server (Optional)
+
+The app includes a flow forecasting feature for USGS gauges that requires a local Python server.
 
 ```bash
 cd server/flow-forecast
 ./run.sh
 ```
 
-> If you run into an issue loading the `FlowForecast` Swift package, you may need to run `make generate_clients` to generate the Swift client.
+The server runs on `http://localhost:8000` by default. If you don't run the forecast server, the app will still work - the forecast feature will simply show as unavailable for gauges.
 
+> If you run into an issue loading the `FlowForecast` Swift package, you may need to run `make generate_clients` to generate the Swift client.
 
 The project uses Swift Package Manager for dependencies. Xcode will automatically resolve and download required packages on first build.
 
