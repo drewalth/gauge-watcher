@@ -35,7 +35,7 @@ struct AppView: View {
         switch store.initialized {
         case .initial, .reloading, .loading:
             ContinuousSpinner()
-        case .error(let error):
+        case .error:
             UtilityBlockView(kind: .error("Something went wrong"))
         case .loaded(let isInitialized):
             if isInitialized {

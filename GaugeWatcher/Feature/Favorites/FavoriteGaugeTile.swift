@@ -35,7 +35,7 @@ struct FavoriteGaugeTile: View {
 
     @ViewBuilder
     private var content: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 16) {
             header
             readingsContent
         }
@@ -75,10 +75,7 @@ struct FavoriteGaugeTile: View {
 
     @ViewBuilder
     private var readingsPlaceholder: some View {
-        HStack(spacing: 16) {
-            ReadingPlaceholder()
-            ReadingPlaceholder()
-        }
+        ReadingsPlaceholderGrid()
     }
 
     @ViewBuilder
@@ -118,21 +115,42 @@ struct FavoriteGaugeTile: View {
                     .foregroundStyle(.secondary)
             }
         } else {
-            HStack(spacing: 20) {
-                if let discharge {
-                    ReadingCell(
-                        label: "Discharge",
-                        value: discharge.value,
-                        unit: discharge.metric,
-                        timestamp: discharge.createdAt)
+            Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 2) {
+                GridRow {
+                    if discharge != nil {
+                        Text("DISCHARGE")
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.tertiary)
+                    }
+                    if height != nil {
+                        Text("STAGE")
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
 
-                if let height {
-                    ReadingCell(
-                        label: "Stage",
-                        value: height.value,
-                        unit: height.metric,
-                        timestamp: height.createdAt)
+                GridRow {
+                    if let discharge {
+                        ReadingValue(value: discharge.value, unit: discharge.metric)
+                    }
+                    if let height {
+                        ReadingValue(value: height.value, unit: height.metric)
+                    }
+                }
+
+                GridRow {
+                    if let discharge {
+                        Text(discharge.createdAt, style: .relative)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                    if let height {
+                        Text(height.createdAt, style: .relative)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
             }
         }
@@ -147,37 +165,24 @@ struct FavoriteGaugeTile: View {
     }
 }
 
-// MARK: - ReadingCell
+// MARK: - ReadingValue
 
-private struct ReadingCell: View {
+private struct ReadingValue: View {
 
     // MARK: Internal
 
-    let label: String
     let value: Double
     let unit: String
-    let timestamp: Date
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label.uppercased())
-                .font(.caption2)
-                .fontWeight(.medium)
-                .foregroundStyle(.tertiary)
+        HStack(alignment: .firstTextBaseline, spacing: 3) {
+            Text(formattedValue)
+                .font(.system(.title3, design: .rounded, weight: .semibold))
+                .monospacedDigit()
 
-            HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text(formattedValue)
-                    .font(.system(.title3, design: .rounded, weight: .semibold))
-                    .monospacedDigit()
-
-                Text(unit.lowercased())
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Text(timestamp, style: .relative)
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            Text(unit.lowercased())
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -194,22 +199,34 @@ private struct ReadingCell: View {
     }
 }
 
-// MARK: - ReadingPlaceholder
+// MARK: - ReadingsPlaceholderGrid
 
-private struct ReadingPlaceholder: View {
+private struct ReadingsPlaceholderGrid: View {
+
+    // MARK: Internal
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            RoundedRectangle(cornerRadius: 2)
-                .fill(Color.secondary.opacity(0.15))
-                .frame(width: 50, height: 10)
-
-            RoundedRectangle(cornerRadius: 3)
-                .fill(Color.secondary.opacity(0.12))
-                .frame(width: 60, height: 20)
-
-            RoundedRectangle(cornerRadius: 2)
-                .fill(Color.secondary.opacity(0.1))
-                .frame(width: 40, height: 8)
+        Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 2) {
+            GridRow {
+                placeholderRect(width: 60, height: 10, opacity: 0.15)
+                placeholderRect(width: 36, height: 10, opacity: 0.15)
+            }
+            GridRow {
+                placeholderRect(width: 70, height: 22, opacity: 0.12)
+                placeholderRect(width: 50, height: 22, opacity: 0.12)
+            }
+            GridRow {
+                placeholderRect(width: 55, height: 10, opacity: 0.1)
+                placeholderRect(width: 55, height: 10, opacity: 0.1)
+            }
         }
+    }
+
+    // MARK: Private
+
+    private func placeholderRect(width: CGFloat, height: CGFloat, opacity: Double) -> some View {
+        RoundedRectangle(cornerRadius: 3)
+            .fill(Color.secondary.opacity(opacity))
+            .frame(width: width, height: height)
     }
 }
