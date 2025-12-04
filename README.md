@@ -4,7 +4,7 @@
 
 ![Gauge Watcher Hero Image](docs/gw@0.5x.png)
 
-An open source iOS app for monitoring near-real-time river flow gauge data across multiple water resource agencies. This is a complete reboot of the original [GaugeWatcher](https://apps.apple.com/us/app/gaugewatcher/id6498313776) app, rebuilt from scratch to explore iOS 26 and Liquid Glass design patterns.
+An iOS app for monitoring near-real-time river flow gauge data across multiple water resource agencies. This is a complete reboot of the original [GaugeWatcher](https://apps.apple.com/us/app/gaugewatcher/id6498313776) app, rebuilt from scratch to explore iOS 26 and SwiftData alternatives.
 
 > This is very much a work in progress. There will be bugs, incomplete features, and other issues. Please report them!
 
