@@ -190,12 +190,11 @@ swift test --package-path ./GaugeDrivers
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or pull request.
+Contributions are welcome! Feel free to open an issue or pull request. **But please note**, this is a small hobby project that is mostly an excuse to learn new things.
+I'm not looking for a lot of contributions, but I'm happy to accept them if you want to help. If you're interested in working on a project with real-world impact, 
+consider contributing to [American Whitewater](https://americanwhitewater.org/), [Whitewater NZ](https://whitewater.nz), or [BC Whitewater](https://www.bcwhitewater.org).
 
 You'll need to install [gitleaks](https://github.com/gitleaks/gitleaks) to check for secrets/leaks in the code before pushing changes.
-
-> Note. This is a small hobby project that is mostly an excuse to learn new things. I'm not looking for a lot of contributions, but I'm happy to accept them if you want to help.
-> If you're interested in working on a project with real-world impact, consider contributing to [American Whitewater](https://americanwhitewater.org/).
 
 ### Adding New Gauge Sources
 
@@ -212,3 +211,8 @@ You'll need to install [gitleaks](https://github.com/gitleaks/gitleaks) to check
 - [Colorado DWR](https://dwr.state.co.us/Tools)
 - [Land, Air, Water Aotearoa (LAWA)](https://www.lawa.org.nz)
 
+## Acknowledgments
+
+- [@ajbonich](https://github.com/ajbonich) initial forecasting server implementation.
+- [@ngottlieb](https://github.com/ngottlieb) Canadian gauge data guidance.
+- [@tallowen](https://github.com/tallowen) design patterns and suggestions.
