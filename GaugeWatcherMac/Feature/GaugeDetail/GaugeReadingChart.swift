@@ -20,8 +20,6 @@ struct GaugeReadingChart: View {
     // MARK: Internal
 
     @Bindable var store: StoreOf<GaugeDetailFeature>
-    @State private var selectedReading: GaugeReadingRef?
-    @State private var chartHoveredPosition: CGPoint?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -45,6 +43,83 @@ struct GaugeReadingChart: View {
     }
 
     // MARK: Private
+
+    @State private var selectedReading: GaugeReadingRef?
+    @State private var chartHoveredPosition: CGPoint?
+
+    private var areaGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color.accentColor.opacity(0.4),
+                Color.accentColor.opacity(0.1),
+                Color.accentColor.opacity(0.0)
+            ],
+            startPoint: .top,
+            endPoint: .bottom)
+    }
+
+    private var lineGradient: LinearGradient {
+        LinearGradient(
+            colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
+            startPoint: .leading,
+            endPoint: .trailing)
+    }
+
+    private var filteredReadings: [GaugeReadingRef] {
+        getFilteredReadings(for: store)
+    }
+
+    private var chartDateRangeDescription: String {
+        guard let readings = store.readings.unwrap(), !readings.isEmpty else {
+            return "No data"
+        }
+
+        let filtered = filteredReadings
+        guard let first = filtered.first, let last = filtered.last else {
+            return store.selectedTimePeriod.description
+        }
+
+        if store.selectedTimePeriod == .last24Hours {
+            return "\(last.createdAt.formatted(date: .omitted, time: .shortened)) – \(first.createdAt.formatted(date: .omitted, time: .shortened))"
+        }
+
+        return "\(last.createdAt.formatted(date: .abbreviated, time: .omitted)) – \(first.createdAt.formatted(date: .abbreviated, time: .omitted))"
+    }
+
+    private var xAxisStride: Calendar.Component {
+        switch store.selectedTimePeriod {
+        case .last24Hours:
+            return .hour
+        case .last7Days:
+            return .day
+        case .last30Days, .last90Days:
+            return .day
+        }
+    }
+
+    private var xAxisStrideCount: Int {
+        switch store.selectedTimePeriod {
+        case .last24Hours:
+            return 4
+        case .last7Days:
+            return 1
+        case .last30Days:
+            return 5
+        case .last90Days:
+            return 14
+        }
+    }
+
+    private var xAxisFormat: Date.FormatStyle {
+        switch store.selectedTimePeriod {
+        case .last24Hours:
+            return .dateTime.hour()
+        case .last7Days:
+            return .dateTime.weekday(.abbreviated)
+        case .last30Days, .last90Days:
+            return .dateTime.month(.abbreviated).day()
+        }
+    }
 
     @ViewBuilder
     private var chartHeader: some View {
@@ -247,80 +322,6 @@ struct GaugeReadingChart: View {
         .transition(.opacity.combined(with: .scale(scale: 0.95)))
     }
 
-    private var areaGradient: LinearGradient {
-        LinearGradient(
-            colors: [
-                Color.accentColor.opacity(0.4),
-                Color.accentColor.opacity(0.1),
-                Color.accentColor.opacity(0.0)
-            ],
-            startPoint: .top,
-            endPoint: .bottom)
-    }
-
-    private var lineGradient: LinearGradient {
-        LinearGradient(
-            colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
-            startPoint: .leading,
-            endPoint: .trailing)
-    }
-
-    private var filteredReadings: [GaugeReadingRef] {
-        getFilteredReadings(for: store)
-    }
-
-    private var chartDateRangeDescription: String {
-        guard let readings = store.readings.unwrap(), !readings.isEmpty else {
-            return "No data"
-        }
-
-        let filtered = filteredReadings
-        guard let first = filtered.first, let last = filtered.last else {
-            return store.selectedTimePeriod.description
-        }
-
-        if store.selectedTimePeriod == .last24Hours {
-            return "\(last.createdAt.formatted(date: .omitted, time: .shortened)) – \(first.createdAt.formatted(date: .omitted, time: .shortened))"
-        }
-
-        return "\(last.createdAt.formatted(date: .abbreviated, time: .omitted)) – \(first.createdAt.formatted(date: .abbreviated, time: .omitted))"
-    }
-
-    private var xAxisStride: Calendar.Component {
-        switch store.selectedTimePeriod {
-        case .last24Hours:
-            return .hour
-        case .last7Days:
-            return .day
-        case .last30Days, .last90Days:
-            return .day
-        }
-    }
-
-    private var xAxisStrideCount: Int {
-        switch store.selectedTimePeriod {
-        case .last24Hours:
-            return 4
-        case .last7Days:
-            return 1
-        case .last30Days:
-            return 5
-        case .last90Days:
-            return 14
-        }
-    }
-
-    private var xAxisFormat: Date.FormatStyle {
-        switch store.selectedTimePeriod {
-        case .last24Hours:
-            return .dateTime.hour()
-        case .last7Days:
-            return .dateTime.weekday(.abbreviated)
-        case .last30Days, .last90Days:
-            return .dateTime.month(.abbreviated).day()
-        }
-    }
-
     private func formatFlowValue(_ value: Double) -> String {
         if value >= 10000 {
             return String(format: "%.0fk", value / 1000)
@@ -399,4 +400,3 @@ extension Date {
         return self >= now.addingTimeInterval(interval)
     }
 }
-

@@ -227,8 +227,8 @@ struct LatestGaugeReading: View {
         title: String,
         isLoading: Bool,
         icon: String,
-        gradient: [Color]
-    ) -> some View {
+        gradient: [Color])
+    -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: icon)
@@ -336,6 +336,8 @@ private enum Trend {
     case falling(Double)
     case stable
 
+    // MARK: Internal
+
     var icon: String {
         switch self {
         case .rising:
@@ -358,4 +360,3 @@ private enum Trend {
         }
     }
 }
-

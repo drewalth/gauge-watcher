@@ -18,8 +18,6 @@ struct GaugeFlowForecast: View {
     // MARK: Internal
 
     var store: StoreOf<GaugeDetailFeature>
-    @State private var selectedDataPoint: ForecastDataPoint?
-    @State private var isExpanded = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -43,6 +41,9 @@ struct GaugeFlowForecast: View {
     }
 
     // MARK: Private
+
+    @State private var selectedDataPoint: ForecastDataPoint?
+    @State private var isExpanded = true
 
     @ViewBuilder
     private var headerView: some View {
@@ -187,6 +188,28 @@ struct GaugeFlowForecast: View {
         .frame(height: 200)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
+    }
+
+    private var legendView: some View {
+        HStack(spacing: 24) {
+            HStack(spacing: 8) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(.blue)
+                    .frame(width: 20, height: 3)
+                Text("Forecast")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            HStack(spacing: 8) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(.blue.opacity(0.2))
+                    .frame(width: 20, height: 12)
+                Text("Confidence Interval")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 
     private func errorView(_ error: Error) -> some View {
@@ -345,7 +368,8 @@ struct GaugeFlowForecast: View {
                 Text("Confidence Range")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text("\(dataPoint.lowerErrorBound, format: .number.precision(.fractionLength(0))) – \(dataPoint.upperErrorBound, format: .number.precision(.fractionLength(0)))")
+                Text(
+                    "\(dataPoint.lowerErrorBound, format: .number.precision(.fractionLength(0))) – \(dataPoint.upperErrorBound, format: .number.precision(.fractionLength(0)))")
                     .font(.system(.caption, design: .monospaced))
             }
         }
@@ -362,28 +386,6 @@ struct GaugeFlowForecast: View {
         .transition(.opacity.combined(with: .scale(scale: 0.95)))
     }
 
-    private var legendView: some View {
-        HStack(spacing: 24) {
-            HStack(spacing: 8) {
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(.blue)
-                    .frame(width: 20, height: 3)
-                Text("Forecast")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 8) {
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(.blue.opacity(0.2))
-                    .frame(width: 20, height: 12)
-                Text("Confidence Interval")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
     private func formatFlowValue(_ value: Double) -> String {
         if value >= 10000 {
             return String(format: "%.0fk", value / 1000)
@@ -398,8 +400,7 @@ struct GaugeFlowForecast: View {
         at location: CGPoint,
         proxy: ChartProxy,
         geometry: GeometryProxy,
-        forecast: [ForecastDataPoint]
-    ) {
+        forecast: [ForecastDataPoint]) {
         let xPosition = location.x - geometry[proxy.plotFrame!].origin.x
 
         guard let date: Date = proxy.value(atX: xPosition) else { return }
@@ -411,4 +412,3 @@ struct GaugeFlowForecast: View {
         selectedDataPoint = closest
     }
 }
-

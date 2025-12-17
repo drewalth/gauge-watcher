@@ -185,10 +185,10 @@ struct GaugeListInspector: View {
 
 struct GaugeListRow: View {
 
+    // MARK: Internal
+
     let gauge: GaugeRef
     let onTap: () -> Void
-
-    @State private var isHovering = false
 
     var body: some View {
         Button(action: onTap) {
@@ -249,6 +249,10 @@ struct GaugeListRow: View {
         }
     }
 
+    // MARK: Private
+
+    @State private var isHovering = false
+
     private var sourceColor: Color {
         switch gauge.source.rawValue.lowercased() {
         case "usgs":
@@ -265,6 +269,8 @@ struct GaugeListRow: View {
 
 struct FavoritesInspectorContent: View {
 
+    // MARK: Internal
+
     @Bindable var store: StoreOf<FavoriteGaugesFeature>
 
     var body: some View {
@@ -280,6 +286,8 @@ struct FavoritesInspectorContent: View {
             }
         }
     }
+
+    // MARK: Private
 
     @ViewBuilder
     private var content: some View {
@@ -312,17 +320,6 @@ struct FavoritesInspectorContent: View {
     }
 
     @ViewBuilder
-    private func favoritesHeader(count: Int) -> some View {
-        HStack {
-            Label("\(count) favorite\(count == 1 ? "" : "s")", systemImage: "star.fill")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Spacer()
-        }
-        .padding()
-    }
-
-    @ViewBuilder
     private var favoritesList: some View {
         ScrollView {
             LazyVStack(spacing: 2) {
@@ -334,15 +331,27 @@ struct FavoritesInspectorContent: View {
             .padding(.vertical, 4)
         }
     }
+
+    @ViewBuilder
+    private func favoritesHeader(count: Int) -> some View {
+        HStack {
+            Label("\(count) favorite\(count == 1 ? "" : "s")", systemImage: "star.fill")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding()
+    }
+
 }
 
 // MARK: - FavoriteRowView
 
 struct FavoriteRowView: View {
 
-    @Bindable var store: StoreOf<FavoriteGaugeTileFeature>
+    // MARK: Internal
 
-    @State private var isHovering = false
+    @Bindable var store: StoreOf<FavoriteGaugeTileFeature>
 
     var body: some View {
         Button {
@@ -394,6 +403,10 @@ struct FavoriteRowView: View {
             isHovering = hovering
         }
     }
+
+    // MARK: Private
+
+    @State private var isHovering = false
 
     private var sourceColor: Color {
         switch store.gauge.source.rawValue.lowercased() {

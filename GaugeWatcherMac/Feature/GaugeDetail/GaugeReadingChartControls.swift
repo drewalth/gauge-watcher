@@ -76,6 +76,35 @@ struct GaugeReadingChartControls: View {
     }
 
     @ViewBuilder
+    private var refreshButton: some View {
+        Button {
+            store.send(.sync)
+        } label: {
+            Group {
+                if store.readings.isReloading() || store.gauge.isReloading() {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                } else {
+                    Image(systemName: "arrow.clockwise")
+                }
+            }
+            .frame(width: 16, height: 16)
+        }
+        .buttonStyle(.plain)
+        .padding(8)
+        .background {
+            Circle()
+                .fill(.ultraThinMaterial)
+        }
+        .overlay {
+            Circle()
+                .strokeBorder(.white.opacity(0.1), lineWidth: 1)
+        }
+        .disabled(store.readings.isLoading() || store.gauge.isLoading())
+        .help("Refresh data")
+    }
+
+    @ViewBuilder
     private func metricPicker(metrics: [GaugeSourceMetric]) -> some View {
         Menu {
             ForEach(metrics, id: \.self) { metric in
@@ -113,33 +142,4 @@ struct GaugeReadingChartControls: View {
         .buttonStyle(.plain)
     }
 
-    @ViewBuilder
-    private var refreshButton: some View {
-        Button {
-            store.send(.sync)
-        } label: {
-            Group {
-                if store.readings.isReloading() || store.gauge.isReloading() {
-                    ProgressView()
-                        .scaleEffect(0.7)
-                } else {
-                    Image(systemName: "arrow.clockwise")
-                }
-            }
-            .frame(width: 16, height: 16)
-        }
-        .buttonStyle(.plain)
-        .padding(8)
-        .background {
-            Circle()
-                .fill(.ultraThinMaterial)
-        }
-        .overlay {
-            Circle()
-                .strokeBorder(.white.opacity(0.1), lineWidth: 1)
-        }
-        .disabled(store.readings.isLoading() || store.gauge.isLoading())
-        .help("Refresh data")
-    }
 }
-

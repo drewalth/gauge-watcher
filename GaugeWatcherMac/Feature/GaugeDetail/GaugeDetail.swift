@@ -74,6 +74,31 @@ struct GaugeDetail: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    @ViewBuilder
+    private var toolbarContent: some View {
+        if let gauge = store.gauge.unwrap() {
+            // Favorite toggle
+            Button {
+                store.send(.toggleFavorite)
+            } label: {
+                Label(
+                    gauge.favorite ? "Remove Favorite" : "Add Favorite",
+                    systemImage: gauge.favorite ? "star.fill" : "star")
+            }
+            .help(gauge.favorite ? "Remove from favorites" : "Add to favorites")
+
+            // Open source
+            if gauge.sourceURL != nil {
+                Button {
+                    store.send(.openSource)
+                } label: {
+                    Label("View Source", systemImage: "safari")
+                }
+                .help("Open gauge source website")
+            }
+        }
+    }
+
     private func errorView(_ error: Error) -> some View {
         ContentUnavailableView {
             Label("Unable to Load Gauge", systemImage: "exclamationmark.triangle.fill")
@@ -192,19 +217,6 @@ struct GaugeDetail: View {
             .foregroundStyle(isStale ? .orange : .green)
     }
 
-    private func sourceStyle(for source: GaugeSource) -> (Color, String) {
-        switch source {
-        case .usgs:
-            return (.blue, "building.columns.fill")
-        case .environmentCanada:
-            return (.red, "leaf.fill")
-        case .dwr:
-            return (.orange, "mountain.2.fill")
-        case .lawa:
-            return (.teal, "water.waves")
-        }
-    }
-
     @ViewBuilder
     private func locationCard(_ gauge: GaugeRef) -> some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -230,16 +242,16 @@ struct GaugeDetail: View {
             // Mini map
             Map(position: $mapCameraPosition) {
                 Marker(gauge.name, coordinate: CLLocationCoordinate2D(
-                    latitude: gauge.latitude,
-                    longitude: gauge.longitude))
+                        latitude: gauge.latitude,
+                        longitude: gauge.longitude))
             }
             .mapStyle(.standard(elevation: .realistic))
             .frame(height: 150)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .onAppear {
                 mapCameraPosition = .region(MKCoordinateRegion(
-                    center: CLLocationCoordinate2D(latitude: gauge.latitude, longitude: gauge.longitude),
-                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+                                                center: CLLocationCoordinate2D(latitude: gauge.latitude, longitude: gauge.longitude),
+                                                span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
             }
 
             // Coordinates
@@ -278,8 +290,8 @@ struct GaugeDetail: View {
         VStack(spacing: 0) {
             Map(position: $mapCameraPosition) {
                 Marker(gauge.name, coordinate: CLLocationCoordinate2D(
-                    latitude: gauge.latitude,
-                    longitude: gauge.longitude))
+                        latitude: gauge.latitude,
+                        longitude: gauge.longitude))
             }
             .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .all))
             .mapControls {
@@ -345,30 +357,19 @@ struct GaugeDetail: View {
         }
     }
 
-    @ViewBuilder
-    private var toolbarContent: some View {
-        if let gauge = store.gauge.unwrap() {
-            // Favorite toggle
-            Button {
-                store.send(.toggleFavorite)
-            } label: {
-                Label(
-                    gauge.favorite ? "Remove Favorite" : "Add Favorite",
-                    systemImage: gauge.favorite ? "star.fill" : "star")
-            }
-            .help(gauge.favorite ? "Remove from favorites" : "Add to favorites")
-
-            // Open source
-            if gauge.sourceURL != nil {
-                Button {
-                    store.send(.openSource)
-                } label: {
-                    Label("View Source", systemImage: "safari")
-                }
-                .help("Open gauge source website")
-            }
+    private func sourceStyle(for source: GaugeSource) -> (Color, String) {
+        switch source {
+        case .usgs:
+            return (.blue, "building.columns.fill")
+        case .environmentCanada:
+            return (.red, "leaf.fill")
+        case .dwr:
+            return (.orange, "mountain.2.fill")
+        case .lawa:
+            return (.teal, "water.waves")
         }
     }
+
 }
 
 // MARK: - Preview
