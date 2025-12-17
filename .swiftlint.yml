@@ -18,6 +18,7 @@ included:
   - UIAppearance/Tests
   - AppTelemetry/Sources
   - AppTelemetry/Tests
+  - GaugeWatcherMac
 
 excluded:
   - .build
