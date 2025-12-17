@@ -41,5 +41,9 @@ struct GaugeWatcherMacApp: App {
         }
         .windowResizability(.contentMinSize)
         .windowToolbarStyle(.unified)
+
+        Settings {
+            SettingsView()
+        }
     }
 }
