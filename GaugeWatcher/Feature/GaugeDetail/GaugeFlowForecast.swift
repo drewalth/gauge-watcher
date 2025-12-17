@@ -7,6 +7,7 @@
 
 import Charts
 import ComposableArchitecture
+import GaugeService
 import Loadable
 import SwiftUI
 import UIComponents

@@ -1,5 +1,6 @@
 import Foundation
 import os
+import SQLiteData
 
 // MARK: - GaugeSources
 
@@ -321,3 +322,9 @@ public enum GaugeSourceMetric: String, CaseIterable, Codable, Sendable {
     /// Meters stage height
     case meterHeight = "M"
 }
+
+// MARK: - QueryBindable Conformances
+
+extension GaugeSource: QueryBindable {}
+
+extension GaugeSourceMetric: QueryBindable {}

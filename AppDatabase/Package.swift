@@ -4,32 +4,31 @@
 import PackageDescription
 
 let package = Package(
-  name: "GaugeSources",
+  name: "AppDatabase",
   platforms: [
-    .iOS(.v18),
+    .iOS(.v26),
     .macOS(.v15),
   ],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
-      name: "GaugeSources",
-      targets: ["GaugeSources"]),
+      name: "AppDatabase",
+      targets: ["AppDatabase"]),
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/sqlite-data", from: "1.0.0"),
+    .package(name: "GaugeSources", path: "../GaugeSources"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
-      name: "GaugeSources",
+      name: "AppDatabase",
       dependencies: [
         .product(name: "SQLiteData", package: "sqlite-data"),
-      ],
-      resources: [
-        .process("Resources"),
+        "GaugeSources",
       ]),
     .testTarget(
-      name: "GaugeSourcesTests",
-      dependencies: ["GaugeSources"]),
+      name: "AppDatabaseTests",
+      dependencies: ["AppDatabase"]),
   ])

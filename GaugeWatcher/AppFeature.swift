@@ -5,9 +5,11 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
+import AppDatabase
 import AppTelemetry
 import ComposableArchitecture
 import Foundation
+import GaugeService
 import Loadable
 import os
 import SQLiteData

@@ -4,6 +4,7 @@
 //
 //  Created by Andrew Althage on 12/1/25.
 //
+import AppDatabase
 import CoreLocation
 import Foundation
 import GaugeSources
@@ -27,6 +28,28 @@ nonisolated struct GaugeRef: Identifiable, Hashable, GaugeProtocol {
     let longitude: Double
     let updatedAt: Date
     let createdAt: Date
+}
+
+// MARK: - Gauge + ref
+
+extension Gauge {
+    nonisolated var ref: GaugeRef {
+        GaugeRef(
+            id: id,
+            name: name,
+            siteID: siteID,
+            metric: metric,
+            country: country,
+            state: state,
+            zone: zone,
+            source: source,
+            favorite: favorite,
+            primary: primary,
+            latitude: latitude,
+            longitude: longitude,
+            updatedAt: updatedAt,
+            createdAt: createdAt)
+    }
 }
 
 // MARK: CustomStringConvertible

@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import Foundation
 import GaugeDrivers
+import GaugeService
 import GaugeSources
 import Loadable
 import os

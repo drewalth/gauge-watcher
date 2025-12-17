@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 9/17/25.
 //
 
+import AppDatabase
 import AppTelemetry
 import ComposableArchitecture
 import GaugeSources

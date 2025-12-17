@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 12/1/25.
 //
 
+import AppDatabase
 import Foundation
 
 // MARK: - GaugeReadingRef
@@ -18,6 +19,20 @@ nonisolated struct GaugeReadingRef: Identifiable, Hashable, GaugeReadingProtocol
     let metric: String
     let gaugeID: Gauge.ID
     let createdAt: Date
+}
+
+// MARK: - GaugeReading + ref
+
+extension GaugeReading {
+    nonisolated var ref: GaugeReadingRef {
+        GaugeReadingRef(
+            id: id,
+            siteID: siteID,
+            value: value,
+            metric: metric,
+            gaugeID: gaugeID,
+            createdAt: createdAt)
+    }
 }
 
 // MARK: CustomStringConvertible

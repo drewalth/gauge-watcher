@@ -5,9 +5,11 @@
 //  Created by Andrew Althage on 11/22/25.
 //
 
+import AppDatabase
 import ComposableArchitecture
 import CoreLocation
 import Foundation
+import GaugeService
 import GaugeSources
 import Loadable
 import MapKit
