@@ -128,7 +128,11 @@ struct GaugeListInspector: View {
     @ViewBuilder
     private var favoritesContent: some View {
         if let store = favoritesStore {
-            FavoritesInspectorContent(store: store)
+            FavoritesInspectorContent(
+                store: store,
+                onGaugeTapped: { gaugeID in
+                    gaugeSearchStore.send(.goToGaugeDetail(gaugeID))
+                })
         } else {
             errorView("Could not load favorites")
         }
@@ -273,18 +277,13 @@ struct FavoritesInspectorContent: View {
 
     @Bindable var store: StoreOf<FavoriteGaugesFeature>
 
+    var onGaugeTapped: (Int) -> Void
+
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            content
-                .task {
-                    store.send(.load)
-                }
-        } destination: { store in
-            switch store.case {
-            case .gaugeDetail(let gaugeDetailStore):
-                GaugeDetail(store: gaugeDetailStore)
+        content
+            .task {
+                store.send(.load)
             }
-        }
     }
 
     // MARK: Private
@@ -324,7 +323,7 @@ struct FavoritesInspectorContent: View {
         ScrollView {
             LazyVStack(spacing: 2) {
                 ForEach(store.scope(state: \.rows, action: \.rows)) { rowStore in
-                    FavoriteRowView(store: rowStore)
+                    FavoriteRowView(store: rowStore, onTap: onGaugeTapped)
                 }
             }
             .padding(.horizontal, 8)
@@ -353,9 +352,11 @@ struct FavoriteRowView: View {
 
     @Bindable var store: StoreOf<FavoriteGaugeTileFeature>
 
+    var onTap: (Int) -> Void
+
     var body: some View {
         Button {
-            store.send(.goToGaugeDetail(store.gauge.id))
+            onTap(store.gauge.id)
         } label: {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "star.fill")

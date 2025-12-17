@@ -635,7 +635,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = GaugeWatcher;
 				INFOPLIST_KEY_CFBundleName = GaugeWatcher;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSLocationUsageDescription = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "This app uses your location to help find nearby gauges";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -682,7 +682,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = GaugeWatcher;
 				INFOPLIST_KEY_CFBundleName = GaugeWatcher;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSLocationUsageDescription = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "This app uses your location to help find nearby gauges";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

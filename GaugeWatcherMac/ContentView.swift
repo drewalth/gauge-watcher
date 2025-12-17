@@ -70,7 +70,9 @@ struct ContentView: View {
                     .keyboardShortcut("s", modifiers: [.command, .option])
                 }
                 ToolbarItemGroup(placement: .primaryAction) {
-                    inspectorModeToggle
+                    if gaugeSearchStore.path.isEmpty {
+                        inspectorModeToggle
+                    }
                 }
             }
         } else {
@@ -81,13 +83,13 @@ struct ContentView: View {
     @ViewBuilder
     private var inspectorModeToggle: some View {
         Picker("Mode", selection: $inspectorMode) {
-            Label("Nearby", systemImage: "map")
+            Label("Search", systemImage: "map")
                 .tag(InspectorMode.nearby)
             Label("Favorites", systemImage: "star")
                 .tag(InspectorMode.favorites)
         }
         .pickerStyle(.segmented)
-        .labelsHidden()
+        .labelStyle(.titleAndIcon)
     }
 
     @ViewBuilder
