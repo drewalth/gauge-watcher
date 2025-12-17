@@ -30,6 +30,34 @@ struct SettingsView: View {
 
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
+    private var statusDescription: String {
+        switch authorizationStatus {
+        case .notDetermined:
+            "Not Requested"
+        case .restricted:
+            "Restricted"
+        case .denied:
+            "Denied"
+        case .authorizedAlways:
+            "Enabled"
+        @unknown default:
+            "Unknown"
+        }
+    }
+
+    private var statusColor: Color {
+        switch authorizationStatus {
+        case .authorizedAlways:
+            .green
+        case .denied, .restricted:
+            .red
+        case .notDetermined:
+            .orange
+        @unknown default:
+            .secondary
+        }
+    }
+
     @ViewBuilder
     private var locationSection: some View {
         Section {
@@ -62,34 +90,6 @@ struct SettingsView: View {
         Circle()
             .fill(statusColor)
             .frame(width: 8, height: 8)
-    }
-
-    private var statusDescription: String {
-        switch authorizationStatus {
-        case .notDetermined:
-            "Not Requested"
-        case .restricted:
-            "Restricted"
-        case .denied:
-            "Denied"
-        case .authorizedAlways:
-            "Enabled"
-        @unknown default:
-            "Unknown"
-        }
-    }
-
-    private var statusColor: Color {
-        switch authorizationStatus {
-        case .authorizedAlways:
-            .green
-        case .denied, .restricted:
-            .red
-        case .notDetermined:
-            .orange
-        @unknown default:
-            .secondary
-        }
     }
 
     private func observeLocationAuthorization() async {
