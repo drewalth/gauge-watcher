@@ -29,9 +29,8 @@ struct GaugeDetail: View {
                     } label: {
                         Label(
                             store.gauge.unwrap()?.favorite == true ? "Remove Favorite" : "Add Favorite",
-                            systemImage: store.gauge.unwrap()?.favorite == true ? "star.fill" : "star"
-                        )
-                        .labelStyle(.iconOnly)
+                            systemImage: store.gauge.unwrap()?.favorite == true ? "star.fill" : "star")
+                            .labelStyle(.iconOnly)
                     }
                 }
 
@@ -61,41 +60,7 @@ struct GaugeDetail: View {
             ContentUnavailableView(
                 "Error",
                 systemImage: "exclamationmark.triangle",
-                description: Text(error.localizedDescription)
-            )
-        }
-    }
-
-    @ViewBuilder
-    private func gaugeContent(_ gauge: GaugeRef) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                // Header
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(gauge.name)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-
-                    HStack(spacing: 16) {
-                        Label(gauge.source.rawValue, systemImage: "building.2")
-                        Label(gauge.state, systemImage: "mappin")
-                        Label(gauge.siteID, systemImage: "number")
-                    }
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                }
-
-                Divider()
-
-                // Readings section
-                readingsSection
-
-                Divider()
-
-                // Location info
-                locationSection(gauge)
-            }
-            .padding()
+                description: Text(error.localizedDescription))
         }
     }
 
@@ -139,6 +104,39 @@ struct GaugeDetail: View {
                 Text("Failed to load readings: \(error.localizedDescription)")
                     .foregroundStyle(.red)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func gaugeContent(_ gauge: GaugeRef) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                // Header
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(gauge.name)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+
+                    HStack(spacing: 16) {
+                        Label(gauge.source.rawValue, systemImage: "building.2")
+                        Label(gauge.state, systemImage: "mappin")
+                        Label(gauge.siteID, systemImage: "number")
+                    }
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                }
+
+                Divider()
+
+                // Readings section
+                readingsSection
+
+                Divider()
+
+                // Location info
+                locationSection(gauge)
+            }
+            .padding()
         }
     }
 

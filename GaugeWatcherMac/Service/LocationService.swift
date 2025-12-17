@@ -34,8 +34,8 @@ final class LocationService: NSObject, LocationServiceProtocol {
             // Emit initial state immediately
             let servicesEnabled = CLLocationManager.locationServicesEnabled()
             continuation.yield(.initialState(
-                authorizationStatus: initialAuth,
-                servicesEnabled: servicesEnabled))
+                                authorizationStatus: initialAuth,
+                                servicesEnabled: servicesEnabled))
 
             // Subscribe to future updates
             let subscription = subject.sink { value in
@@ -87,8 +87,7 @@ extension LocationService: CLLocationManagerDelegate {
     nonisolated public func locationManager(
         _: CLLocationManager,
         didDetermineState state: CLRegionState,
-        for region: CLRegion
-    ) {
+        for region: CLRegion) {
         Task { @MainActor in
             self.delegateSubject.send(.didDetermineState(state, region))
         }
@@ -134,7 +133,7 @@ extension LocationService {
     }
 }
 
-// MARK: - DependencyKey Registration
+// MARK: - LocationServiceKey + DependencyKey
 
 extension LocationServiceKey: DependencyKey {
     @MainActor
@@ -144,4 +143,3 @@ extension LocationServiceKey: DependencyKey {
         return client
     }()
 }
-

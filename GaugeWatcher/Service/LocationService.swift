@@ -168,7 +168,7 @@ extension LocationService {
     }
 }
 
-// MARK: - DependencyKey Registration
+// MARK: - LocationServiceKey + DependencyKey
 
 extension LocationServiceKey: DependencyKey {
     @MainActor

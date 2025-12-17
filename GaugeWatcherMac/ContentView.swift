@@ -85,8 +85,7 @@ struct ContentView: View {
         ContentUnavailableView(
             "Error",
             systemImage: "exclamationmark.triangle",
-            description: Text(message)
-        )
+            description: Text(message))
     }
 }
 

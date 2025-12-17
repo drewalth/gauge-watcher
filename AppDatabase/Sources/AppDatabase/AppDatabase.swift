@@ -32,8 +32,8 @@ public enum AppDatabase {
 
 private let logger = Logger(subsystem: "com.drewalth.GaugeWatcher", category: "AppDatabase")
 
-public extension Database {
-  func seedGaugeData(_ gaugeData: [GaugeSourceItem]) throws {
+extension Database {
+  public func seedGaugeData(_ gaugeData: [GaugeSourceItem]) throws {
     // Filter out any items without a source before seeding
     let validGauges = gaugeData.filter { $0.source != nil }
 
@@ -57,8 +57,8 @@ public extension Database {
   }
 }
 
-public extension DependencyValues {
-  mutating func bootstrapDatabase() throws {
+extension DependencyValues {
+  public mutating func bootstrapDatabase() throws {
     @Dependency(\.context) var context
     let database = try SQLiteData.defaultDatabase()
     logger.debug(

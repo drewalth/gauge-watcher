@@ -323,8 +323,10 @@ public enum GaugeSourceMetric: String, CaseIterable, Codable, Sendable {
     case meterHeight = "M"
 }
 
-// MARK: - QueryBindable Conformances
+// MARK: - GaugeSource + QueryBindable
 
-extension GaugeSource: QueryBindable {}
+extension GaugeSource: QueryBindable { }
 
-extension GaugeSourceMetric: QueryBindable {}
+// MARK: - GaugeSourceMetric + QueryBindable
+
+extension GaugeSourceMetric: QueryBindable { }

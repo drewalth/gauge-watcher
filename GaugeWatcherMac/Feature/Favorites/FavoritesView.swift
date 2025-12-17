@@ -43,8 +43,7 @@ struct FavoritesView: View {
                 ContentUnavailableView(
                     "No Favorites",
                     systemImage: "star",
-                    description: Text("Add gauges to favorites from the map view")
-                )
+                    description: Text("Add gauges to favorites from the map view"))
             } else {
                 List {
                     ForEach(store.scope(state: \.rows, action: \.rows)) { rowStore in
@@ -56,8 +55,7 @@ struct FavoritesView: View {
             ContentUnavailableView(
                 "Error",
                 systemImage: "exclamationmark.triangle",
-                description: Text(error.localizedDescription)
-            )
+                description: Text(error.localizedDescription))
         }
     }
 }

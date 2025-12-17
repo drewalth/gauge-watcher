@@ -20,19 +20,16 @@ struct GaugeSearchMap: View {
     var body: some View {
         Map(
             position: $mapPosition,
-            selection: $selectedGaugeID
-        ) {
+            selection: $selectedGaugeID) {
             if let gauges = store.results.unwrap() {
                 ForEach(gauges) { gauge in
                     Marker(
                         gauge.name,
                         coordinate: CLLocationCoordinate2D(
                             latitude: gauge.latitude,
-                            longitude: gauge.longitude
-                        )
-                    )
-                    .tint(.blue)
-                    .tag(gauge.id)
+                            longitude: gauge.longitude))
+                        .tint(.blue)
+                        .tag(gauge.id)
                 }
             }
 
@@ -69,12 +66,10 @@ struct GaugeSearchMap: View {
             if shouldRecenter, let location = store.currentLocation {
                 withAnimation {
                     mapPosition = .region(MKCoordinateRegion(
-                        center: CLLocationCoordinate2D(
-                            latitude: location.latitude,
-                            longitude: location.longitude
-                        ),
-                        span: MKCoordinateSpan(latitudeDelta: 1.0, longitudeDelta: 1.0)
-                    ))
+                                            center: CLLocationCoordinate2D(
+                                                latitude: location.latitude,
+                                                longitude: location.longitude),
+                                            span: MKCoordinateSpan(latitudeDelta: 1.0, longitudeDelta: 1.0)))
                 }
                 store.send(.recenterCompleted)
             }

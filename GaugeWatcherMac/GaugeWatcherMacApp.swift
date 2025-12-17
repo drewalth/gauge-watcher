@@ -36,8 +36,7 @@ struct GaugeWatcherMacApp: App {
                 minWidth: 800,
                 maxWidth: .infinity,
                 minHeight: 600,
-                maxHeight: .infinity
-            )
+                maxHeight: .infinity)
             .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         }
         .windowResizability(.contentMinSize)

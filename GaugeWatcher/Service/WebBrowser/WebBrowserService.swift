@@ -10,10 +10,10 @@ import SafariServices
 import SharedFeatures
 import UIKit
 
-// MARK: - DependencyKey Registration
+// MARK: - SharedFeatures.WebBrowserService + DependencyKey
 
 extension SharedFeatures.WebBrowserService: DependencyKey {
-    public static let liveValue: SharedFeatures.WebBrowserService = SharedFeatures.WebBrowserService { url, options in
+    public static let liveValue = SharedFeatures.WebBrowserService { url, options in
         await MainActor.run {
             let browserModule = WebBrowserModule()
             let opts = options ?? SharedFeatures.WebBrowserOptions()
@@ -31,7 +31,11 @@ class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePre
 
     // MARK: Lifecycle
 
-    init(url: URL, options: SharedFeatures.WebBrowserOptions, onDismiss: @escaping (String) -> Void, didPresent: @escaping () -> Void) {
+    init(
+        url: URL,
+        options: SharedFeatures.WebBrowserOptions,
+        onDismiss: @escaping (String) -> Void,
+        didPresent: @escaping () -> Void) {
         self.onDismiss = onDismiss
         self.didPresent = didPresent
 
@@ -73,8 +77,9 @@ class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePre
     let didPresent: () -> Void
 
     func open() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first
+        guard
+            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = windowScene.windows.first
         else { return }
 
         var currentViewController = window.rootViewController

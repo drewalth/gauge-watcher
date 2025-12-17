@@ -8,7 +8,7 @@ import Testing
 
 @Test
 func smokeTest() async throws {
-    // Placeholder test
-    #expect(true)
+  // Placeholder test
+  #expect(true)
 }
 
