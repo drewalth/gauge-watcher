@@ -20,44 +20,108 @@ struct GaugeListInspector: View {
     @Binding var mode: InspectorMode
 
     var body: some View {
-        VStack(spacing: 0) {
-            switch mode {
-            case .nearby:
-                nearbyContent
-            case .favorites:
-                favoritesContent
-            }
+        switch mode {
+        case .nearby:
+            nearbyContent
+        case .favorites:
+            favoritesContent
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: Private
 
     @State private var searchText = ""
 
+    private var allGauges: [GaugeRef] {
+        gaugeSearchStore.results.unwrap() ?? []
+    }
+
+    private var displayedGauges: [GaugeRef] {
+        filteredGauges(allGauges)
+    }
+
     @ViewBuilder
     private var nearbyContent: some View {
         switch gaugeSearchStore.results {
         case .initial, .loading:
-            ContentUnavailableView {
-                ProgressView()
-            } description: {
-                Text("Loading gauges...")
-            }
+            loadingView("Loading gauges...")
         case .loaded(let gauges), .reloading(let gauges):
             if gauges.isEmpty {
-                ContentUnavailableView(
-                    "No Gauges",
-                    systemImage: "drop.triangle",
-                    description: Text("Pan the map to find gauges"))
+                emptyNearbyView
             } else {
-                gaugeList(gauges: filteredGauges(gauges))
+                gaugeListContent
             }
         case .error(let error):
-            ContentUnavailableView(
-                "Error",
-                systemImage: "exclamationmark.triangle",
-                description: Text(error.localizedDescription))
+            errorView(error.localizedDescription)
+        }
+    }
+
+    @ViewBuilder
+    private var gaugeListContent: some View {
+        VStack(spacing: 0) {
+            inspectorHeader
+            Divider()
+            if displayedGauges.isEmpty {
+                noSearchResultsView
+            } else {
+                gaugeList
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var inspectorHeader: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                TextField("Search gauges", text: $searchText)
+                    .textFieldStyle(.plain)
+                if !searchText.isEmpty {
+                    Button("Clear", systemImage: "xmark.circle.fill", action: clearSearch)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.secondary)
+                        .labelStyle(.iconOnly)
+                }
+            }
+            .padding(8)
+            .background(.quaternary.opacity(0.5))
+            .clipShape(.rect(cornerRadius: 8))
+
+            HStack {
+                Text(headerTitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                if gaugeSearchStore.results.isLoading() || gaugeSearchStore.results.isReloading() {
+                    ProgressView()
+                        .scaleEffect(0.6)
+                }
+            }
+        }
+        .padding()
+    }
+
+    private var headerTitle: String {
+        if searchText.isEmpty {
+            "\(allGauges.count) gauges in view"
+        } else {
+            "\(displayedGauges.count) of \(allGauges.count) gauges"
+        }
+    }
+
+    @ViewBuilder
+    private var gaugeList: some View {
+        ScrollView {
+            LazyVStack(spacing: 2) {
+                ForEach(displayedGauges) { gauge in
+                    GaugeListRow(gauge: gauge) {
+                        gaugeSearchStore.send(.goToGaugeDetail(gauge.id))
+                    }
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
         }
     }
 
@@ -66,11 +130,41 @@ struct GaugeListInspector: View {
         if let store = favoritesStore {
             FavoritesInspectorContent(store: store)
         } else {
-            ContentUnavailableView(
-                "Favorites Unavailable",
-                systemImage: "star.slash",
-                description: Text("Could not load favorites"))
+            errorView("Could not load favorites")
         }
+    }
+
+    @ViewBuilder
+    private var emptyNearbyView: some View {
+        ContentUnavailableView(
+            "No Gauges",
+            systemImage: "drop.triangle",
+            description: Text("Pan the map to find gauges"))
+    }
+
+    @ViewBuilder
+    private var noSearchResultsView: some View {
+        ContentUnavailableView(
+            "No Results",
+            systemImage: "magnifyingglass",
+            description: Text("No gauges match \"\(searchText)\""))
+    }
+
+    @ViewBuilder
+    private func loadingView(_ message: String) -> some View {
+        ContentUnavailableView {
+            ProgressView()
+        } description: {
+            Text(message)
+        }
+    }
+
+    @ViewBuilder
+    private func errorView(_ message: String) -> some View {
+        ContentUnavailableView(
+            "Error",
+            systemImage: "exclamationmark.triangle",
+            description: Text(message))
     }
 
     private func filteredGauges(_ gauges: [GaugeRef]) -> [GaugeRef] {
@@ -82,15 +176,8 @@ struct GaugeListInspector: View {
         }
     }
 
-    @ViewBuilder
-    private func gaugeList(gauges: [GaugeRef]) -> some View {
-        List(gauges) { gauge in
-            GaugeListRow(gauge: gauge) {
-                gaugeSearchStore.send(.goToGaugeDetail(gauge.id))
-            }
-        }
-        .listStyle(.sidebar)
-        .searchable(text: $searchText, prompt: "Filter gauges")
+    private func clearSearch() {
+        searchText = ""
     }
 }
 
@@ -101,38 +188,76 @@ struct GaugeListRow: View {
     let gauge: GaugeRef
     let onTap: () -> Void
 
+    @State private var isHovering = false
+
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(gauge.name)
-                    .font(.headline)
-                    .lineLimit(2)
-                HStack(spacing: 4) {
-                    Text(gauge.source.rawValue.uppercased())
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.fill.tertiary)
-                        .clipShape(.capsule)
-                    Text(gauge.state)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    if !gauge.zone.isEmpty {
+            HStack(alignment: .top, spacing: 12) {
+                // Source indicator
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(sourceColor)
+                    .frame(width: 4)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(gauge.name)
+                        .font(.system(.body, weight: .medium))
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+
+                    HStack(spacing: 6) {
+                        Text(gauge.source.rawValue.uppercased())
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(sourceColor)
+
                         Text("•")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundStyle(.tertiary)
-                        Text(gauge.zone)
+
+                        Text(gauge.state)
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                            .lineLimit(1)
+
+                        if !gauge.zone.isEmpty {
+                            Text("•")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                            Text(gauge.zone)
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                                .lineLimit(1)
+                        }
+
+                        Spacer(minLength: 0)
                     }
                 }
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .padding(.top, 4)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+            .background(isHovering ? Color.primary.opacity(0.06) : .clear)
+            .clipShape(.rect(cornerRadius: 8))
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .onHover { hovering in
+            isHovering = hovering
+        }
+    }
+
+    private var sourceColor: Color {
+        switch gauge.source.rawValue.lowercased() {
+        case "usgs":
+            .blue
+        case "dwr":
+            .green
+        default:
+            .orange
+        }
     }
 }
 
@@ -172,18 +297,41 @@ struct FavoritesInspectorContent: View {
                     systemImage: "star",
                     description: Text("Star gauges from the detail view to add them here"))
             } else {
-                List {
-                    ForEach(store.scope(state: \.rows, action: \.rows)) { rowStore in
-                        FavoriteRowView(store: rowStore)
-                    }
+                VStack(spacing: 0) {
+                    favoritesHeader(count: gauges.count)
+                    Divider()
+                    favoritesList
                 }
-                .listStyle(.sidebar)
             }
         case .error(let error):
             ContentUnavailableView(
                 "Error",
                 systemImage: "exclamationmark.triangle",
                 description: Text(error.localizedDescription))
+        }
+    }
+
+    @ViewBuilder
+    private func favoritesHeader(count: Int) -> some View {
+        HStack {
+            Label("\(count) favorite\(count == 1 ? "" : "s")", systemImage: "star.fill")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private var favoritesList: some View {
+        ScrollView {
+            LazyVStack(spacing: 2) {
+                ForEach(store.scope(state: \.rows, action: \.rows)) { rowStore in
+                    FavoriteRowView(store: rowStore)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
         }
     }
 }
@@ -194,31 +342,68 @@ struct FavoriteRowView: View {
 
     @Bindable var store: StoreOf<FavoriteGaugeTileFeature>
 
+    @State private var isHovering = false
+
     var body: some View {
         Button {
             store.send(.goToGaugeDetail(store.gauge.id))
         } label: {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(store.gauge.name)
-                    .font(.headline)
-                    .lineLimit(2)
-                HStack(spacing: 4) {
-                    Text(store.gauge.source.rawValue.uppercased())
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.fill.tertiary)
-                        .clipShape(.capsule)
-                    Text(store.gauge.state)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "star.fill")
+                    .font(.caption)
+                    .foregroundStyle(.yellow)
+                    .padding(.top, 4)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(store.gauge.name)
+                        .font(.system(.body, weight: .medium))
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+
+                    HStack(spacing: 6) {
+                        Text(store.gauge.source.rawValue.uppercased())
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(sourceColor)
+
+                        Text("•")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+
+                        Text(store.gauge.state)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        Spacer(minLength: 0)
+                    }
                 }
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .padding(.top, 4)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+            .background(isHovering ? Color.primary.opacity(0.06) : .clear)
+            .clipShape(.rect(cornerRadius: 8))
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .onHover { hovering in
+            isHovering = hovering
+        }
+    }
+
+    private var sourceColor: Color {
+        switch store.gauge.source.rawValue.lowercased() {
+        case "usgs":
+            .blue
+        case "dwr":
+            .green
+        default:
+            .orange
+        }
     }
 }
 
@@ -233,5 +418,5 @@ struct FavoriteRowView: View {
             FavoriteGaugesFeature()
         },
         mode: .constant(.nearby))
+        .frame(width: 320, height: 600)
 }
-

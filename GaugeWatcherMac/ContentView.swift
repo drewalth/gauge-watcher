@@ -43,30 +43,36 @@ struct ContentView: View {
 
     // MARK: Private
 
-    @State private var showInspector = true
     @State private var inspectorMode: InspectorMode = .nearby
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
     @ViewBuilder
     private var mainContent: some View {
         if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
-            GaugeSearchView(store: gaugeSearchStore)
-                .ignoresSafeArea(.container, edges: .all)
-                .inspector(isPresented: $showInspector) {
-                    GaugeListInspector(
-                        gaugeSearchStore: gaugeSearchStore,
-                        favoritesStore: store.scope(state: \.favorites, action: \.favorites),
-                        mode: $inspectorMode)
-                        .inspectorColumnWidth(min: 280, ideal: 320, max: 400)
-                }
-                .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
-                        inspectorModeToggle
-                        Button("Toggle Inspector", systemImage: "sidebar.trailing") {
-                            showInspector.toggle()
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                GaugeListInspector(
+                    gaugeSearchStore: gaugeSearchStore,
+                    favoritesStore: store.scope(state: \.favorites, action: \.favorites),
+                    mode: $inspectorMode)
+                    .navigationSplitViewColumnWidth(min: 300, ideal: 350, max: 400)
+                    .toolbar(removing: .sidebarToggle)
+            } detail: {
+                GaugeSearchView(store: gaugeSearchStore)
+                    .ignoresSafeArea(.container, edges: .all)
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .navigation) {
+                    Button("Toggle Sidebar", systemImage: "sidebar.leading") {
+                        withAnimation {
+                            columnVisibility = columnVisibility == .all ? .detailOnly : .all
                         }
-                        .keyboardShortcut("i", modifiers: [.command, .option])
                     }
+                    .keyboardShortcut("s", modifiers: [.command, .option])
                 }
+                ToolbarItemGroup(placement: .primaryAction) {
+                    inspectorModeToggle
+                }
+            }
         } else {
             ProgressView()
         }
