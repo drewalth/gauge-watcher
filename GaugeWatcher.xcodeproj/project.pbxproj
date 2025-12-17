@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A112A01C2EDAAF0100019370 /* FlowForecast in Frameworks */ = {isa = PBXBuildFile; productRef = A112A01B2EDAAF0100019370 /* FlowForecast */; };
+		A1502F8D2EF2988900DCCBA0 /* SharedFeatures in Frameworks */ = {isa = PBXBuildFile; productRef = A1502F8C2EF2988900DCCBA0 /* SharedFeatures */; };
 		A1526C2A2ED4D4BD0063C7FA /* GaugeDrivers in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C292ED4D4BD0063C7FA /* GaugeDrivers */; };
 		A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C5F2ED4EAA00063C7FA /* Algorithms */; };
 		A1526C722ED51C490063C7FA /* AccessibleUI in Frameworks */ = {isa = PBXBuildFile; productRef = A1526C712ED51C490063C7FA /* AccessibleUI */; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A1502F8B2EF2986700DCCBA0 /* SharedFeatures */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedFeatures; sourceTree = "<group>"; };
 		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1526CAA2ED5263D0063C7FA /* AppTelemetry */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppTelemetry; sourceTree = "<group>"; };
 		A18830222EDE27540033F911 /* UIComponents */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIComponents; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1502F8D2EF2988900DCCBA0 /* SharedFeatures in Frameworks */,
 				A1526CAD2ED526D30063C7FA /* AppTelemetry in Frameworks */,
 				A1526C602ED4EAA00063C7FA /* Algorithms in Frameworks */,
 				A1526C722ED51C490063C7FA /* AccessibleUI in Frameworks */,
@@ -187,6 +190,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A1502F8B2EF2986700DCCBA0 /* SharedFeatures */,
 				A19585662EF28DEE0087291B /* GaugeService */,
 				A19585652EF28BDD0087291B /* AppDatabase */,
 				A18830222EDE27540033F911 /* UIComponents */,
@@ -320,6 +324,7 @@
 				A18830242EDE27FB0033F911 /* UIComponents */,
 				A19585672EF2904A0087291B /* AppDatabase */,
 				A19585692EF290500087291B /* GaugeService */,
+				A1502F8C2EF2988900DCCBA0 /* SharedFeatures */,
 			);
 			productName = GaugeWatcher;
 			productReference = A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */;
@@ -1141,6 +1146,10 @@
 		A112A01B2EDAAF0100019370 /* FlowForecast */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlowForecast;
+		};
+		A1502F8C2EF2988900DCCBA0 /* SharedFeatures */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SharedFeatures;
 		};
 		A1526C292ED4D4BD0063C7FA /* GaugeDrivers */ = {
 			isa = XCSwiftPackageProductDependency;
