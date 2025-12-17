@@ -65,8 +65,7 @@ struct GaugeListInspector: View {
     private var searchModeBinding: Binding<SearchMode> {
         Binding(
             get: { gaugeSearchStore.searchMode },
-            set: { gaugeSearchStore.send(.setSearchMode($0)) }
-        )
+            set: { gaugeSearchStore.send(.setSearchMode($0)) })
     }
 
     @ViewBuilder

@@ -47,7 +47,7 @@ public struct FilterOptions: Equatable, Sendable {
   public var country: String?
   public var state: String?
   public var source: GaugeSource?
-  public var searchText: String = ""
+  public var searchText = ""
 
   /// Returns true if any filter is actively set
   public var hasActiveFilters: Bool {
