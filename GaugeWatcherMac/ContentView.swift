@@ -43,42 +43,45 @@ struct ContentView: View {
 
     // MARK: Private
 
-    @State private var selectedSidebarItem: SidebarItem? = .map
-    @State private var preferredColumn: NavigationSplitViewColumn = .detail
+    @State private var showInspector = true
+    @State private var inspectorMode: InspectorMode = .nearby
+
     @ViewBuilder
     private var mainContent: some View {
-        NavigationSplitView(preferredCompactColumn: $preferredColumn) {
-            List(selection: $selectedSidebarItem) {
-                Label("Map", systemImage: "map")
-                    .tag(SidebarItem.map)
-                Label("Favorites", systemImage: "star")
-                    .tag(SidebarItem.favorites)
-            }
-            .navigationTitle("Gauge Watcher")
-        } detail: {
-            detailContent
+        if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
+            GaugeSearchView(store: gaugeSearchStore)
+                .ignoresSafeArea(.container, edges: .all)
+                .inspector(isPresented: $showInspector) {
+                    GaugeListInspector(
+                        gaugeSearchStore: gaugeSearchStore,
+                        favoritesStore: store.scope(state: \.favorites, action: \.favorites),
+                        mode: $inspectorMode)
+                        .inspectorColumnWidth(min: 280, ideal: 320, max: 400)
+                }
+                .toolbar {
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        inspectorModeToggle
+                        Button("Toggle Inspector", systemImage: "sidebar.trailing") {
+                            showInspector.toggle()
+                        }
+                        .keyboardShortcut("i", modifiers: [.command, .option])
+                    }
+                }
+        } else {
+            ProgressView()
         }
     }
 
     @ViewBuilder
-    private var detailContent: some View {
-        switch selectedSidebarItem {
-        case .map, .none:
-            if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
-                GaugeSearchView(store: gaugeSearchStore)
-                .ignoresSafeArea(.container, edges: .all)
-            } else {
-                ProgressView()
-            }
-        case .favorites:
-            if let favoritesStore = store.scope(state: \.favorites, action: \.favorites) {
-                FavoritesView(store: favoritesStore)
-            } else {
-                Text("Favorites")
-                    .font(.largeTitle)
-                    .foregroundStyle(.secondary)
-            }
+    private var inspectorModeToggle: some View {
+        Picker("Mode", selection: $inspectorMode) {
+            Label("Nearby", systemImage: "map")
+                .tag(InspectorMode.nearby)
+            Label("Favorites", systemImage: "star")
+                .tag(InspectorMode.favorites)
         }
+        .pickerStyle(.segmented)
+        .labelsHidden()
     }
 
     @ViewBuilder
@@ -90,10 +93,10 @@ struct ContentView: View {
     }
 }
 
-// MARK: - SidebarItem
+// MARK: - InspectorMode
 
-private enum SidebarItem: Hashable {
-    case map
+enum InspectorMode: Hashable {
+    case nearby
     case favorites
 }
 

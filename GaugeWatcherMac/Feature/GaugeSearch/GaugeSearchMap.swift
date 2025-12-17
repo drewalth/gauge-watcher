@@ -26,15 +26,13 @@ struct GaugeSearchMap: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     if store.currentLocation != nil {
-                        Button {
+                        Button("Center on Location", systemImage: "location.fill") {
                             store.send(.recenterOnUserLocation)
-                        } label: {
-                            Label("Center on Location", systemImage: "location.fill")
-                                .labelStyle(.iconOnly)
                         }
+                        .labelStyle(.iconOnly)
                     }
                 }
-            }.searchable(text: .constant(""), prompt: "Search")
+            }
     }
 }
 
