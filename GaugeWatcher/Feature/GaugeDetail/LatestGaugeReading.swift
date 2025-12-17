@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Loadable
+import SharedFeatures
 import SwiftUI
 
 struct LatestGaugeReading: View {

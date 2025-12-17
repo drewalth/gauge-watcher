@@ -9,26 +9,12 @@ import Combine
 import ComposableArchitecture
 import CoreLocation
 import os
-
-// MARK: - LocationManagerDelegateAction
-
-public enum LocationManagerDelegateAction: Sendable {
-    case didUpdateLocations([CLLocation])
-    case didFailWithError(Swift.Error)
-    case didChangeAuthorization(CLAuthorizationStatus)
-    case initialState(authorizationStatus: CLAuthorizationStatus, servicesEnabled: Bool)
-
-    #if os(iOS) || os(macOS) || targetEnvironment(macCatalyst)
-    case didDetermineState(CLRegionState, CLRegion)
-    #endif
-
-    case didStartMonitoringFor(CLRegion)
-}
+import SharedFeatures
 
 // MARK: - LocationService
 
 @MainActor
-class LocationService: NSObject {
+final class LocationService: NSObject, LocationServiceProtocol {
 
     // MARK: Public
 
@@ -39,7 +25,7 @@ class LocationService: NSObject {
     public private(set) var currentLocation: CLLocation?
 
     /// Provides a stream of location manager events, including initial state
-    nonisolated public func delegate() async -> AsyncStream<LocationManagerDelegateAction> {
+    nonisolated public func delegate() async -> AsyncStream<SharedFeatures.LocationManagerDelegateAction> {
         // Safely access MainActor properties
         let initialAuth = await currentAuthorizationStatus
         let subject = await delegateSubject
@@ -62,7 +48,7 @@ class LocationService: NSObject {
     // MARK: Internal
 
     let locationManager = CLLocationManager()
-    let delegateSubject = PassthroughSubject<LocationManagerDelegateAction, Never>()
+    let delegateSubject = PassthroughSubject<SharedFeatures.LocationManagerDelegateAction, Never>()
 
     func initialize() {
         locationManager.delegate = self
@@ -182,20 +168,13 @@ extension LocationService {
     }
 }
 
-// MARK: DependencyKey
+// MARK: - DependencyKey Registration
 
-extension LocationService: DependencyKey {
+extension LocationServiceKey: DependencyKey {
     @MainActor
-    public static var liveValue: LocationService = {
+    public static var liveValue: any LocationServiceProtocol = {
         let client = LocationService()
         client.initialize()
         return client
     }()
-}
-
-extension DependencyValues {
-    var locationService: LocationService {
-        get { self[LocationService.self] }
-        set { self[LocationService.self] = newValue }
-    }
 }

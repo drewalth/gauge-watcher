@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import MapKit
+import SharedFeatures
 import SwiftUI
 
 // MARK: - ClusteredMapView

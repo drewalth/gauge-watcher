@@ -6,8 +6,7 @@
 //
 
 import AppTelemetry
-import ComposableArchitecture
-import Loadable
+import SharedFeatures
 import SwiftUI
 import UIComponents
 
@@ -50,7 +49,7 @@ struct AppView: View {
                     .tabItem {
                         Label("Search", systemImage: "magnifyingglass")
                     }
-                    .tag(0)
+                    .tag(AppFeature.RootTab.search)
 
                     Group {
                         if let favoriteGaugesStore = store.scope(state: \.favorites, action: \.favorites) {
@@ -62,7 +61,7 @@ struct AppView: View {
                     .tabItem {
                         Label("Favorites", systemImage: "star.fill")
                     }
-                    .tag(1)
+                    .tag(AppFeature.RootTab.favorites)
                 }
             } else {
                 UtilityBlockView(kind: .error("Something went wrong"))

@@ -1,8 +1,6 @@
 //
 //  GaugeDetailFeature.swift
-//  GaugeWatcher
-//
-//  Created by Andrew Althage on 11/23/25.
+//  SharedFeatures
 //
 
 import ComposableArchitecture
@@ -16,27 +14,31 @@ import os
 // MARK: - GaugeDetailFeature
 
 @Reducer
-struct GaugeDetailFeature {
+public struct GaugeDetailFeature: Sendable {
 
     private let logger = Logger(category: "GaugeDetailFeature")
 
-    @ObservableState
-    struct State {
-        var gaugeID: Int
-        var gauge: Loadable<GaugeRef> = .initial
-        var readings: Loadable<[GaugeReadingRef]> = .initial
-        var selectedTimePeriod: TimePeriod.PredefinedPeriod = .last7Days
-        var availableMetrics: [GaugeSourceMetric]?
-        var selectedMetric: GaugeSourceMetric?
-        var forecast: Loadable<[ForecastDataPoint]> = .initial
-        var forecastAvailable: Loadable<Bool> = .initial
+    // MARK: - State
 
-        init(_ gaugeID: Int) {
+    @ObservableState
+    public struct State {
+        public var gaugeID: Int
+        public var gauge: Loadable<GaugeRef> = .initial
+        public var readings: Loadable<[GaugeReadingRef]> = .initial
+        public var selectedTimePeriod: TimePeriod.PredefinedPeriod = .last7Days
+        public var availableMetrics: [GaugeSourceMetric]?
+        public var selectedMetric: GaugeSourceMetric?
+        public var forecast: Loadable<[ForecastDataPoint]> = .initial
+        public var forecastAvailable: Loadable<Bool> = .initial
+
+        public init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
         }
     }
 
-    enum Action {
+    // MARK: - Action
+
+    public enum Action {
         case load
         case setGauge(Loadable<GaugeRef>)
         case sync
@@ -52,30 +54,37 @@ struct GaugeDetailFeature {
         case setForecastAvailable(Loadable<Bool>)
     }
 
-    @Dependency(\.gaugeService) var gaugeService: GaugeService
-    @Dependency(\.webBrowserService) var webBrowserService: WebBrowserService
+    // MARK: - CancelID
 
-    nonisolated enum CancelID {
+    nonisolated public enum CancelID: Sendable {
         case sync
         case loadReadings
         case load
     }
 
-    var body: some Reducer<State, Action> {
+    // MARK: - Initializer
+
+    public init() {}
+
+    // MARK: - Body
+
+    public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             case .setForecastAvailable(let newValue):
                 state.forecastAvailable = newValue
                 return .none
+
             case .setForecast(let newValue):
                 state.forecast = newValue
                 return .none
+
             case .getForecast:
                 guard state.gauge.isLoaded(), state.forecastAvailable.unwrap() == true else {
                     logger.warning("gauge not loaded or unable to determine forecastability...")
                     return .none
                 }
-                return .run { [gauge = state.gauge] send in
+                return .run { [gauge = state.gauge, logger] send in
                     do {
                         guard
                             let gauge = gauge.unwrap(),
@@ -85,6 +94,7 @@ struct GaugeDetailFeature {
                             return
                         }
 
+                        @Dependency(\.gaugeService) var gaugeService
                         let result = try await gaugeService.forecast(gauge.siteID, USGS.USGSParameter.discharge)
 
                         await send(.setForecast(.loaded(result)))
@@ -93,8 +103,9 @@ struct GaugeDetailFeature {
                         await send(.setForecast(.error(error)))
                     }
                 }
+
             case .openSource:
-                return .run { [gauge = state.gauge] _ in
+                return .run { [gauge = state.gauge, logger] _ in
                     do {
                         guard
                             let gaugeRef = gauge.unwrap(),
@@ -103,32 +114,40 @@ struct GaugeDetailFeature {
                             throw Errors.invalidGaugeSourceURL
                         }
 
+                        @Dependency(\.webBrowserService) var webBrowserService
                         try await webBrowserService.open(sourceURL, WebBrowserOptions())
 
                     } catch {
                         logger.error("\(#function): \(error.localizedDescription)")
                     }
                 }
+
             case .toggleFavorite:
                 guard state.gauge.unwrap() != nil else {
                     return .none
                 }
                 return .concatenate(
                     .run { [gaugeID = state.gaugeID] _ in
+                        @Dependency(\.gaugeService) var gaugeService
                         try await gaugeService.toggleFavorite(gaugeID)
                     }, .send(.load))
+
             case .setAvailableMetrics(let newValue):
                 state.availableMetrics = newValue
                 return .none
+
             case .setSelectedMetric(let newValue):
                 state.selectedMetric = newValue
                 return .none
+
             case .setSelectedTimePeriod(let newValue):
                 state.selectedTimePeriod = newValue
                 return .none
+
             case .setReadings(let newValue):
                 state.readings = newValue
                 return .none
+
             case .loadReadings:
                 // If we already have readings, show them while reloading. Otherwise, show loading.
                 if state.readings.isLoaded() {
@@ -139,6 +158,7 @@ struct GaugeDetailFeature {
 
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
+                        @Dependency(\.gaugeService) var gaugeService
                         let readings = try await gaugeService.loadGaugeReadings(.init(gaugeID: gaugeID)).map { $0.ref }
                         let availableMetrics = getAvailableMetrics(for: readings)
 
@@ -153,6 +173,7 @@ struct GaugeDetailFeature {
                         await send(.setReadings(.error(error)))
                     }
                 }.cancellable(id: CancelID.loadReadings, cancelInFlight: true)
+
             case .sync:
                 guard let gauge = state.gauge.unwrap() else {
                     logger.warning("gauge not set in state")
@@ -163,6 +184,7 @@ struct GaugeDetailFeature {
                 state.readings = .reloading(state.readings.unwrap() ?? [])
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
+                        @Dependency(\.gaugeService) var gaugeService
                         // Sync with API
                         try await gaugeService.sync(gaugeID)
 
@@ -177,18 +199,21 @@ struct GaugeDetailFeature {
                         await send(.setReadings(.error(error)))
                     }
                 }.cancellable(id: CancelID.sync, cancelInFlight: false)
+
             case .setGauge(let newValue):
                 state.gauge = newValue
                 return .none
+
             case .load:
                 if state.gauge.isLoaded() {
                     state.gauge = .reloading(state.gauge.unwrap()!)
                 } else if state.gauge.isInitial() {
                     state.gauge = .loading
                 }
-                return .run { [state] send in
+                return .run { [gaugeID = state.gaugeID, logger] send in
                     do {
-                        let gauge = try await gaugeService.loadGauge(state.gaugeID).ref
+                        @Dependency(\.gaugeService) var gaugeService
+                        let gauge = try await gaugeService.loadGauge(gaugeID).ref
 
                         await send(.setGauge(.loaded(gauge)))
 
@@ -212,21 +237,22 @@ struct GaugeDetailFeature {
         }
     }
 
+    // MARK: - Private Helpers
+
     private nonisolated func getAvailableMetrics(for readings: [GaugeReadingRef]) -> [GaugeSourceMetric] {
         // Use Set to get unique metrics, then convert back to array
-        // TODO: usage of .uppercased() here is a design flaw
         let uniqueMetrics = Set(readings.compactMap { GaugeSourceMetric(rawValue: $0.metric.uppercased()) })
         return Array(uniqueMetrics).sorted { $0.rawValue < $1.rawValue }
     }
 }
 
-// MARK: GaugeDetailFeature.Errors
+// MARK: - Errors
 
-extension GaugeDetailFeature {
+public extension GaugeDetailFeature {
     enum Errors: Error, LocalizedError {
         case invalidGaugeSourceURL
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .invalidGaugeSourceURL:
                 "Invalid gauge source URL"
@@ -234,3 +260,4 @@ extension GaugeDetailFeature {
         }
     }
 }
+

@@ -1,8 +1,6 @@
 //
 //  AppFeature.swift
-//  GaugeWatcher
-//
-//  Created by Andrew Althage on 11/23/25.
+//  SharedFeatures
 //
 
 import AppDatabase
@@ -14,26 +12,30 @@ import Loadable
 import os
 import SQLiteData
 
+// MARK: - AppFeature
+
 @Reducer
-struct AppFeature {
+public struct AppFeature: Sendable {
 
     private let logger = Logger(category: "AppFeature")
 
+    // MARK: - State
+
     @ObservableState
-    struct State {
-        var initialized: Loadable<Bool>
+    public struct State {
+        public var initialized: Loadable<Bool>
+        public var selectedTab: RootTab = .search
+        public var gaugeSearch: GaugeSearchFeature.State?
+        public var favorites: FavoriteGaugesFeature.State?
 
-        var selectedTab: RootTab = .favorites
-
-        init(initialized: Loadable<Bool> = .initial) {
+        public init(initialized: Loadable<Bool> = .initial) {
             self.initialized = initialized
         }
-
-        var gaugeSearch: GaugeSearchFeature.State?
-        var favorites: FavoriteGaugesFeature.State?
     }
 
-    enum Action {
+    // MARK: - Action
+
+    public enum Action {
         case initialize
         case setInitialized(Loadable<Bool>)
         case setSelectedTab(RootTab)
@@ -41,37 +43,46 @@ struct AppFeature {
         case favorites(FavoriteGaugesFeature.Action)
     }
 
-    enum RootTab {
+    // MARK: - RootTab
+
+    public enum RootTab: Sendable {
         case search, favorites
     }
 
-    @Dependency(\.defaultDatabase)
-    var database
+    // MARK: - Initializer
 
-    @Dependency(\.gaugeService)
-    var gaugeService: GaugeService
+    public init() {}
 
-    var body: some Reducer<State, Action> {
+    // MARK: - Body
+
+    public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             case .gaugeSearch, .favorites:
                 return .none
+
             case .setSelectedTab(let newValue):
                 state.selectedTab = newValue
                 return .none
+
             case .setInitialized(let newValue):
                 state.initialized = newValue
                 if
                     let isInitialized = newValue.unwrap(),
-                    isInitialized == true {
+                    isInitialized == true
+                {
                     state.gaugeSearch = GaugeSearchFeature.State()
                     state.favorites = FavoriteGaugesFeature.State()
                 }
                 return .none
+
             case .initialize:
                 state.initialized = .loading
-                return .run { send in
+                return .run { [logger] send in
                     do {
+                        @Dependency(\.gaugeService) var gaugeService
+                        @Dependency(\.defaultDatabase) var database
+
                         let isSeededResult = try await gaugeService.seeded().get()
 
                         if !isSeededResult {
@@ -84,7 +95,7 @@ struct AppFeature {
                             }.value
                         } else {
                             logger.info("Gauges have already been seeded in database")
-                            // TODO: need mechanism for identifying and adding new gauge sources. It's probably best to manage and serve sources from remote rather than local JSON files.
+                            // TODO: need mechanism for identifying and adding new gauge sources
                         }
 
                         await send(.setInitialized(.loaded(true)))
@@ -96,7 +107,8 @@ struct AppFeature {
                     }
                 }
             }
-        }.ifLet(\.gaugeSearch, action: \.gaugeSearch) {
+        }
+        .ifLet(\.gaugeSearch, action: \.gaugeSearch) {
             GaugeSearchFeature()
         }
         .ifLet(\.favorites, action: \.favorites) {
@@ -104,3 +116,4 @@ struct AppFeature {
         }
     }
 }
+

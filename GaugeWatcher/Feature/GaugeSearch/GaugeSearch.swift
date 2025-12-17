@@ -8,6 +8,7 @@
 import AppTelemetry
 import ComposableArchitecture
 import Loadable
+import SharedFeatures
 import SwiftUI
 import UIComponents
 
@@ -45,7 +46,7 @@ struct GaugeSearch: View {
             if isInitialized {
                 GaugeSearchMap(store: store)
             } else {
-                ContinuousSpinner()
+                UtilityBlockView(kind: .error("Failed to load map"))
             }
         case .error(let error):
             UtilityBlockView(kind: .error(error.localizedDescription))

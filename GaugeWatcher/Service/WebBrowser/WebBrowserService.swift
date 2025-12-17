@@ -7,37 +7,31 @@
 
 import ComposableArchitecture
 import SafariServices
+import SharedFeatures
+import UIKit
 
-// MARK: - WebBrowserService
+// MARK: - DependencyKey Registration
 
-struct WebBrowserService {
-    var open: (URL, WebBrowserOptions?) async throws -> Void
-}
-
-// MARK: DependencyKey
-
-extension WebBrowserService: DependencyKey {
-    static let liveValue = Self(open: { url, options in
-        let browserModule = WebBrowserModule()
-        let options = options ?? WebBrowserOptions()
-        try await browserModule.openBrowserAsync(url: url, options: options)
-    })
-}
-
-extension DependencyValues {
-    var webBrowserService: WebBrowserService {
-        get { self[WebBrowserService.self] }
-        set { self[WebBrowserService.self] = newValue }
+extension SharedFeatures.WebBrowserService: DependencyKey {
+    public static let liveValue: SharedFeatures.WebBrowserService = SharedFeatures.WebBrowserService { url, options in
+        await MainActor.run {
+            let browserModule = WebBrowserModule()
+            let opts = options ?? SharedFeatures.WebBrowserOptions()
+            Task {
+                try await browserModule.openBrowserAsync(url: url, options: opts)
+            }
+        }
     }
 }
 
 // MARK: - WebBrowserSession
 
+@MainActor
 class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePresentationControllerDelegate {
 
     // MARK: Lifecycle
 
-    init(url: URL, options: WebBrowserOptions, onDismiss: @escaping (String) -> Void, didPresent: @escaping () -> Void) {
+    init(url: URL, options: SharedFeatures.WebBrowserOptions, onDismiss: @escaping (String) -> Void, didPresent: @escaping () -> Void) {
         self.onDismiss = onDismiss
         self.didPresent = didPresent
 
@@ -46,8 +40,8 @@ class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePre
         configuration.entersReaderIfAvailable = options.readerMode
 
         viewController = SFSafariViewController(url: url, configuration: configuration)
-        viewController.modalPresentationStyle = options.presentationStyle.toPresentationStyle()
-        viewController.dismissButtonStyle = options.dismissButtonStyle.toSafariDismissButtonStyle()
+        viewController.modalPresentationStyle = options.presentationStyle.toUIKit()
+        viewController.dismissButtonStyle = options.dismissButtonStyle.toSafari()
 
         super.init()
         viewController.delegate = self
@@ -58,14 +52,18 @@ class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePre
 
     // MARK: - SFSafariViewControllerDelegate
 
-    public func safariViewControllerDidFinish(_: SFSafariViewController) {
-        finish(type: "cancel")
+    nonisolated public func safariViewControllerDidFinish(_: SFSafariViewController) {
+        Task { @MainActor in
+            self.finish(type: "cancel")
+        }
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
 
-    public func presentationControllerDidDismiss(_: UIPresentationController) {
-        finish(type: "cancel")
+    nonisolated public func presentationControllerDidDismiss(_: UIPresentationController) {
+        Task { @MainActor in
+            self.finish(type: "cancel")
+        }
     }
 
     // MARK: Internal
@@ -75,7 +73,11 @@ class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePre
     let didPresent: () -> Void
 
     func open() {
-        var currentViewController = UIApplication.shared.keyWindow?.rootViewController
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first
+        else { return }
+
+        var currentViewController = window.rootViewController
         while currentViewController?.presentedViewController != nil {
             currentViewController = currentViewController?.presentedViewController
         }
@@ -111,6 +113,7 @@ class WebBrowserSession: NSObject, SFSafariViewControllerDelegate, UIAdaptivePre
 
 // MARK: - WebBrowserModule
 
+@MainActor
 class WebBrowserModule {
 
     // MARK: Lifecycle
@@ -122,14 +125,14 @@ class WebBrowserModule {
 
     // MARK: Internal
 
-    func openBrowserAsync(url: URL, options: WebBrowserOptions = .init()) async throws {
+    func openBrowserAsync(url: URL, options: SharedFeatures.WebBrowserOptions = .init()) async throws {
         if vcDidPresent {
             currentWebBrowserSession = nil
             vcDidPresent = false
         }
 
         guard isValid(url: url) else {
-            throw WebBrowserErrors.invalidURL
+            throw SharedFeatures.WebBrowserErrors.invalidURL
         }
 
         currentWebBrowserSession = WebBrowserSession(url: url, options: options) { _ in
@@ -151,8 +154,30 @@ class WebBrowserModule {
     }
 }
 
-// MARK: - WebBrowserErrors
+// MARK: - Style Conversions
 
-enum WebBrowserErrors: Error {
-    case alreadyOpen, invalidURL
+extension SharedFeatures.DismissButtonStyle {
+    func toSafari() -> SFSafariViewController.DismissButtonStyle {
+        switch self {
+        case .done: .done
+        case .close: .close
+        case .cancel: .cancel
+        }
+    }
+}
+
+extension SharedFeatures.PresentationStyle {
+    func toUIKit() -> UIModalPresentationStyle {
+        switch self {
+        case .fullScreen: .fullScreen
+        case .pageSheet: .pageSheet
+        case .formSheet: .formSheet
+        case .currentContext: .currentContext
+        case .overFullScreen: .overFullScreen
+        case .overCurrentContext: .overCurrentContext
+        case .popover: .popover
+        case .none: .none
+        case .automatic: .automatic
+        }
+    }
 }

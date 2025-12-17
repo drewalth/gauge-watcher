@@ -10,6 +10,7 @@ import ComposableArchitecture
 import GaugeSources
 import Loadable
 import MapKit
+import SharedFeatures
 import SwiftUI
 
 // MARK: - GaugeSearchMap

@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/24/25.
 //
 import GaugeDrivers
+import SharedFeatures
 
 func readingsInTimePeriod(readings: [GaugeReadingRef], timePeriod: TimePeriod) -> [GaugeReadingRef] {
     readings.filter { isInTimePeriod(reading: $0, timePeriod: timePeriod) }

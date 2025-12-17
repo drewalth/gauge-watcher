@@ -12,6 +12,7 @@ import ComposableArchitecture
 import GaugeDrivers
 import GaugeSources
 import Loadable
+import SharedFeatures
 import SwiftUI
 import UIComponents
 

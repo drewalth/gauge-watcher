@@ -5,17 +5,14 @@
 //  Created by Andrew Althage on 9/17/25.
 //
 
-import AppDatabase
 import AppTelemetry
-import ComposableArchitecture
-import GaugeSources
-import SQLiteData
+import SharedFeatures
 import SwiftUI
 
 // MARK: - GaugeWatcherApp
 
 @main
-struct GaugeWatcherApp: App {
+struct GaugeWatcherApp: SwiftUI.App {
 
     // MARK: Lifecycle
 

@@ -9,6 +9,7 @@ import Charts
 import ComposableArchitecture
 import GaugeService
 import Loadable
+import SharedFeatures
 import SwiftUI
 import UIComponents
 
