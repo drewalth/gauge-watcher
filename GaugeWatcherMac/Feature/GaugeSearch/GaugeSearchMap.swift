@@ -34,7 +34,7 @@ struct GaugeSearchMap: View {
                         }
                     }
                 }
-            }
+            }.searchable(text: .constant(""), prompt: "Search")
     }
 }
 

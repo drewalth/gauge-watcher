@@ -44,10 +44,10 @@ struct ContentView: View {
     // MARK: Private
 
     @State private var selectedSidebarItem: SidebarItem? = .map
-
+    @State private var preferredColumn: NavigationSplitViewColumn = .detail
     @ViewBuilder
     private var mainContent: some View {
-        NavigationSplitView {
+        NavigationSplitView(preferredCompactColumn: $preferredColumn) {
             List(selection: $selectedSidebarItem) {
                 Label("Map", systemImage: "map")
                     .tag(SidebarItem.map)
@@ -66,6 +66,7 @@ struct ContentView: View {
         case .map, .none:
             if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
                 GaugeSearchView(store: gaugeSearchStore)
+                .ignoresSafeArea(.container, edges: .all)
             } else {
                 ProgressView()
             }
