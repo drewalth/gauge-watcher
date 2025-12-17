@@ -8,9 +8,52 @@ import ComposableArchitecture
 import CoreLocation
 import Foundation
 import GaugeService
+import GaugeSources
 import Loadable
 import MapKit
 import os
+
+// MARK: - SearchMode
+
+/// Determines how gauge queries are triggered
+public enum SearchMode: Equatable, Sendable {
+  /// Queries based on visible map area - panning triggers new queries
+  case viewport
+  /// Queries based on manual filters - map panning does not trigger queries
+  case filtered
+}
+
+// MARK: - FilterOptions
+
+/// Manual filter options for filtered search mode
+public struct FilterOptions: Equatable, Sendable {
+
+  // MARK: Lifecycle
+
+  public init(
+    country: String? = nil,
+    state: String? = nil,
+    source: GaugeSource? = nil,
+    searchText: String = "")
+  {
+    self.country = country
+    self.state = state
+    self.source = source
+    self.searchText = searchText
+  }
+
+  // MARK: Public
+
+  public var country: String?
+  public var state: String?
+  public var source: GaugeSource?
+  public var searchText: String = ""
+
+  /// Returns true if any filter is actively set
+  public var hasActiveFilters: Bool {
+    country != nil || state != nil || source != nil || !searchText.isEmpty
+  }
+}
 
 // MARK: - GaugeSearchFeature
 
@@ -38,7 +81,10 @@ public struct GaugeSearchFeature: Sendable {
       initialized: Loadable<Bool> = .initial,
       path: StackState<Path.State> = .init(),
       mapRegion: MKCoordinateRegion? = nil,
-      shouldRecenterMap: Bool = false)
+      shouldRecenterMap: Bool = false,
+      searchMode: SearchMode = .viewport,
+      filterOptions: FilterOptions = FilterOptions(),
+      shouldZoomToResults: Bool = false)
     {
       self.results = results
       self.queryOptions = queryOptions
@@ -46,6 +92,9 @@ public struct GaugeSearchFeature: Sendable {
       self.path = path
       self.mapRegion = mapRegion
       self.shouldRecenterMap = shouldRecenterMap
+      self.searchMode = searchMode
+      self.filterOptions = filterOptions
+      self.shouldZoomToResults = shouldZoomToResults
     }
 
     // MARK: Public
@@ -61,6 +110,15 @@ public struct GaugeSearchFeature: Sendable {
 
     // Flag to trigger recenter animation in MKMapView
     public var shouldRecenterMap = false
+
+    // Search mode determines query behavior
+    public var searchMode: SearchMode = .viewport
+
+    // Manual filter options (used when searchMode == .filtered)
+    public var filterOptions = FilterOptions()
+
+    // Flag to trigger map zoom to fit results after filter query
+    public var shouldZoomToResults = false
 
   }
 
@@ -82,6 +140,13 @@ public struct GaugeSearchFeature: Sendable {
     case mapRegionChangeDebounced(MKCoordinateRegion)
     case recenterOnUserLocation
     case recenterCompleted
+
+    // Search mode actions
+    case setSearchMode(SearchMode)
+    case updateFilterOptions(FilterOptions)
+    case applyFilters
+    case clearFilters
+    case zoomToResultsCompleted
   }
 
   // MARK: - Path
@@ -146,6 +211,9 @@ public struct GaugeSearchFeature: Sendable {
         return .none
 
       case .mapRegionChanged(let region):
+        // Only trigger viewport queries when in viewport mode
+        guard state.searchMode == .viewport else { return .none }
+
         // Don't update state immediately - only store when debounce fires
         // This prevents excessive state updates during pan/zoom
         return .run { send in
@@ -157,6 +225,9 @@ public struct GaugeSearchFeature: Sendable {
         .cancellable(id: CancelID.mapRegionDebounce, cancelInFlight: true)
 
       case .mapRegionChangeDebounced(let region):
+        // Double-check we're still in viewport mode (could have changed during debounce)
+        guard state.searchMode == .viewport else { return .none }
+
         // Only update state after user has stopped moving the map
         state.mapRegion = region
 
@@ -179,6 +250,54 @@ public struct GaugeSearchFeature: Sendable {
 
         state.queryOptions = newOptions
         return .send(.query)
+
+      // MARK: - Search Mode Actions
+
+      case .setSearchMode(let mode):
+        let previousMode = state.searchMode
+        state.searchMode = mode
+
+        // When switching to viewport mode, trigger a query based on current map region
+        if mode == .viewport, previousMode == .filtered, let region = state.mapRegion {
+          return .send(.mapRegionChangeDebounced(region))
+        }
+
+        // When switching to filtered mode, clear results until user applies filters
+        if mode == .filtered, previousMode == .viewport {
+          // Keep existing results visible until new filters are applied
+          return .none
+        }
+
+        return .none
+
+      case .updateFilterOptions(let options):
+        state.filterOptions = options
+        return .none
+
+      case .applyFilters:
+        // Build query options from filter options
+        var queryOptions = GaugeQueryOptions()
+        queryOptions.country = state.filterOptions.country
+        queryOptions.state = state.filterOptions.state
+        queryOptions.source = state.filterOptions.source
+        if !state.filterOptions.searchText.isEmpty {
+          queryOptions.name = state.filterOptions.searchText.lowercased()
+        }
+        // No bounding box for filtered queries
+        queryOptions.boundingBox = nil
+
+        state.queryOptions = queryOptions
+        state.shouldZoomToResults = true
+        return .send(.query)
+
+      case .clearFilters:
+        state.filterOptions = FilterOptions()
+        state.results = .loaded([])
+        return .none
+
+      case .zoomToResultsCompleted:
+        state.shouldZoomToResults = false
+        return .none
 
       case .initialize:
         // Show the map immediately - don't block on location

@@ -42,6 +42,45 @@ struct GaugeListInspector: View {
 
     @ViewBuilder
     private var nearbyContent: some View {
+        VStack(spacing: 0) {
+            searchModeToggle
+            Divider()
+            searchModeContent
+        }
+    }
+
+    @ViewBuilder
+    private var searchModeToggle: some View {
+        Picker("Search Mode", selection: searchModeBinding) {
+            Label("Map View", systemImage: "map")
+                .tag(SearchMode.viewport)
+            Label("Filters", systemImage: "line.3.horizontal.decrease.circle")
+                .tag(SearchMode.filtered)
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
+        .padding()
+    }
+
+    private var searchModeBinding: Binding<SearchMode> {
+        Binding(
+            get: { gaugeSearchStore.searchMode },
+            set: { gaugeSearchStore.send(.setSearchMode($0)) }
+        )
+    }
+
+    @ViewBuilder
+    private var searchModeContent: some View {
+        switch gaugeSearchStore.searchMode {
+        case .viewport:
+            viewportContent
+        case .filtered:
+            filteredContent
+        }
+    }
+
+    @ViewBuilder
+    private var viewportContent: some View {
         switch gaugeSearchStore.results {
         case .initial, .loading:
             loadingView("Loading gauges...")
@@ -53,6 +92,75 @@ struct GaugeListInspector: View {
             }
         case .error(let error):
             errorView(error.localizedDescription)
+        }
+    }
+
+    @ViewBuilder
+    private var filteredContent: some View {
+        VStack(spacing: 0) {
+            FilterForm(store: gaugeSearchStore)
+
+            // Show results below the form when filters are applied
+            if gaugeSearchStore.filterOptions.hasActiveFilters {
+                Divider()
+                filteredResultsContent
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var filteredResultsContent: some View {
+        switch gaugeSearchStore.results {
+        case .initial:
+            ContentUnavailableView(
+                "Set Filters",
+                systemImage: "line.3.horizontal.decrease.circle",
+                description: Text("Configure filters above and tap Search"))
+        case .loading:
+            loadingView("Searching...")
+        case .loaded(let gauges), .reloading(let gauges):
+            if gauges.isEmpty {
+                ContentUnavailableView(
+                    "No Results",
+                    systemImage: "magnifyingglass",
+                    description: Text("No gauges match your filters"))
+            } else {
+                filteredResultsList(gauges)
+            }
+        case .error(let error):
+            errorView(error.localizedDescription)
+        }
+    }
+
+    @ViewBuilder
+    private func filteredResultsList(_ gauges: [GaugeRef]) -> some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text("\(gauges.count) result\(gauges.count == 1 ? "" : "s")")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                if gaugeSearchStore.results.isReloading() {
+                    ProgressView()
+                        .scaleEffect(0.6)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
+            Divider()
+
+            ScrollView {
+                LazyVStack(spacing: 2) {
+                    ForEach(gauges) { gauge in
+                        GaugeListRow(gauge: gauge) {
+                            gaugeSearchStore.send(.goToGaugeDetail(gauge.id))
+                        }
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+            }
         }
     }
 

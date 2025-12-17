@@ -21,7 +21,8 @@ struct GaugeSearchMap: View {
             gauges: store.results.unwrap() ?? [],
             store: store,
             userLocation: store.currentLocation,
-            shouldRecenter: store.shouldRecenterMap)
+            shouldRecenter: store.shouldRecenterMap,
+            shouldZoomToResults: store.shouldZoomToResults)
             .toolbar(removing: .title)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -46,6 +47,7 @@ struct ClusteredMapView: NSViewRepresentable {
     let store: StoreOf<GaugeSearchFeature>
     let userLocation: CurrentLocation?
     let shouldRecenter: Bool
+    let shouldZoomToResults: Bool
 
     func makeNSView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -93,6 +95,12 @@ struct ClusteredMapView: NSViewRepresentable {
             mapView.setRegion(region, animated: true)
             context.coordinator.recenterCompleted()
         }
+
+        // Handle zoom to results (for filtered search)
+        if shouldZoomToResults, !gauges.isEmpty {
+            zoomToFitGauges(mapView: mapView, gauges: gauges)
+            context.coordinator.zoomToResultsCompleted()
+        }
     }
 
     func makeCoordinator() -> Coordinator {
@@ -114,6 +122,36 @@ struct ClusteredMapView: NSViewRepresentable {
         let toAdd = gauges.filter { !existingIDs.contains($0.id) }.map { GaugeAnnotation(gaugeRef: $0) }
         mapView.addAnnotations(toAdd)
     }
+
+    private func zoomToFitGauges(mapView: MKMapView, gauges: [GaugeRef]) {
+        guard !gauges.isEmpty else { return }
+
+        // Calculate bounding box of all gauges
+        var minLat = Double.greatestFiniteMagnitude
+        var maxLat = -Double.greatestFiniteMagnitude
+        var minLon = Double.greatestFiniteMagnitude
+        var maxLon = -Double.greatestFiniteMagnitude
+
+        for gauge in gauges {
+            minLat = min(minLat, gauge.latitude)
+            maxLat = max(maxLat, gauge.latitude)
+            minLon = min(minLon, gauge.longitude)
+            maxLon = max(maxLon, gauge.longitude)
+        }
+
+        let center = CLLocationCoordinate2D(
+            latitude: (minLat + maxLat) / 2,
+            longitude: (minLon + maxLon) / 2)
+
+        // Add padding to the span (20% on each side)
+        let latDelta = max((maxLat - minLat) * 1.4, 0.1) // Minimum span for single point
+        let lonDelta = max((maxLon - minLon) * 1.4, 0.1)
+
+        let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)
+        let region = MKCoordinateRegion(center: center, span: span)
+
+        mapView.setRegion(region, animated: true)
+    }
 }
 
 // MARK: ClusteredMapView.Coordinator
@@ -133,6 +171,10 @@ extension ClusteredMapView {
 
         func recenterCompleted() {
             store.send(.recenterCompleted)
+        }
+
+        func zoomToResultsCompleted() {
+            store.send(.zoomToResultsCompleted)
         }
 
         // MARK: - MKMapViewDelegate
