@@ -195,16 +195,16 @@ struct GaugeListInspector: View {
             .background(.quaternary.opacity(0.5))
             .clipShape(.rect(cornerRadius: 8))
 
-            HStack {
+            HStack(alignment: .center) {
                 Text(headerTitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
                 if gaugeSearchStore.results.isLoading() || gaugeSearchStore.results.isReloading() {
                     ProgressView()
-                        .scaleEffect(0.6)
+                        .scaleEffect(0.5)
                 }
-            }
+            }.frame(height: 30)
         }
         .padding()
     }

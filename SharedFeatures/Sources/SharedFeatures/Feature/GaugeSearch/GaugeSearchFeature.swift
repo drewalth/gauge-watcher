@@ -378,7 +378,11 @@ public struct GaugeSearchFeature: Sendable {
         return .none
 
       case .query:
-        state.results = .loading
+        if state.results.isLoaded() {
+          state.results = .reloading(state.results.unwrap() ?? [])
+        } else if state.results.isInitial() || state.results.isError() {
+          state.results = .loading
+        }
         return .run { [queryOptions = state.queryOptions] send in
           do {
             @Dependency(\.gaugeService) var gaugeService
