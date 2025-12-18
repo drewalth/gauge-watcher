@@ -227,4 +227,3 @@ You'll need to install [gitleaks](https://github.com/gitleaks/gitleaks) to check
 
 - [@ajbonich](https://github.com/ajbonich) initial forecasting server implementation.
 - [@ngottlieb](https://github.com/ngottlieb) Canadian gauge data guidance.
-- [@tallowen](https://github.com/tallowen) design patterns and suggestions.

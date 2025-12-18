@@ -86,7 +86,6 @@
 			membershipExceptions = (
 				Components/README.md,
 				Feature/README.md,
-				Model/README.md,
 				Schema/README.md,
 			);
 			target = A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */;
