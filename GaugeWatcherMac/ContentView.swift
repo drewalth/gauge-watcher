@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 12/16/25.
 //
 
+import GaugeBot
 import SharedFeatures
 import SwiftUI
-import GaugeBot
 
 // MARK: - ContentView
 
@@ -46,7 +46,8 @@ struct ContentView: View {
 
     @State private var inspectorMode: InspectorMode = .nearby
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
-@State private var sheetIsPresented = true
+    @State private var sheetIsPresented = false
+
     @ViewBuilder
     private var mainContent: some View {
         if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
@@ -74,9 +75,17 @@ struct ContentView: View {
                     if gaugeSearchStore.path.isEmpty {
                         inspectorModeToggle
                     }
-                    Button("Chat", systemImage: "message") {
+                    Button {
                         sheetIsPresented.toggle()
                     }
+                    label: {
+                        Label("GaugeBot", systemImage: "bubble.left.and.bubble.right")
+                        .accessibilityLabel("Chat with GaugeBot")
+                        .accessibilityHint("Chat with GaugeBot to get information about water gauges")
+                        .accessibilityValue("Chat with GaugeBot")
+                        .labelStyle(.titleAndIcon)
+                        
+                    }.buttonStyle(.borderedProminent)
                 }
 
             }.sheet(isPresented: $sheetIsPresented) {
@@ -84,14 +93,14 @@ struct ContentView: View {
                     GaugeBotChatView(store: Store(initialState: GaugeBotReducer.State(), reducer: {
                         GaugeBotReducer()
                     }))
-                        .navigationTitle("Chat")
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                Button("Close", systemImage: "xmark") {
-                                    sheetIsPresented.toggle()
-                                }
+                    .navigationTitle("GaugeBot")
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close", systemImage: "xmark") {
+                                sheetIsPresented.toggle()
                             }
                         }
+                    }
                 }
             }
         } else {

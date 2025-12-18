@@ -4,31 +4,27 @@
 import PackageDescription
 
 let package = Package(
-    name: "GaugeBot",
-    platforms: [
-      .iOS(.v26),
-      .macOS(.v26),
-    ],
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "GaugeBot",
-            targets: ["GaugeBot"]
-        ),
-    ],
-   dependencies: [
-    .package(name: "SharedFeatures", path: "../SharedFeatures")
-   ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "GaugeBot",
-            dependencies: ["SharedFeatures"]
-        ),
-        .testTarget(
-            name: "GaugeBotTests",
-            dependencies: ["GaugeBot"]
-        ),
-    ]
-)
+  name: "GaugeBot",
+  platforms: [
+    .iOS(.v26),
+    .macOS(.v26),
+  ],
+  products: [
+    // Products define the executables and libraries a package produces, making them visible to other packages.
+    .library(
+      name: "GaugeBot",
+      targets: ["GaugeBot"]),
+  ],
+  dependencies: [
+    .package(name: "SharedFeatures", path: "../SharedFeatures"),
+  ],
+  targets: [
+    // Targets are the basic building blocks of a package, defining a module or a test suite.
+    // Targets can depend on other targets in this package and products from dependencies.
+    .target(
+      name: "GaugeBot",
+      dependencies: ["SharedFeatures"]),
+    .testTarget(
+      name: "GaugeBotTests",
+      dependencies: ["GaugeBot"]),
+  ])
