@@ -15,11 +15,35 @@ An iOS and macOS app for monitoring near-real-time river flow gauge data across 
   - Environment Canada (BC, ON, QC)
   - Colorado Department of Water Resources (DWR)
   - Land, Air, Water Aotearoa (LAWA - New Zealand)
+- **GaugeBot AI Assistant** (macOS): Chat with an on-device AI assistant powered by Apple Intelligence to search gauges, check favorites, and get information about water conditions using natural language
 - **Interactive Map**: Search and browse gauges by location with visual clustering
 - **Historical Charts**: View gauge reading trends over customizable time periods
 - **Favorites**: Save frequently monitored gauges for quick access
 - **Offline-First Architecture**: Local SQLite database with intelligent caching
 - **Location-Aware**: Discover gauges near your current location
+
+## GaugeBot AI Assistant
+
+GaugeBot is an on-device AI chat assistant powered by Apple Intelligence and the Foundation Models framework. It provides a natural language interface to explore and manage water gauges.
+
+### Capabilities
+
+- **Search Gauges**: Ask questions like "Find gauges on the Arkansas River" or "What gauges are in Colorado?"
+- **Check Favorites**: Query your saved gauges with "Show me my favorite gauges" or "What are my saved stations?"
+- **Get Information**: Ask about specific rivers, locations, or gauge data
+
+### Requirements
+
+GaugeBot requires:
+- **macOS 26.0+** (Apple Silicon)
+- **Apple Intelligence** enabled on your device
+- The on-device language model must be downloaded (happens automatically when Apple Intelligence is enabled)
+
+> GaugeBot runs entirely on-device using Apple's Foundation Models framework. No data is sent to external AI services - all processing happens locally on your Mac.
+
+### Availability
+
+GaugeBot is currently available on **macOS only**. The feature gracefully degrades on unsupported devices or when Apple Intelligence is not enabled, showing helpful guidance on how to enable it.
 
 ## Requirements
 
@@ -28,6 +52,7 @@ An iOS and macOS app for monitoring near-real-time river flow gauge data across 
 - Swift 6.0+
 - Docker
 - [openapi-generator](https://openapi-generator.tech/) (for generating the forecast server's Swift client)
+- Apple Intelligence enabled (for GaugeBot on macOS)
 
 ## Installation
 
@@ -144,10 +169,14 @@ gauge-watcher/
 │   ├── Feature/               # macOS-optimized feature modules
 │   └── Service/               # macOS-specific services
 ├── SharedFeatures/            # Swift package: Shared TCA features and state
+├── GaugeBot/                  # Swift package: AI assistant using Apple Intelligence
 ├── GaugeSources/              # Swift package: Gauge data definitions and JSON sources
 ├── GaugeDrivers/              # Swift package: API clients for each data provider
+├── GaugeService/              # Swift package: Database and data access layer
+├── AppDatabase/               # Swift package: SQLite schema and migrations
 ├── AppTelemetry/              # Swift package: Analytics and tracking
-└── UIAppearance/              # Swift package: Shared UI components and styles
+├── UIAppearance/              # Swift package: Shared UI components and styles
+└── UIComponents/              # Swift package: Reusable SwiftUI components
 ```
 
 ### Module Responsibilities
@@ -155,10 +184,14 @@ gauge-watcher/
 - **GaugeWatcher**: Main iOS app container, features, and UI
 - **GaugeWatcherMac**: Native macOS app with NavigationSplitView layout, full-screen map, and platform-specific optimizations
 - **SharedFeatures**: Cross-platform TCA reducers, state management, and business logic shared between iOS and macOS
+- **GaugeBot**: On-device AI assistant using Apple Intelligence Foundation Models framework (macOS only)
 - **GaugeSources**: Static gauge definitions, state/province configurations
 - **GaugeDrivers**: Network clients for fetching live data from each provider's API
+- **GaugeService**: Database queries, data synchronization, and business logic
+- **AppDatabase**: SQLite schema definitions using SQLiteData
 - **AppTelemetry**: Event tracking and analytics abstraction
 - **UIAppearance**: Design system components, colors, and assets
+- **UIComponents**: Reusable SwiftUI view components
 
 ## Architecture
 
