@@ -1,3 +1,0 @@
-# Schema
-
-SQLite database schema

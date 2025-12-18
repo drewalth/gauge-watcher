@@ -7,6 +7,7 @@
 
 import SharedFeatures
 import SwiftUI
+import GaugeBot
 
 // MARK: - ContentView
 
@@ -45,7 +46,7 @@ struct ContentView: View {
 
     @State private var inspectorMode: InspectorMode = .nearby
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
-
+@State private var sheetIsPresented = true
     @ViewBuilder
     private var mainContent: some View {
         if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
@@ -73,6 +74,24 @@ struct ContentView: View {
                     if gaugeSearchStore.path.isEmpty {
                         inspectorModeToggle
                     }
+                    Button("Chat", systemImage: "message") {
+                        sheetIsPresented.toggle()
+                    }
+                }
+
+            }.sheet(isPresented: $sheetIsPresented) {
+                NavigationStack {
+                    GaugeBotChatView(store: Store(initialState: GaugeBotReducer.State(), reducer: {
+                        GaugeBotReducer()
+                    }))
+                        .navigationTitle("Chat")
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Close", systemImage: "xmark") {
+                                    sheetIsPresented.toggle()
+                                }
+                            }
+                        }
                 }
             }
         } else {

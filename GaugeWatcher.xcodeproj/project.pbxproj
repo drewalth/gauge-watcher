@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A112A01C2EDAAF0100019370 /* FlowForecast in Frameworks */ = {isa = PBXBuildFile; productRef = A112A01B2EDAAF0100019370 /* FlowForecast */; };
+		A14B1DCD2EF45DEF009A296F /* GaugeBot in Frameworks */ = {isa = PBXBuildFile; productRef = A14B1DCC2EF45DEF009A296F /* GaugeBot */; };
 		A1502F8D2EF2988900DCCBA0 /* SharedFeatures in Frameworks */ = {isa = PBXBuildFile; productRef = A1502F8C2EF2988900DCCBA0 /* SharedFeatures */; };
 		A15030002EF32A7C00DCCBA0 /* AppDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = A1502FFF2EF32A7C00DCCBA0 /* AppDatabase */; };
 		A15030022EF32A7C00DCCBA0 /* AppTelemetry in Frameworks */ = {isa = PBXBuildFile; productRef = A15030012EF32A7C00DCCBA0 /* AppTelemetry */; };
@@ -64,6 +65,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A14B1DCB2EF45CE1009A296F /* GaugeBot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeBot; sourceTree = "<group>"; };
 		A1502F8B2EF2986700DCCBA0 /* SharedFeatures */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedFeatures; sourceTree = "<group>"; };
 		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1526CAA2ED5263D0063C7FA /* AppTelemetry */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppTelemetry; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				A15030022EF32A7C00DCCBA0 /* AppTelemetry in Frameworks */,
 				A150300C2EF32A7C00DCCBA0 /* SQLiteData in Frameworks */,
 				A15030082EF32A7C00DCCBA0 /* GaugeSources in Frameworks */,
+				A14B1DCD2EF45DEF009A296F /* GaugeBot in Frameworks */,
 				A15030062EF32A7C00DCCBA0 /* GaugeService in Frameworks */,
 				A15030102EF32A7C00DCCBA0 /* Loadable in Frameworks */,
 				A150300A2EF32A7C00DCCBA0 /* SharedFeatures in Frameworks */,
@@ -207,6 +210,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A14B1DCB2EF45CE1009A296F /* GaugeBot */,
 				A1502F8B2EF2986700DCCBA0 /* SharedFeatures */,
 				A19585662EF28DEE0087291B /* GaugeService */,
 				A19585652EF28BDD0087291B /* AppDatabase */,
@@ -268,6 +272,7 @@
 				A150300B2EF32A7C00DCCBA0 /* SQLiteData */,
 				A150300D2EF32A7C00DCCBA0 /* ComposableArchitecture */,
 				A150300F2EF32A7C00DCCBA0 /* Loadable */,
+				A14B1DCC2EF45DEF009A296F /* GaugeBot */,
 			);
 			productName = GaugeWatcherMac;
 			productReference = A1D0A8B82EF28AC600606285 /* GaugeWatcher.app */;
@@ -615,7 +620,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2BTKYF3W9D;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -662,7 +667,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2BTKYF3W9D;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -1198,6 +1203,10 @@
 		A112A01B2EDAAF0100019370 /* FlowForecast */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlowForecast;
+		};
+		A14B1DCC2EF45DEF009A296F /* GaugeBot */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GaugeBot;
 		};
 		A1502F8C2EF2988900DCCBA0 /* SharedFeatures */ = {
 			isa = XCSwiftPackageProductDependency;
