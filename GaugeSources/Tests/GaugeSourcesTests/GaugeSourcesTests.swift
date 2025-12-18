@@ -9,9 +9,8 @@ struct GaugeSourcesTests {
         #expect(sources.count == 8882) // Includes all regions: CA (BC, ON, QC), US (USGS, DWR), NZ (3 regions)
         for source in sources {
             if source.latitude == 0 || source.longitude == 0 {
-               Issue.record("Latitude or longitude is 0 for \(source.name)")
+                Issue.record("Latitude or longitude is 0 for \(source.name)")
             }
-
         }
     }
 
