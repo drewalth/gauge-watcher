@@ -12,3 +12,4 @@ public enum LocalStorageKey: String {
   case currentLocation = "current-location"
 }
 
+

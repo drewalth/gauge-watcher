@@ -6,7 +6,13 @@ struct GaugeSourcesTests {
     @Test
     func loadAll_happy() async throws {
         let sources = try await GaugeSources.loadAll()
-        #expect(sources.count == 8916) // Includes all regions: CA (BC, ON, QC), US (USGS, DWR), NZ (3 regions)
+        #expect(sources.count == 8882) // Includes all regions: CA (BC, ON, QC), US (USGS, DWR), NZ (3 regions)
+        for source in sources {
+            if source.latitude == 0 || source.longitude == 0 {
+               Issue.record("Latitude or longitude is 0 for \(source.name)")
+            }
+
+        }
     }
 
     @Test
@@ -20,7 +26,7 @@ struct GaugeSourcesTests {
     @Test
     func loadUSGS_happy() async throws {
         let sources = try await GaugeSources.loadUSGS()
-        #expect(sources.count == 7449)
+        #expect(sources.count == 7422)
         #expect(sources.allSatisfy { $0.source == .usgs })
         #expect(sources.allSatisfy { $0.country == "US" })
     }

@@ -32,6 +32,7 @@ struct GaugeWatcherMacApp: App {
             ContentView(store: Store(initialState: AppFeature.State()) {
                 AppFeature()
             })
+            .fontDesign(.monospaced)
             .frame(
                 minWidth: 800,
                 maxWidth: .infinity,
