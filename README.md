@@ -4,7 +4,7 @@
 
 ![Gauge Watcher Hero Image](docs/gw@0.5x.png)
 
-An iOS app for monitoring near-real-time river flow gauge data across multiple water resource agencies. This is a complete reboot of the original [GaugeWatcher](https://apps.apple.com/us/app/gaugewatcher/id6498313776) app, rebuilt from scratch to explore iOS 26 and SwiftData alternatives.
+An iOS and macOS app for monitoring near-real-time river flow gauge data across multiple water resource agencies. This is a complete reboot of the original [GaugeWatcher](https://apps.apple.com/us/app/gaugewatcher/id6498313776) app, rebuilt from scratch to explore iOS 26, macOS 26, and SwiftData alternatives.
 
 > This is very much a work in progress. There will be bugs, incomplete features, and other issues. Please report them!
 
@@ -97,9 +97,13 @@ The project uses the following Swift packages:
 
 ## Building & Running
 
-### Standard Build
+### iOS
 
 Select the `GaugeWatcher` scheme and run (⌘R) in Xcode.
+
+### macOS
+
+Select the `GaugeWatcherMac` scheme and run (⌘R) in Xcode. The macOS app features a sidebar/detail layout with an interactive full-screen map.
 
 ### Testing
 
@@ -136,6 +140,10 @@ gauge-watcher/
 │   ├── Service/               # Business logic services
 │   ├── Database/              # Database models and bootstrapping
 │   └── Components/            # Reusable UI components
+├── GaugeWatcherMac/           # Native macOS app target
+│   ├── Feature/               # macOS-optimized feature modules
+│   └── Service/               # macOS-specific services
+├── SharedFeatures/            # Swift package: Shared TCA features and state
 ├── GaugeSources/              # Swift package: Gauge data definitions and JSON sources
 ├── GaugeDrivers/              # Swift package: API clients for each data provider
 ├── AppTelemetry/              # Swift package: Analytics and tracking
@@ -144,7 +152,9 @@ gauge-watcher/
 
 ### Module Responsibilities
 
-- **GaugeWatcher**: Main app container, features, and UI
+- **GaugeWatcher**: Main iOS app container, features, and UI
+- **GaugeWatcherMac**: Native macOS app with NavigationSplitView layout, full-screen map, and platform-specific optimizations
+- **SharedFeatures**: Cross-platform TCA reducers, state management, and business logic shared between iOS and macOS
 - **GaugeSources**: Static gauge definitions, state/province configurations
 - **GaugeDrivers**: Network clients for fetching live data from each provider's API
 - **AppTelemetry**: Event tracking and analytics abstraction
@@ -176,7 +186,9 @@ Key patterns:
 ### Unit Tests
 - `GaugeDriversTests/`: Tests for each API driver
 - `GaugeSourcesTests/`: Tests for gauge data parsing
-- `GaugeWatcherTests/`: App-level integration tests
+- `GaugeWatcherTests/`: iOS app integration tests
+- `GaugeWatcherMacTests/`: macOS app integration tests
+- `SharedFeaturesTests/`: Cross-platform feature tests
 
 ### Running Tests
 ```bash
