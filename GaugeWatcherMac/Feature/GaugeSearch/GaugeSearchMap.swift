@@ -299,7 +299,7 @@ final class GaugeAnnotation: NSObject, MKAnnotation {
 
 // MARK: - GaugeAnnotationView
 
-final class GaugeAnnotationView: MKMarkerAnnotationView {
+final class GaugeAnnotationView: MKAnnotationView {
 
     // MARK: Lifecycle
 
@@ -307,9 +307,14 @@ final class GaugeAnnotationView: MKMarkerAnnotationView {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
 
         clusteringIdentifier = "gauge"
-        markerTintColor = .systemBlue
-        glyphImage = NSImage(systemSymbolName: "drop.fill", accessibilityDescription: nil)
         displayPriority = .defaultHigh
+        collisionMode = .circle
+
+        frame = CGRect(x: 0, y: 0, width: Self.size, height: Self.size)
+        centerOffset = CGPoint(x: 0, y: -Self.size / 2)
+
+        setupView()
+        setupTrackingArea()
     }
 
     @available(*, unavailable)
@@ -319,23 +324,207 @@ final class GaugeAnnotationView: MKMarkerAnnotationView {
 
     // MARK: Internal
 
+    static let size: CGFloat = 32
+
     override func prepareForReuse() {
         super.prepareForReuse()
         clusteringIdentifier = "gauge"
+        dismissPopover()
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        if animated {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.15
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                containerView.animator().alphaValue = selected ? 0.85 : 1.0
+                let scale = selected ? 1.15 : 1.0
+                containerView.layer?.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+            }
+        } else {
+            containerView.alphaValue = selected ? 0.85 : 1.0
+            let scale = selected ? 1.15 : 1.0
+            containerView.layer?.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+        }
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+
+        if let existingArea = trackingArea {
+            removeTrackingArea(existingArea)
+        }
+
+        let area = NSTrackingArea(
+            rect: bounds,
+            options: [.mouseEnteredAndExited, .activeInActiveApp],
+            owner: self,
+            userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        showPopover()
+        applyHoverEffect(true)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        dismissPopover()
+        applyHoverEffect(false)
+    }
+
+    // MARK: Private
+
+    private static let hoverScale: CGFloat = 1.08
+
+    private let containerView = NSView()
+    private var popover: NSPopover?
+    private var trackingArea: NSTrackingArea?
+    private var isHovering = false
+
+    private func setupView() {
+        wantsLayer = true
+        layer?.masksToBounds = false
+
+        // Container with shadow
+        containerView.frame = bounds
+        containerView.wantsLayer = true
+        containerView.layer?.masksToBounds = false
+        containerView.layer?.shadowColor = NSColor.black.cgColor
+        containerView.layer?.shadowOpacity = 0.25
+        containerView.layer?.shadowOffset = CGSize(width: 0, height: 2)
+        containerView.layer?.shadowRadius = 4
+        addSubview(containerView)
+
+        // Gradient background circle
+        let backgroundLayer = CAGradientLayer()
+        backgroundLayer.frame = bounds
+        backgroundLayer.cornerRadius = Self.size / 2
+        backgroundLayer.colors = [
+            NSColor(calibratedRed: 0.2, green: 0.5, blue: 0.85, alpha: 1.0).cgColor,
+            NSColor(calibratedRed: 0.15, green: 0.35, blue: 0.7, alpha: 1.0).cgColor,
+        ]
+        backgroundLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        backgroundLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        containerView.layer?.addSublayer(backgroundLayer)
+
+        // Inner highlight ring
+        let highlightLayer = CALayer()
+        highlightLayer.frame = bounds.insetBy(dx: 2, dy: 2)
+        highlightLayer.cornerRadius = (Self.size - 4) / 2
+        highlightLayer.borderColor = NSColor.white.withAlphaComponent(0.3).cgColor
+        highlightLayer.borderWidth = 1
+        containerView.layer?.addSublayer(highlightLayer)
+
+        // Water drop icon
+        let iconSize: CGFloat = 16
+        let iconLayer = CALayer()
+        iconLayer.frame = CGRect(
+            x: (Self.size - iconSize) / 2,
+            y: (Self.size - iconSize) / 2,
+            width: iconSize,
+            height: iconSize)
+
+        let config = NSImage.SymbolConfiguration(pointSize: iconSize, weight: .semibold)
+        if let image = NSImage(systemSymbolName: "drop.fill", accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) {
+            let tintedImage = image.tinted(with: .white)
+            iconLayer.contents = tintedImage
+            iconLayer.contentsGravity = .resizeAspect
+        }
+        containerView.layer?.addSublayer(iconLayer)
+
+        // Outer ring for depth
+        let outerRing = CALayer()
+        outerRing.frame = bounds
+        outerRing.cornerRadius = Self.size / 2
+        outerRing.borderColor = NSColor.white.withAlphaComponent(0.15).cgColor
+        outerRing.borderWidth = 1.5
+        containerView.layer?.addSublayer(outerRing)
+    }
+
+    private func setupTrackingArea() {
+        let area = NSTrackingArea(
+            rect: bounds,
+            options: [.mouseEnteredAndExited, .activeInActiveApp],
+            owner: self,
+            userInfo: nil)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    private func applyHoverEffect(_ hovering: Bool) {
+        isHovering = hovering
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.12
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+
+            let scale = hovering ? Self.hoverScale : 1.0
+            containerView.layer?.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+
+            // Enhance shadow on hover
+            containerView.layer?.shadowOpacity = hovering ? 0.4 : 0.25
+            containerView.layer?.shadowRadius = hovering ? 6 : 4
+        }
+    }
+
+    private func showPopover() {
+        guard popover == nil else { return }
+        guard let gaugeAnnotation = annotation as? GaugeAnnotation else { return }
+
+        let contentView = GaugePopoverView(gaugeName: gaugeAnnotation.gaugeRef.name)
+        let hostingController = NSHostingController(rootView: contentView)
+
+        let newPopover = NSPopover()
+        newPopover.contentViewController = hostingController
+        newPopover.behavior = .semitransient
+        newPopover.animates = true
+
+        // Position popover above the marker
+        newPopover.show(relativeTo: bounds, of: self, preferredEdge: .maxY)
+        popover = newPopover
+    }
+
+    private func dismissPopover() {
+        popover?.close()
+        popover = nil
+    }
+}
+
+// MARK: - GaugePopoverView
+
+private struct GaugePopoverView: View {
+    let gaugeName: String
+
+    var body: some View {
+        Text(gaugeName)
+            .font(.system(size: 12, weight: .medium))
+            .foregroundStyle(.primary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .fixedSize()
     }
 }
 
 // MARK: - GaugeClusterAnnotationView
 
-final class GaugeClusterAnnotationView: MKMarkerAnnotationView {
+final class GaugeClusterAnnotationView: MKAnnotationView {
 
     // MARK: Lifecycle
 
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
 
-        markerTintColor = .systemBlue
         displayPriority = .defaultHigh
+        collisionMode = .circle
+
+        setupView()
     }
 
     @available(*, unavailable)
@@ -351,7 +540,147 @@ final class GaugeClusterAnnotationView: MKMarkerAnnotationView {
         guard let cluster = annotation as? MKClusterAnnotation else { return }
 
         let count = cluster.memberAnnotations.count
-        glyphText = "\(count)"
+        updateCount(count)
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        if animated {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.15
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                let scale = selected ? 1.1 : 1.0
+                containerView.layer?.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+            }
+        } else {
+            let scale = selected ? 1.1 : 1.0
+            containerView.layer?.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+        }
+    }
+
+    // MARK: Private
+
+    private static let baseSize: CGFloat = 40
+
+    private let containerView = NSView()
+    private let countLabel = NSTextField(labelWithString: "")
+    private var backgroundLayer: CAGradientLayer?
+
+    private func setupView() {
+        wantsLayer = true
+        layer?.masksToBounds = false
+
+        let size = Self.baseSize
+        frame = CGRect(x: 0, y: 0, width: size, height: size)
+        centerOffset = CGPoint(x: 0, y: -size / 2)
+
+        // Container with shadow
+        containerView.frame = bounds
+        containerView.wantsLayer = true
+        containerView.layer?.masksToBounds = false
+        containerView.layer?.shadowColor = NSColor.black.cgColor
+        containerView.layer?.shadowOpacity = 0.3
+        containerView.layer?.shadowOffset = CGSize(width: 0, height: 3)
+        containerView.layer?.shadowRadius = 6
+        addSubview(containerView)
+
+        // Gradient background
+        let bgLayer = CAGradientLayer()
+        bgLayer.frame = bounds
+        bgLayer.cornerRadius = size / 2
+        bgLayer.colors = [
+            NSColor(calibratedRed: 0.1, green: 0.3, blue: 0.6, alpha: 1.0).cgColor,
+            NSColor(calibratedRed: 0.08, green: 0.2, blue: 0.45, alpha: 1.0).cgColor,
+        ]
+        bgLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        bgLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        containerView.layer?.addSublayer(bgLayer)
+        backgroundLayer = bgLayer
+
+        // Inner glow
+        let glowLayer = CALayer()
+        glowLayer.frame = bounds.insetBy(dx: 3, dy: 3)
+        glowLayer.cornerRadius = (size - 6) / 2
+        glowLayer.borderColor = NSColor.white.withAlphaComponent(0.2).cgColor
+        glowLayer.borderWidth = 1.5
+        containerView.layer?.addSublayer(glowLayer)
+
+        // Count label
+        countLabel.font = NSFont.systemFont(ofSize: 14, weight: .bold)
+        countLabel.textColor = .white
+        countLabel.alignment = .center
+        countLabel.backgroundColor = .clear
+        countLabel.isBezeled = false
+        countLabel.isEditable = false
+        countLabel.sizeToFit()
+        containerView.addSubview(countLabel)
+
+        // Outer ring
+        let outerRing = CALayer()
+        outerRing.frame = bounds
+        outerRing.cornerRadius = size / 2
+        outerRing.borderColor = NSColor.white.withAlphaComponent(0.25).cgColor
+        outerRing.borderWidth = 2
+        containerView.layer?.addSublayer(outerRing)
+    }
+
+    private func updateCount(_ count: Int) {
+        let displayText = count > 999 ? "999+" : "\(count)"
+        countLabel.stringValue = displayText
+
+        // Adjust size based on count magnitude
+        let size: CGFloat
+        let fontSize: CGFloat
+        if count > 99 {
+            size = Self.baseSize + 8
+            fontSize = 12
+        } else if count > 9 {
+            size = Self.baseSize + 4
+            fontSize = 13
+        } else {
+            size = Self.baseSize
+            fontSize = 14
+        }
+
+        frame = CGRect(x: 0, y: 0, width: size, height: size)
+        centerOffset = CGPoint(x: 0, y: -size / 2)
+        containerView.frame = bounds
+        backgroundLayer?.frame = bounds
+        backgroundLayer?.cornerRadius = size / 2
+
+        // Update sublayers
+        containerView.layer?.sublayers?.forEach { layer in
+            if layer !== backgroundLayer {
+                layer.frame = bounds
+                if layer.borderWidth > 0 {
+                    layer.cornerRadius = size / 2
+                }
+            }
+        }
+
+        countLabel.font = NSFont.systemFont(ofSize: fontSize, weight: .bold)
+        countLabel.sizeToFit()
+        countLabel.frame = CGRect(
+            x: (size - countLabel.frame.width) / 2,
+            y: (size - countLabel.frame.height) / 2,
+            width: countLabel.frame.width,
+            height: countLabel.frame.height)
+    }
+}
+
+// MARK: - NSImage Tinting Extension
+
+private extension NSImage {
+    func tinted(with color: NSColor) -> NSImage {
+        let newImage = NSImage(size: size, flipped: false) { rect in
+            color.set()
+            rect.fill()
+            self.draw(in: rect, from: rect, operation: .destinationIn, fraction: 1.0)
+            return true
+        }
+        newImage.isTemplate = false
+        return newImage
     }
 }
 
