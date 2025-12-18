@@ -14,16 +14,8 @@ public protocol GaugeBotProtocol: Sendable {
 
 /// Simplified gauge representation for LLM tool output
 struct GaugeInfo: Codable, Sendable {
-  let id: Int
-  let name: String
-  let siteID: String
-  let country: String
-  let state: String
-  let source: String
-  let latitude: Double
-  let longitude: Double
-  let isFavorite: Bool
-  let lastUpdated: String
+
+  // MARK: Lifecycle
 
   init(from gauge: GaugeRef) {
     id = gauge.id
@@ -37,12 +29,34 @@ struct GaugeInfo: Codable, Sendable {
     isFavorite = gauge.favorite
     lastUpdated = gauge.updatedAt.formatted(date: .abbreviated, time: .shortened)
   }
+
+  // MARK: Internal
+
+  let id: Int
+  let name: String
+  let siteID: String
+  let country: String
+  let state: String
+  let source: String
+  let latitude: Double
+  let longitude: Double
+  let isFavorite: Bool
+  let lastUpdated: String
+
 }
 
 // MARK: - LoadFavoriteGaugesTool
 
 /// Tool that loads the user's favorite water gauges from the database.
 struct LoadFavoriteGaugesTool: Tool {
+
+  // MARK: Lifecycle
+
+  init(gaugeService: GaugeService) {
+    self.gaugeService = gaugeService
+  }
+
+  // MARK: Internal
 
   @Generable
   struct Arguments {
@@ -56,12 +70,6 @@ struct LoadFavoriteGaugesTool: Tool {
     Returns gauge names, locations, and site IDs. Use this when the user asks \
     about their favorites, saved gauges, or wants to check on specific gauges they track.
     """
-
-  private let gaugeService: GaugeService
-
-  init(gaugeService: GaugeService) {
-    self.gaugeService = gaugeService
-  }
 
   func call(arguments: Arguments) async throws -> String {
     let gauges = try await gaugeService.loadFavoriteGauges()
@@ -95,12 +103,25 @@ struct LoadFavoriteGaugesTool: Tool {
 
     return result
   }
+
+  // MARK: Private
+
+  private let gaugeService: GaugeService
+
 }
 
 // MARK: - SearchGaugesTool
 
 /// Tool that searches for water gauges by name or location.
 struct SearchGaugesTool: Tool {
+
+  // MARK: Lifecycle
+
+  init(gaugeService: GaugeService) {
+    self.gaugeService = gaugeService
+  }
+
+  // MARK: Internal
 
   @Generable
   struct Arguments {
@@ -123,12 +144,6 @@ struct SearchGaugesTool: Tool {
     gauges in a specific area, river, or by name. You can filter by state, country, or \
     search by name. Returns matching gauge information.
     """
-
-  private let gaugeService: GaugeService
-
-  init(gaugeService: GaugeService) {
-    self.gaugeService = gaugeService
-  }
 
   func call(arguments: Arguments) async throws -> String {
     // Build query options - clear defaults if user provides specific filters
@@ -178,6 +193,11 @@ struct SearchGaugesTool: Tool {
 
     return result
   }
+
+  // MARK: Private
+
+  private let gaugeService: GaugeService
+
 }
 
 // MARK: - GaugeBot

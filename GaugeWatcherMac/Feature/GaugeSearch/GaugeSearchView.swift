@@ -64,6 +64,3 @@ struct GaugeSearchView: View {
         GaugeSearchFeature()
     })
 }
-
-
-

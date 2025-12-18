@@ -80,11 +80,11 @@ struct ContentView: View {
                     }
                     label: {
                         Label("GaugeBot", systemImage: "bubble.left.and.bubble.right")
-                        .accessibilityLabel("Chat with GaugeBot")
-                        .accessibilityHint("Chat with GaugeBot to get information about water gauges")
-                        .accessibilityValue("Chat with GaugeBot")
-                        .labelStyle(.titleAndIcon)
-                        
+                            .accessibilityLabel("Chat with GaugeBot")
+                            .accessibilityHint("Chat with GaugeBot to get information about water gauges")
+                            .accessibilityValue("Chat with GaugeBot")
+                            .labelStyle(.titleAndIcon)
+
                     }.buttonStyle(.borderedProminent)
                 }
 

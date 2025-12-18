@@ -19,6 +19,8 @@ included:
   - AppTelemetry/Sources
   - AppTelemetry/Tests
   - GaugeWatcherMac
+  - SharedFeatures/Sources
+  - SharedFeatures/Tests
 
 excluded:
   - .build
