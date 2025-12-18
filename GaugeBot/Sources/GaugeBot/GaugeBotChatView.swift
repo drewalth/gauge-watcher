@@ -11,6 +11,7 @@ import SwiftUI
 
 // MARK: - GaugeBotChatView
 
+// TODO: prettier styling of assistant Markdown responses
 public struct GaugeBotChatView: View {
 
   // MARK: Lifecycle
