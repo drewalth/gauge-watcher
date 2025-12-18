@@ -9,7 +9,7 @@ import SharedFeatures
 import SwiftUI
 
 // MARK: - GaugeListInspector
-
+// TODO: split up var computed views into separate structs
 struct GaugeListInspector: View {
 
     // MARK: Internal
@@ -46,6 +46,7 @@ struct GaugeListInspector: View {
             searchModeToggle
             Divider()
             searchModeContent
+            Spacer()
         }
     }
 
@@ -265,6 +266,7 @@ struct GaugeListInspector: View {
     private func loadingView(_ message: String) -> some View {
         ContentUnavailableView {
             ProgressView()
+                .scaleEffect(0.5)
         } description: {
             Text(message)
         }

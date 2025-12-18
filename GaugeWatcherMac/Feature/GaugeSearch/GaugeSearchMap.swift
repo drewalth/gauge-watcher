@@ -63,20 +63,14 @@ struct ClusteredMapView: NSViewRepresentable {
             GaugeClusterAnnotationView.self,
             forAnnotationViewWithReuseIdentifier: MKMapViewDefaultClusterAnnotationViewReuseIdentifier)
 
-        // Set initial region - user location if available, otherwise default to US center
-        let initialRegion: MKCoordinateRegion
-        if let location = userLocation {
-            initialRegion = MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
-                latitudinalMeters: 150_000,
-                longitudinalMeters: 150_000)
-        } else {
-            // Default to center of continental US
-            initialRegion = MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 39.8283, longitude: -98.5795),
-                latitudinalMeters: 5_000_000,
-                longitudinalMeters: 5_000_000)
-        }
+        // Store user location in coordinator for initial zoom after map loads
+        context.coordinator.pendingUserLocation = userLocation
+
+        // Always start with default US center - we'll zoom to user location in mapViewDidFinishLoadingMap
+        let initialRegion = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 39.8283, longitude: -98.5795),
+            latitudinalMeters: 5_000_000,
+            longitudinalMeters: 5_000_000)
         mapView.setRegion(initialRegion, animated: false)
 
         return mapView
@@ -84,7 +78,22 @@ struct ClusteredMapView: NSViewRepresentable {
 
     func updateNSView(_ mapView: MKMapView, context: Context) {
         context.coordinator.store = store
+        context.coordinator.pendingUserLocation = userLocation
         updateAnnotations(mapView: mapView, gauges: gauges)
+
+        // Handle initial zoom if map has loaded and we have location but haven't zoomed yet
+        if
+            context.coordinator.mapDidFinishLoading,
+            !context.coordinator.hasPerformedInitialZoom,
+            let location = userLocation
+        {
+            let region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
+                latitudinalMeters: 150_000,
+                longitudinalMeters: 150_000)
+            mapView.setRegion(region, animated: true)
+            context.coordinator.hasPerformedInitialZoom = true
+        }
 
         // Handle recenter request
         if shouldRecenter, let location = userLocation {
@@ -97,7 +106,8 @@ struct ClusteredMapView: NSViewRepresentable {
         }
 
         // Handle zoom to results (for filtered search)
-        if shouldZoomToResults, !gauges.isEmpty {
+        // Only zoom when results are fully loaded (not reloading with stale data)
+        if shouldZoomToResults, case .loaded = store.results, !gauges.isEmpty {
             zoomToFitGauges(mapView: mapView, gauges: gauges)
             context.coordinator.zoomToResultsCompleted()
         }
@@ -168,6 +178,9 @@ extension ClusteredMapView {
         // MARK: Internal
 
         var store: StoreOf<GaugeSearchFeature>
+        var hasPerformedInitialZoom = false
+        var mapDidFinishLoading = false
+        var pendingUserLocation: CurrentLocation?
 
         func recenterCompleted() {
             store.send(.recenterCompleted)
@@ -178,6 +191,20 @@ extension ClusteredMapView {
         }
 
         // MARK: - MKMapViewDelegate
+
+        func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
+            mapDidFinishLoading = true
+
+            // Perform initial zoom to user location if available and not already done
+            guard !hasPerformedInitialZoom, let location = pendingUserLocation else { return }
+
+            let region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
+                latitudinalMeters: 150_000,
+                longitudinalMeters: 150_000)
+            mapView.setRegion(region, animated: true)
+            hasPerformedInitialZoom = true
+        }
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             // Let the system handle user location annotation

@@ -149,6 +149,7 @@ struct FilterForm: View {
                     .foregroundStyle(.tertiary)
                 TextField("Search by name", text: searchTextBinding)
                     .textFieldStyle(.plain)
+                    .onSubmit(applyFilters)
                 if !store.filterOptions.searchText.isEmpty {
                     Button("Clear", systemImage: "xmark.circle.fill") {
                         updateFilter { $0.searchText = "" }

@@ -258,11 +258,20 @@ struct GaugeReadingChart: View {
             .animation(.easeInOut(duration: 0.2), value: selectedReading?.id)
 
             // Tooltip overlay
-            if let selected = selectedReading {
+            Group {
+                if let selected = selectedReading {
                 tooltipView(for: selected)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 12)
+            } else {
+                Rectangle()
+                    .fill(Color.white.opacity(0))
+                    .contentShape(.rect)
+                    .frame(height: 30)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 12)
             }
+            }.frame(height: 64)
         }
     }
 
