@@ -85,8 +85,7 @@ struct ClusteredMapView: NSViewRepresentable {
         if
             context.coordinator.mapDidFinishLoading,
             !context.coordinator.hasPerformedInitialZoom,
-            let location = userLocation
-        {
+            let location = userLocation {
             let region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
                 latitudinalMeters: 150_000,
@@ -434,7 +433,7 @@ final class GaugeAnnotationView: MKAnnotationView {
         backgroundLayer.cornerRadius = Self.size / 2
         backgroundLayer.colors = [
             NSColor(calibratedRed: 0.2, green: 0.5, blue: 0.85, alpha: 1.0).cgColor,
-            NSColor(calibratedRed: 0.15, green: 0.35, blue: 0.7, alpha: 1.0).cgColor,
+            NSColor(calibratedRed: 0.15, green: 0.35, blue: 0.7, alpha: 1.0).cgColor
         ]
         backgroundLayer.startPoint = CGPoint(x: 0.5, y: 0)
         backgroundLayer.endPoint = CGPoint(x: 0.5, y: 1)
@@ -458,8 +457,9 @@ final class GaugeAnnotationView: MKAnnotationView {
             height: iconSize)
 
         let config = NSImage.SymbolConfiguration(pointSize: iconSize, weight: .semibold)
-        if let image = NSImage(systemSymbolName: "drop.fill", accessibilityDescription: nil)?
-            .withSymbolConfiguration(config) {
+        if
+            let image = NSImage(systemSymbolName: "drop.fill", accessibilityDescription: nil)?
+                .withSymbolConfiguration(config) {
             let tintedImage = image.tinted(with: .white)
             iconLayer.contents = tintedImage
             iconLayer.contentsGravity = .resizeAspect
@@ -618,7 +618,7 @@ final class GaugeClusterAnnotationView: MKAnnotationView {
         bgLayer.cornerRadius = size / 2
         bgLayer.colors = [
             NSColor(calibratedRed: 0.1, green: 0.3, blue: 0.6, alpha: 1.0).cgColor,
-            NSColor(calibratedRed: 0.08, green: 0.2, blue: 0.45, alpha: 1.0).cgColor,
+            NSColor(calibratedRed: 0.08, green: 0.2, blue: 0.45, alpha: 1.0).cgColor
         ]
         bgLayer.startPoint = CGPoint(x: 0.5, y: 0)
         bgLayer.endPoint = CGPoint(x: 0.5, y: 1)
@@ -698,8 +698,8 @@ final class GaugeClusterAnnotationView: MKAnnotationView {
 
 // MARK: - NSImage Tinting Extension
 
-private extension NSImage {
-    func tinted(with color: NSColor) -> NSImage {
+extension NSImage {
+    fileprivate func tinted(with color: NSColor) -> NSImage {
         let newImage = NSImage(size: size, flipped: false) { rect in
             color.set()
             rect.fill()

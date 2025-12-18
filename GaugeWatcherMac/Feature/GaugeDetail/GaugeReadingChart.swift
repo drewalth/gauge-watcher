@@ -260,17 +260,17 @@ struct GaugeReadingChart: View {
             // Tooltip overlay
             Group {
                 if let selected = selectedReading {
-                tooltipView(for: selected)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 12)
-            } else {
-                Rectangle()
-                    .fill(Color.white.opacity(0))
-                    .contentShape(.rect)
-                    .frame(height: 30)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 12)
-            }
+                    tooltipView(for: selected)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 12)
+                } else {
+                    Rectangle()
+                        .fill(Color.white.opacity(0))
+                        .contentShape(.rect)
+                        .frame(height: 30)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 12)
+                }
             }.frame(height: 64)
         }
     }
