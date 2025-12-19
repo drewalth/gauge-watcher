@@ -44,6 +44,10 @@ struct GaugeReadingChart: View {
 
     // MARK: Private
 
+    // Fixed heights for consistent layout
+    private let chartHeight: CGFloat = 250
+    private let tooltipHeight: CGFloat = 64
+
     @State private var selectedReading: GaugeReadingRef?
     @State private var chartHoveredPosition: CGPoint?
 
@@ -156,122 +160,181 @@ struct GaugeReadingChart: View {
     }
 
     private var loadingView: some View {
-        VStack {
-            ProgressView()
-                .scaleEffect(1.2)
-            Text("Loading readings...")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.top, 8)
+        VStack(spacing: 0) {
+            // Chart skeleton area - same height as real chart
+            chartSkeleton
+                .frame(height: chartHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
+
+            // Tooltip placeholder - same height as real tooltip
+            Rectangle()
+                .fill(.clear)
+                .frame(height: tooltipHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 12)
         }
-        .frame(height: 280)
-        .frame(maxWidth: .infinity)
+    }
+
+    private var chartSkeleton: some View {
+        ZStack {
+            // Background grid lines skeleton
+            VStack(spacing: 0) {
+                ForEach(0 ..< 5, id: \.self) { _ in
+                    Spacer()
+                    Rectangle()
+                        .fill(.secondary.opacity(0.1))
+                        .frame(height: 1)
+                }
+                Spacer()
+            }
+
+            // Fake wave line skeleton
+            GeometryReader { geometry in
+                Path { path in
+                    let width = geometry.size.width
+                    let height = geometry.size.height
+                    let midY = height * 0.5
+
+                    path.move(to: CGPoint(x: 0, y: midY + 20))
+
+                    // Create a wavy path
+                    let segments = 8
+                    for i in 0 ... segments {
+                        let x = width * CGFloat(i) / CGFloat(segments)
+                        let offsetY = sin(Double(i) * .pi / 2) * 40
+                        path.addLine(to: CGPoint(x: x, y: midY + offsetY))
+                    }
+                }
+                .stroke(
+                    LinearGradient(
+                        colors: [.secondary.opacity(0.3), .secondary.opacity(0.15)],
+                        startPoint: .leading,
+                        endPoint: .trailing),
+                    style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+            }
+
+            // Loading indicator overlay
+            VStack {
+                ProgressView()
+                    .scaleEffect(1.0)
+                Text("Loading readings...")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 6)
+            }
+        }
     }
 
     @ViewBuilder
     private var chartView: some View {
         let readings = filteredReadings
 
-        if readings.isEmpty {
-            emptyView
-        } else {
-            Chart(readings, id: \.id) { reading in
-                AreaMark(
-                    x: .value("Time", reading.createdAt),
-                    y: .value("Value", reading.value))
-                    .interpolationMethod(.catmullRom)
-                    .foregroundStyle(areaGradient)
-
-                LineMark(
-                    x: .value("Time", reading.createdAt),
-                    y: .value("Value", reading.value))
-                    .interpolationMethod(.catmullRom)
-                    .foregroundStyle(lineGradient)
-                    .lineStyle(StrokeStyle(lineWidth: 2.5))
-
-                if let selected = selectedReading, selected.id == reading.id {
-                    PointMark(
+        VStack(alignment: .leading, spacing: 0) {
+            if readings.isEmpty {
+                emptyView
+                    .frame(height: chartHeight)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 16)
+            } else {
+                Chart(readings, id: \.id) { reading in
+                    AreaMark(
                         x: .value("Time", reading.createdAt),
                         y: .value("Value", reading.value))
-                        .foregroundStyle(.white)
-                        .symbolSize(80)
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(areaGradient)
 
-                    RuleMark(x: .value("Time", reading.createdAt))
-                        .foregroundStyle(.white.opacity(0.3))
-                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
+                    LineMark(
+                        x: .value("Time", reading.createdAt),
+                        y: .value("Value", reading.value))
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(lineGradient)
+                        .lineStyle(StrokeStyle(lineWidth: 2.5))
+
+                    if let selected = selectedReading, selected.id == reading.id {
+                        PointMark(
+                            x: .value("Time", reading.createdAt),
+                            y: .value("Value", reading.value))
+                            .foregroundStyle(.white)
+                            .symbolSize(80)
+
+                        RuleMark(x: .value("Time", reading.createdAt))
+                            .foregroundStyle(.white.opacity(0.3))
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
+                    }
                 }
-            }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: xAxisStride, count: xAxisStrideCount)) { value in
-                    if let date = value.as(Date.self) {
-                        AxisValueLabel {
-                            VStack(spacing: 2) {
-                                Text(date, format: xAxisFormat)
-                                    .font(.caption2)
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: xAxisStride, count: xAxisStrideCount)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                VStack(spacing: 2) {
+                                    Text(date, format: xAxisFormat)
+                                        .font(.caption2)
+                                }
+                                .foregroundStyle(.secondary)
                             }
-                            .foregroundStyle(.secondary)
+                            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
+                                .foregroundStyle(.secondary.opacity(0.3))
+                        }
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading) { value in
+                        AxisValueLabel {
+                            if let flowValue = value.as(Double.self) {
+                                Text(formatFlowValue(flowValue))
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
                             .foregroundStyle(.secondary.opacity(0.3))
                     }
                 }
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading) { value in
-                    AxisValueLabel {
-                        if let flowValue = value.as(Double.self) {
-                            Text(formatFlowValue(flowValue))
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
-                        .foregroundStyle(.secondary.opacity(0.3))
-                }
-            }
-            .chartOverlay { proxy in
-                GeometryReader { geometry in
-                    Rectangle()
-                        .fill(.clear)
-                        .contentShape(.rect)
-                        .onContinuousHover { phase in
-                            switch phase {
-                            case .active(let location):
-                                chartHoveredPosition = location
-                                updateSelectedReading(at: location, proxy: proxy, geometry: geometry)
-                            case .ended:
-                                chartHoveredPosition = nil
-                                selectedReading = nil
+                .chartOverlay { proxy in
+                    GeometryReader { geometry in
+                        Rectangle()
+                            .fill(.clear)
+                            .contentShape(.rect)
+                            .onContinuousHover { phase in
+                                switch phase {
+                                case .active(let location):
+                                    chartHoveredPosition = location
+                                    updateSelectedReading(at: location, proxy: proxy, geometry: geometry)
+                                case .ended:
+                                    chartHoveredPosition = nil
+                                    selectedReading = nil
+                                }
                             }
-                        }
+                    }
                 }
+                .chartBackground { _ in
+                    LinearGradient(
+                        colors: [.accentColor.opacity(0.05), .clear],
+                        startPoint: .top,
+                        endPoint: .bottom)
+                }
+                .frame(height: chartHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
+                .animation(.easeInOut(duration: 0.2), value: selectedReading?.id)
             }
-            .chartBackground { _ in
-                LinearGradient(
-                    colors: [.accentColor.opacity(0.05), .clear],
-                    startPoint: .top,
-                    endPoint: .bottom)
-            }
-            .frame(height: 280)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 16)
-            .animation(.easeInOut(duration: 0.2), value: selectedReading?.id)
 
-            // Tooltip overlay
-            Group {
-                if let selected = selectedReading {
-                    tooltipView(for: selected)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 12)
-                } else {
-                    Rectangle()
-                        .fill(Color.white.opacity(0))
-                        .contentShape(.rect)
-                        .frame(height: 30)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 12)
-                }
-            }.frame(height: 64)
+            // Tooltip area - fixed height regardless of content
+            tooltipArea
+                .frame(height: tooltipHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 12)
+        }
+    }
+
+    @ViewBuilder
+    private var tooltipArea: some View {
+        if let selected = selectedReading {
+            tooltipView(for: selected)
+        } else {
+            // TODO: make this a look like the tooltipView container. an empty box with border stoke.
+            Color.white.opacity(0.1)
         }
     }
 
@@ -280,15 +343,23 @@ struct GaugeReadingChart: View {
             "No Readings",
             systemImage: "chart.line.downtrend.xyaxis",
             description: Text("No data available for the selected time period"))
-            .frame(height: 280)
     }
 
     private func errorView(_ error: Error) -> some View {
-        ContentUnavailableView(
-            "Error Loading Data",
-            systemImage: "exclamationmark.triangle",
-            description: Text(error.localizedDescription))
-            .frame(height: 280)
+        VStack(spacing: 0) {
+            ContentUnavailableView(
+                "Error Loading Data",
+                systemImage: "exclamationmark.triangle",
+                description: Text(error.localizedDescription))
+                .frame(height: chartHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
+
+            Color.clear
+                .frame(height: tooltipHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 12)
+        }
     }
 
     @ViewBuilder

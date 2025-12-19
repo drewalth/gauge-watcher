@@ -46,27 +46,31 @@ struct GaugeDetailInspector: View {
 
             Spacer()
 
-            if let gauge = store.gauge.unwrap() {
-                Button {
-                    store.send(.toggleFavorite)
-                } label: {
-                    Image(systemName: gauge.favorite ? "star.fill" : "star")
-                        .foregroundStyle(gauge.favorite ? .yellow : .secondary)
-                }
-                .buttonStyle(.borderless)
-                .help(gauge.favorite ? "Remove from favorites" : "Add to favorites")
+            // Always show buttons to prevent layout shift, disable when not ready
+            let gauge = store.gauge.unwrap()
+            let isLoaded = gauge != nil
 
-                if gauge.sourceURL != nil {
-                    Button {
-                        store.send(.openSource)
-                    } label: {
-                        Image(systemName: "safari")
-                            .foregroundStyle(.secondary)
-                    }
-                    .buttonStyle(.borderless)
-                    .help("Open gauge source website")
-                }
+            Button {
+                store.send(.toggleFavorite)
+            } label: {
+                Image(systemName: gauge?.favorite == true ? "star.fill" : "star")
+                    .foregroundStyle(gauge?.favorite == true ? .yellow : .secondary)
             }
+            .buttonStyle(.borderless)
+            .help(gauge?.favorite == true ? "Remove from favorites" : "Add to favorites")
+            .disabled(!isLoaded)
+            .opacity(isLoaded ? 1 : 0.4)
+
+            Button {
+                store.send(.openSource)
+            } label: {
+                Image(systemName: "safari")
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.borderless)
+            .help("Open gauge source website")
+            .disabled(gauge?.sourceURL == nil)
+            .opacity(gauge?.sourceURL != nil ? 1 : 0.4)
 
             Button {
                 onClose()
@@ -87,23 +91,138 @@ struct GaugeDetailInspector: View {
     private var content: some View {
         switch store.gauge {
         case .initial, .loading:
-            loadingView
+            skeletonContent
         case .loaded(let gauge), .reloading(let gauge):
             gaugeContent(gauge)
+                .overlay {
+                    if store.gauge.isReloading() {
+                        reloadingOverlay
+                    }
+                }
         case .error(let error):
             errorView(error)
         }
     }
 
-    private var loadingView: some View {
-        VStack(spacing: 16) {
-            ProgressView()
-                .scaleEffect(1.2)
-            Text("Loading gauge...")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+    private var skeletonContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Header skeleton
+                skeletonHeader
+
+                // Use actual components - they handle their own loading states
+                LatestGaugeReading(store: store)
+                GaugeReadingChart(store: store)
+
+                // Forecast skeleton (matches GaugeFlowForecast layout)
+                skeletonForecast
+
+                // Location skeleton
+                skeletonLocation
+
+                // Info skeleton
+                skeletonInfo
+
+                Spacer(minLength: 24)
+            }
+            .padding(20)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .scrollIndicators(.automatic)
+    }
+
+    private var skeletonHeader: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                skeletonPill(width: 80)
+                skeletonPill(width: 60)
+            }
+            skeletonRect(height: 24)
+            VStack(alignment: .leading, spacing: 4) {
+                skeletonRect(width: 120, height: 14)
+                skeletonRect(width: 100, height: 14)
+            }
+        }
+    }
+
+    private var skeletonForecast: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                skeletonRect(width: 100, height: 18)
+                Spacer()
+            }
+            skeletonRect(height: 80)
+        }
+        .padding(14)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+    }
+
+    private var skeletonLocation: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            skeletonRect(width: 80, height: 18)
+            skeletonRect(height: 140)
+            HStack(spacing: 16) {
+                skeletonRect(width: 80, height: 30)
+                skeletonRect(width: 80, height: 30)
+            }
+        }
+        .padding(14)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+    }
+
+    private var skeletonInfo: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            skeletonRect(width: 60, height: 18)
+            VStack(spacing: 12) {
+                infoRowSkeleton
+                infoRowSkeleton
+                infoRowSkeleton
+            }
+        }
+        .padding(14)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+    }
+
+    private var infoRowSkeleton: some View {
+        HStack {
+            skeletonRect(width: 80, height: 16)
+            Spacer()
+            skeletonRect(width: 100, height: 16)
+        }
+    }
+
+    private func skeletonRect(width: CGFloat? = nil, height: CGFloat) -> some View {
+        RoundedRectangle(cornerRadius: 6, style: .continuous)
+            .fill(.primary.opacity(0.08))
+            .frame(width: width, height: height)
+            .frame(maxWidth: width == nil ? .infinity : nil, alignment: .leading)
+            .shimmering()
+    }
+
+    private func skeletonPill(width: CGFloat) -> some View {
+        Capsule()
+            .fill(.primary.opacity(0.08))
+            .frame(width: width, height: 22)
+            .shimmering()
+    }
+
+    private var reloadingOverlay: some View {
+        Color.black.opacity(0.1)
+            .ignoresSafeArea()
+            .overlay {
+                ProgressView()
+                    .scaleEffect(1.2)
+                    .padding(20)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+            }
     }
 
     private func errorView(_ error: Error) -> some View {
@@ -313,6 +432,42 @@ struct GaugeDetailInspector: View {
         case .lawa:
             (.teal, "water.waves")
         }
+    }
+}
+
+// MARK: - Shimmer Effect
+
+extension View {
+    func shimmering() -> some View {
+        modifier(ShimmerModifier())
+    }
+}
+
+struct ShimmerModifier: ViewModifier {
+    @State private var phase: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                GeometryReader { geometry in
+                    LinearGradient(
+                        colors: [
+                            .clear,
+                            .white.opacity(0.3),
+                            .clear
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing)
+                        .frame(width: geometry.size.width * 2)
+                        .offset(x: -geometry.size.width + (phase * geometry.size.width * 2))
+                }
+                .mask(content)
+            }
+            .onAppear {
+                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                    phase = 1
+                }
+            }
     }
 }
 
