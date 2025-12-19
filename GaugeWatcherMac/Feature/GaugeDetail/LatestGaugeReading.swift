@@ -71,6 +71,21 @@ struct LatestGaugeReading: View {
         }
     }
 
+    private var emptyView: some View {
+        HStack {
+            ContentUnavailableView(
+                "No Readings",
+                systemImage: "drop.halffull",
+                description: Text("No readings available for this gauge"))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
+        .background {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+    }
+
     private func loadingSecondaryCard(title: String, icon: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
@@ -94,21 +109,6 @@ struct LatestGaugeReading: View {
         .overlay {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(.white.opacity(0.1), lineWidth: 1)
-        }
-    }
-
-    private var emptyView: some View {
-        HStack {
-            ContentUnavailableView(
-                "No Readings",
-                systemImage: "drop.halffull",
-                description: Text("No readings available for this gauge"))
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 32)
-        .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(.ultraThinMaterial)
         }
     }
 

@@ -137,4 +137,3 @@ extension GaugeRef {
         return nil
     }
 }
-

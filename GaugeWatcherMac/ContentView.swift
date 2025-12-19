@@ -87,7 +87,6 @@ struct ContentView: View {
 
                     }.buttonStyle(.borderedProminent)
                 }
-
             }
             .sheet(isPresented: $sheetIsPresented) {
                 NavigationStack {
@@ -107,14 +106,16 @@ struct ContentView: View {
         }
     }
 
-    private func inspectorBinding(for gaugeSearchStore: StoreOf<GaugeSearchFeature>) -> Binding<Bool> {
-        Binding(
-            get: { gaugeSearchStore.isInspectorPresented },
-            set: { newValue in
-                if !newValue {
-                    gaugeSearchStore.send(.closeInspector, animation: .easeInOut(duration: 0.2))
-                }
-            })
+    @ViewBuilder
+    private var inspectorModeToggle: some View {
+        Picker("Mode", selection: $inspectorMode) {
+            Label("Search", systemImage: "map")
+                .tag(InspectorMode.nearby)
+            Label("Favorites", systemImage: "star")
+                .tag(InspectorMode.favorites)
+        }
+        .pickerStyle(.segmented)
+        .labelStyle(.titleAndIcon)
     }
 
     @ViewBuilder
@@ -130,24 +131,23 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    private var inspectorModeToggle: some View {
-        Picker("Mode", selection: $inspectorMode) {
-            Label("Search", systemImage: "map")
-                .tag(InspectorMode.nearby)
-            Label("Favorites", systemImage: "star")
-                .tag(InspectorMode.favorites)
-        }
-        .pickerStyle(.segmented)
-        .labelStyle(.titleAndIcon)
-    }
-
-    @ViewBuilder
     private func errorView(_ message: String) -> some View {
         ContentUnavailableView(
             "Error",
             systemImage: "exclamationmark.triangle",
             description: Text(message))
     }
+
+    private func inspectorBinding(for gaugeSearchStore: StoreOf<GaugeSearchFeature>) -> Binding<Bool> {
+        Binding(
+            get: { gaugeSearchStore.isInspectorPresented },
+            set: { newValue in
+                if !newValue {
+                    gaugeSearchStore.send(.closeInspector, animation: .easeInOut(duration: 0.2))
+                }
+            })
+    }
+
 }
 
 // MARK: - InspectorMode

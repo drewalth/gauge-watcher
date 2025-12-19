@@ -152,11 +152,11 @@ struct GaugeListInspector: View {
 
             ScrollView {
                 LazyVStack(spacing: 2) {
-                ForEach(gauges) { gauge in
-                    GaugeListRow(gauge: gauge) {
-                        gaugeSearchStore.send(.selectGaugeForInspector(gauge.id))
+                    ForEach(gauges) { gauge in
+                        GaugeListRow(gauge: gauge) {
+                            gaugeSearchStore.send(.selectGaugeForInspector(gauge.id))
+                        }
                     }
-                }
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)

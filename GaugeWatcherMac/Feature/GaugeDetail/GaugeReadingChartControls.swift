@@ -174,4 +174,3 @@ extension GaugeSourceMetric {
         }
     }
 }
-

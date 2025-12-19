@@ -19,6 +19,7 @@ struct GaugeDetailInspector: View {
     // MARK: Internal
 
     @Bindable var store: StoreOf<GaugeDetailFeature>
+
     var onClose: () -> Void
 
     var body: some View {
@@ -231,18 +232,18 @@ struct GaugeDetailInspector: View {
 
             Map(position: $mapCameraPosition) {
                 Marker(gauge.name, coordinate: CLLocationCoordinate2D(
-                    latitude: gauge.latitude,
-                    longitude: gauge.longitude))
+                        latitude: gauge.latitude,
+                        longitude: gauge.longitude))
             }
             .mapStyle(.standard(elevation: .realistic))
             .frame(height: 140)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .onAppear {
                 mapCameraPosition = .region(MKCoordinateRegion(
-                    center: CLLocationCoordinate2D(
-                        latitude: gauge.latitude,
-                        longitude: gauge.longitude),
-                    span: MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15)))
+                                                center: CLLocationCoordinate2D(
+                                                    latitude: gauge.latitude,
+                                                    longitude: gauge.longitude),
+                                                span: MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15)))
             }
 
             HStack(spacing: 16) {
@@ -325,4 +326,3 @@ struct GaugeDetailInspector: View {
         onClose: { })
         .frame(width: 400, height: 800)
 }
-
