@@ -515,7 +515,13 @@ final class GaugeAnnotationView: MKAnnotationView {
         newPopover.animates = true
 
         // Position popover above the marker
-        newPopover.show(relativeTo: bounds, of: self, preferredEdge: .maxY)
+        // Convert to window coordinates to avoid MKMapView transform issues
+        if let contentView = window?.contentView {
+            let windowRect = convert(containerView.bounds, to: contentView)
+            newPopover.show(relativeTo: windowRect, of: contentView, preferredEdge: .maxY)
+        } else {
+            newPopover.show(relativeTo: containerView.bounds, of: containerView, preferredEdge: .maxY)
+        }
         popover = newPopover
     }
 

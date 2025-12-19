@@ -54,12 +54,6 @@ struct LatestGaugeReading: View {
                 Text("Current Reading")
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.8))
-                Spacer()
-                if isLoading || store.readings.isReloading() {
-                    ProgressView()
-                        .scaleEffect(0.7)
-                        .tint(.white)
-                }
             }
             .frame(height: 24)
 

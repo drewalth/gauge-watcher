@@ -19,6 +19,7 @@ struct SettingsView: View {
         Form {
             locationSection
             aboutSection
+            iOSAppSection
             linksSection
             acknowledgementsSection
         }
@@ -109,6 +110,45 @@ struct SettingsView: View {
                 .foregroundStyle(.secondary)
         } header: {
             Label("About", systemImage: "info.circle")
+        }
+    }
+
+    @ViewBuilder
+    private var iOSAppSection: some View {
+        Section {
+            HStack(spacing: 12) {
+                Image(systemName: "iphone")
+                    .font(.title)
+                    .foregroundStyle(.blue)
+                    .frame(width: 44, height: 44)
+                    .background(.blue.opacity(0.1))
+                    .clipShape(.rect(cornerRadius: 10))
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("GaugeWatcher for iPhone")
+                        .font(.headline)
+                    Text("Take your gauges on the go with the iOS app.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Link(destination: URL(string: "https://apps.apple.com/us/app/gaugewatcher/id6498313776")!) {
+                    Text("View")
+                        .font(.callout)
+                        .bold()
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.blue)
+                        .foregroundStyle(.white)
+                        .clipShape(.capsule)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.vertical, 4)
+        } header: {
+            Label("iOS App", systemImage: "apps.iphone")
         }
     }
 
