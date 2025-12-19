@@ -94,11 +94,21 @@
 			);
 			target = A1FB4A242E7B5DCD00A3C7FE /* GaugeWatcher */;
 		};
+		A1411C7A2EF5F3EF0038991F /* Exceptions for "GaugeWatcherMac" folder in "GaugeWatcherMac" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A1D0A8B72EF28AC600606285 /* GaugeWatcherMac */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A1D0A8B92EF28AC600606285 /* GaugeWatcherMac */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A1411C7A2EF5F3EF0038991F /* Exceptions for "GaugeWatcherMac" folder in "GaugeWatcherMac" target */,
+			);
 			path = GaugeWatcherMac;
 			sourceTree = "<group>";
 		};
@@ -617,8 +627,10 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GaugeWatcherMac/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GaugeWatcher;
 				INFOPLIST_KEY_CFBundleName = GaugeWatcher;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Andrew Althage. All rights reserved.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "This app uses your location to help find nearby gauges";
@@ -665,8 +677,10 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GaugeWatcherMac/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GaugeWatcher;
 				INFOPLIST_KEY_CFBundleName = GaugeWatcher;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Andrew Althage. All rights reserved.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "This app uses your location to help find nearby gauges";
