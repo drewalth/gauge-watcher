@@ -23,7 +23,7 @@ public struct MarkdownUI: UIViewRepresentable {
 
   public let body: String
 
-  public func makeUIView(context: Context) -> MarkdownView {
+  public func makeUIView(context _: Context) -> MarkdownView {
     let view = MarkdownView(css: css, plugins: plugins, stylesheets: stylesheets, styled: styled)
     view.isScrollEnabled = false
     view.onTouchLink = onTouchLinkAction
@@ -31,7 +31,7 @@ public struct MarkdownUI: UIViewRepresentable {
     return view
   }
 
-  public func updateUIView(_ uiView: MarkdownView, context: Context) {
+  public func updateUIView(_ uiView: MarkdownView, context _: Context) {
     uiView.onTouchLink = onTouchLinkAction
     uiView.onRendered = onRenderedAction
     uiView.show(markdown: body)
@@ -88,14 +88,14 @@ public struct MarkdownUI: NSViewRepresentable {
 
   public let body: String
 
-  public func makeNSView(context: Context) -> MarkdownView {
+  public func makeNSView(context _: Context) -> MarkdownView {
     let view = MarkdownView(css: css, plugins: plugins, stylesheets: stylesheets, styled: styled)
     view.onTouchLink = onTouchLinkAction
     view.onRendered = onRenderedAction
     return view
   }
 
-  public func updateNSView(_ nsView: MarkdownView, context: Context) {
+  public func updateNSView(_ nsView: MarkdownView, context _: Context) {
     nsView.onTouchLink = onTouchLinkAction
     nsView.onRendered = onRenderedAction
     nsView.show(markdown: body)

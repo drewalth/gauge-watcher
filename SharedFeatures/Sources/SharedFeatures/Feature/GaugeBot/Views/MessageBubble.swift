@@ -12,44 +12,39 @@ import SwiftUI
 
 struct MessageBubble: View {
 
-  // MARK: Internal
+    // MARK: Internal
 
-  let message: ChatMessage
+    let message: ChatMessage
 
-  var body: some View {
-    HStack {
-      if isUser { Spacer(minLength: 60) }
+    var body: some View {
+        HStack {
+            if isUser { Spacer(minLength: 60) }
 
-      VStack(alignment: isUser ? .trailing : .leading, spacing: 4) {
-        if isUser {
-          Text(message.content)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(Color.accentColor)
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .foregroundStyle(.white)
-        } else {
-          MarkdownUI(body: message.content, css: Self.assistantCSS, styled: false)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(Color.primary.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            VStack(alignment: isUser ? .trailing : .leading, spacing: 4) {
+                if isUser {
+                    Text(message.content)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color.accentColor)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .foregroundStyle(.white)
+                } else {
+                    MarkdownUI(body: message.content, css: Self.assistantCSS, styled: false)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
+            }
+
+            if !isUser { Spacer(minLength: 60) }
         }
-      }
-
-      if !isUser { Spacer(minLength: 60) }
     }
-  }
 
-  // MARK: Private
+    // MARK: Private
 
-  private var isUser: Bool {
-    if case .user = message { return true }
-    return false
-  }
-
-  /// Custom CSS that adapts to system appearance and matches SwiftUI styling
-  private static let assistantCSS = """
+    /// Custom CSS that adapts to system appearance and matches SwiftUI styling
+    private static let assistantCSS = """
     :root {
       color-scheme: light dark;
     }
@@ -186,6 +181,12 @@ struct MessageBubble: View {
       border-radius: 6px;
     }
     """
+
+    private var isUser: Bool {
+        if case .user = message { return true }
+        return false
+    }
+
 }
 
 #Preview("MessageBubble - User") {
