@@ -53,8 +53,8 @@ struct AvailabilityCheckView<Content: View>: View {
             }
         }
         #if os(macOS)
-        .frame(minWidth: 400, minHeight: 400)
-        .frame(maxWidth: 400, maxHeight: 400)
+        .frame(minWidth: 500, minHeight: 500)
+        .frame(maxWidth: 700, maxHeight: 500)
         #endif
     }
 
