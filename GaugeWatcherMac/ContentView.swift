@@ -47,6 +47,10 @@ struct ContentView: View {
     @State private var inspectorMode: InspectorMode = .nearby
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var sheetIsPresented = false
+    
+//    private var gaugeBotStore = Store(initialState: GaugeBotReducer.State(), reducer: {
+//        GaugeBotReducer()
+//    })
 
     @ViewBuilder
     private var mainContent: some View {
@@ -90,9 +94,7 @@ struct ContentView: View {
 
             }.sheet(isPresented: $sheetIsPresented) {
                 NavigationStack {
-                    GaugeBotChatView(store: Store(initialState: GaugeBotReducer.State(), reducer: {
-                        GaugeBotReducer()
-                    }))
+                    GaugeBotChatView(store: store.scope(state: \.gaugeBot, action: \.gaugeBot))
                     .navigationTitle("GaugeBot")
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {

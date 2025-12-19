@@ -7,7 +7,7 @@ let package = Package(
   name: "SharedFeatures",
   platforms: [
     .iOS(.v26),
-    .macOS(.v15),
+    .macOS(.v26),
   ],
   products: [
     .library(

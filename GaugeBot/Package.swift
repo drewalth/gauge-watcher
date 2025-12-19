@@ -16,14 +16,15 @@ let package = Package(
       targets: ["GaugeBot"]),
   ],
   dependencies: [
-    .package(name: "SharedFeatures", path: "../SharedFeatures"),
+    .package(name: "GaugeService", path: "../GaugeService"),
+//    .package(name: "SharedFeatures", path: "../SharedFeatures"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "GaugeBot",
-      dependencies: ["SharedFeatures"]),
+      dependencies: ["GaugeService"]),
     .testTarget(
       name: "GaugeBotTests",
       dependencies: ["GaugeBot"]),

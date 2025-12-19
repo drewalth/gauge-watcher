@@ -71,7 +71,7 @@ struct ChatAvailableView: View {
 
     private var inputSection: some View {
         HStack(spacing: 12) {
-            TextField("Show me gauges on the Arkansas River...", text: $store.inputText)
+            TextField("Ask a question...", text: $store.inputText)
                 .textFieldStyle(.plain)
                 .focused($isInputFocused)
                 .disabled(store.isWaitingForResponse)

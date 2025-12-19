@@ -33,6 +33,7 @@ public struct AppFeature: Sendable {
         public var selectedTab: RootTab = .search
         public var gaugeSearch: GaugeSearchFeature.State?
         public var favorites: FavoriteGaugesFeature.State?
+        public var gaugeBot = GaugeBotReducer.State()
 
         public init(initialized: Loadable<Bool> = .initial) {
             self.initialized = initialized
@@ -47,6 +48,7 @@ public struct AppFeature: Sendable {
         case setSelectedTab(RootTab)
         case gaugeSearch(GaugeSearchFeature.Action)
         case favorites(FavoriteGaugesFeature.Action)
+        case gaugeBot(GaugeBotReducer.Action)
     }
 
     // MARK: - RootTab
@@ -58,9 +60,14 @@ public struct AppFeature: Sendable {
     // MARK: - Body
 
     public var body: some Reducer<State, Action> {
+        
+        Scope(state: \.gaugeBot, action: \.gaugeBot) {
+            GaugeBotReducer()
+        }
+        
         Reduce { state, action in
             switch action {
-            case .gaugeSearch, .favorites:
+            case .gaugeSearch, .favorites, .gaugeBot:
                 return .none
 
             case .setSelectedTab(let newValue):
