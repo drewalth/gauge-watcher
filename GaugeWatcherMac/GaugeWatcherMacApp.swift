@@ -7,6 +7,7 @@
 
 import SharedFeatures
 import SwiftUI
+import AppTelemetry
 
 // MARK: - GaugeWatcherMacApp
 
@@ -16,6 +17,7 @@ struct GaugeWatcherMacApp: App {
     // MARK: Lifecycle
 
     init() {
+        AppTelemetry.initialize()
         do {
             try prepareDependencies {
                 try $0.bootstrapDatabase()

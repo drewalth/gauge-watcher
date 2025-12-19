@@ -7,6 +7,7 @@
 
 import FoundationModels
 import SwiftUI
+import AppTelemetry
 
 // MARK: - AvailabilityCheckView
 
@@ -33,23 +34,27 @@ struct AvailabilityCheckView<Content: View>: View {
                     title: "Device Not Supported",
                     message: "This device doesn't support Apple Intelligence.",
                     systemImage: "iphone.slash")
+                    .trackView("AvailabilityCheckView - Unavailable - Device Not Supported")
             case .unavailable(.appleIntelligenceNotEnabled):
                 UnavailableViewContent(
                     title: "Apple Intelligence Disabled",
                     message: "Enable Apple Intelligence in Settings to use GaugeBot.",
                     systemImage: "brain",
                     helpURL: helpURL)
+                    .trackView("AvailabilityCheckView - Unavailable - Apple Intelligence Not Enabled")
             case .unavailable(.modelNotReady):
                 UnavailableViewContent(
                     title: "Model Downloading",
                     message: "The language model is being prepared. Please try again shortly.",
                     systemImage: "arrow.down.circle",
                     isLoading: true)
+                    .trackView("AvailabilityCheckView - Unavailable - Model Not Ready")
             case .unavailable(let other):
                 UnavailableViewContent(
                     title: "Unavailable",
                     message: "GaugeBot is unavailable: \(other)",
                     systemImage: "exclamationmark.triangle")
+                    .trackView("AvailabilityCheckView - Unavailable - \(other)")
             }
         }
         #if os(macOS)

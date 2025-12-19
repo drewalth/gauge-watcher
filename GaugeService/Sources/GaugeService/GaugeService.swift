@@ -65,8 +65,12 @@ extension GaugeService: DependencyKey {
         // implement the query options
         var query = Gauge.all
         if let name = options.name {
-          // where name contains the query string
-          query = query.where { $0.name.lower().contains(name.lowercased()) }
+          // Split search into words and require each word to match (fuzzy AND)
+          // "Potomac Little Falls" matches "POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA"
+          let words = name.lowercased().split(separator: " ").map(String.init)
+          for word in words where !word.isEmpty {
+            query = query.where { $0.name.lower().contains(word) }
+          }
         }
         if let country = options.country {
           query = query.where { $0.country == country }

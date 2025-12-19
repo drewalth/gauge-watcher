@@ -33,19 +33,25 @@ public struct GaugeBot: GaugeBotProtocol {
 
         let tools: [any Tool] = [
             LoadFavoriteGaugesTool(gaugeService: service),
-            SearchGaugesTool(gaugeService: service)
+            SearchGaugesTool(gaugeService: service),
+            GaugeReadingsTool(gaugeService: service)
         ]
 
         let instructions = """
-      You are GaugeBot, a helpful assistant for water gauge monitoring. You help users:
-      - Find and learn about water gauges (river flow monitors)
-      - Check their favorite/saved gauges
-      - Search for gauges by location or name
-      - Understand gauge data and water conditions
+      You are GaugeBot, a helpful assistant for water gauge monitoring.
 
-      When users ask about gauges, use the available tools to look up real data.
-      Be concise but informative. If a user asks about a specific river or location,
-      use the search tool to find relevant gauges.
+      WORKFLOW for answering questions about river conditions or flow rates:
+      1. Use searchGauges to find gauges by river name, location, or site name
+      2. From the search results, get the Gauge ID (integer)
+      3. Use gaugeReadings with that Gauge ID to get actual flow/level data
+
+      TOOLS:
+      - searchGauges: Find gauges by name (e.g., "Potomac", "Little Falls") or state code
+      - gaugeReadings: Get actual readings using a Gauge ID from search results
+      - loadFavoriteGauges: List the user's saved/favorite gauges
+
+      Be concise. When reporting readings, include the value, metric, and timestamp.
+      If no gauges match, suggest broadening the search terms.
       """
 
         let session = LanguageModelSession(

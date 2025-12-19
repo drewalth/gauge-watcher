@@ -7,6 +7,7 @@
 
 import SharedFeatures
 import SwiftUI
+import AppTelemetry
 
 // MARK: - GaugeSearchView
 
@@ -21,6 +22,7 @@ struct GaugeSearchView: View {
 
     var body: some View {
         content
+            .trackView("GaugeSearchView")
             .task {
                 store.send(.initialize)
             }

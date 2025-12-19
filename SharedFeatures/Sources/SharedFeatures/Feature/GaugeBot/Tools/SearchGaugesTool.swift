@@ -22,10 +22,10 @@ struct SearchGaugesTool: Tool {
 
     @Generable
     struct Arguments {
-        @Guide(description: "Search term to find gauges by name (partial match)")
+        @Guide(description: "Search keywords to find gauges (e.g., 'Potomac Little Falls' matches all words)")
         var name: String?
 
-        @Guide(description: "Two-letter US state code (e.g., 'CO', 'AK', 'CA')")
+        @Guide(description: "Two-letter US state code (e.g., 'CO', 'AK', 'CA', 'MD', 'VA')")
         var state: String?
 
         @Guide(description: "Two-letter country code (e.g., 'US', 'CA' for Canada)")
@@ -80,6 +80,7 @@ struct SearchGaugesTool: Tool {
         for (index, info) in gaugeInfos.enumerated() {
             result += """
         \(index + 1). \(info.name)
+           Gauge ID: \(info.id)
            Site ID: \(info.siteID)
            Location: \(info.state), \(info.country)
            Source: \(info.source.uppercased())

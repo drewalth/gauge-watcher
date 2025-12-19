@@ -7,6 +7,7 @@
 //
 import ComposableArchitecture
 import Loadable
+import AppTelemetry
 
 @Reducer
 public struct GaugeBotReducer: Sendable {
@@ -84,10 +85,12 @@ public struct GaugeBotReducer: Sendable {
 
                 return .run { send in
                     do {
+                        AppTelemetry.captureEvent("GaugeBot query :: \(message)")
                         let response = try await gaugeBot.query(text: message)
                         await send(.responseReceived(.success(response)))
                     } catch {
                         await send(.responseReceived(.failure(error)))
+                        AppTelemetry.captureEvent("GaugeBot query error :: \(error.localizedDescription)")
                     }
                 }
 

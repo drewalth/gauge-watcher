@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppTelemetry
 
 // MARK: - ChatAvailableView
 
@@ -21,6 +22,11 @@ struct ChatAvailableView: View {
             Divider()
             inputSection
         }
+        .trackView("ChatAvailableView", {
+            return [
+                "MessagesCount": store.messages.unwrap()?.count ?? 0,
+            ]
+        }())
     }
 
     // MARK: Private

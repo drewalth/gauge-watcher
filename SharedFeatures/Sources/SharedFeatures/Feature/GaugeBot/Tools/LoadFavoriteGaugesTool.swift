@@ -54,6 +54,7 @@ struct LoadFavoriteGaugesTool: Tool {
         for (index, info) in gaugeInfos.enumerated() {
             result += """
         \(index + 1). \(info.name)
+           Gauge ID: \(info.id)
            Site ID: \(info.siteID)
            Location: \(info.state), \(info.country)
            Source: \(info.source.uppercased())

@@ -9,6 +9,7 @@ import GaugeSources
 import MapKit
 import SharedFeatures
 import SwiftUI
+import AppTelemetry
 
 // MARK: - GaugeDetailInspector
 
@@ -31,7 +32,23 @@ struct GaugeDetailInspector: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background {
             Color(nsColor: .controlBackgroundColor)
-        }
+        }.trackView("GaugeDetailInspector", {
+            if let gauge = store.gauge.unwrap() {
+                return [
+                    "Gauge": gauge.name,
+                    "GaugeID": gauge.id,
+                    "GaugeSource": gauge.source.rawValue,
+                    "GaugeState": gauge.state,
+                    "GaugeSiteID": gauge.siteID,
+                    "GaugeLatitude": gauge.latitude,
+                    "GaugeLongitude": gauge.longitude,
+                    "GaugeUpdatedAt": gauge.updatedAt.formatted(date: .abbreviated, time: .shortened),
+                    "GaugeZone": gauge.zone,
+                    "GaugeMetric": gauge.metric.rawValue,
+                ]
+            }
+            return [:]
+        }())
     }
 
     // MARK: Private

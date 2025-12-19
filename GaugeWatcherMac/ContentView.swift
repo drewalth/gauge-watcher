@@ -83,9 +83,8 @@ struct ContentView: View {
                             .accessibilityLabel("Chat with GaugeBot")
                             .accessibilityHint("Chat with GaugeBot to get information about water gauges")
                             .accessibilityValue("Chat with GaugeBot")
-                            .labelStyle(.titleAndIcon)
 
-                    }.buttonStyle(.borderedProminent)
+                    }
                 }
             }
             .sheet(isPresented: $sheetIsPresented) {
