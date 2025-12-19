@@ -5,7 +5,6 @@
 //  Created by Andrew Althage on 12/18/25.
 //
 
-
 // MARK: - GaugeInfo
 
 /// Simplified gauge representation for LLM tool output

@@ -91,14 +91,14 @@ struct ContentView: View {
             }.sheet(isPresented: $sheetIsPresented) {
                 NavigationStack {
                     GaugeBotChatView(store: store.scope(state: \.gaugeBot, action: \.gaugeBot))
-                    .navigationTitle("GaugeBot")
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Close", systemImage: "xmark") {
-                                sheetIsPresented.toggle()
+                        .navigationTitle("GaugeBot")
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Close", systemImage: "xmark") {
+                                    sheetIsPresented.toggle()
+                                }
                             }
                         }
-                    }
                 }
             }
         } else {

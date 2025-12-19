@@ -5,11 +5,11 @@
 //  Created by Andrew Althage on 12/18/25.
 //
 //
-//import ComposableArchitecture
-//import Loadable
+// import ComposableArchitecture
+// import Loadable
 //
-//@Reducer
-//public struct GaugeBotReducer: Sendable {
+// @Reducer
+// public struct GaugeBotReducer: Sendable {
 //
 //    // MARK: Lifecycle
 //
@@ -107,4 +107,4 @@
 //
 //    private let gaugeBot = GaugeBot()
 //
-//}
+// }

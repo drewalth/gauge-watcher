@@ -18,24 +18,23 @@ struct GaugeSearch: View {
 
     @Bindable var store: StoreOf<GaugeSearchFeature>
     @Bindable var gaugeBotStore: StoreOf<GaugeBotReducer>
-    @State private var selectedDetent: PresentationDetent = .large
 
     var body: some View {
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             Group {
                 content()
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button("Chat", systemImage: "bubble.left.and.bubble.right") {
-                            gaugeBotStore.send(.setChatPresented(true))
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button("Chat", systemImage: "bubble.left.and.bubble.right") {
+                                gaugeBotStore.send(.setChatPresented(true))
+                            }
                         }
                     }
-                }
                     .sheet(isPresented: $gaugeBotStore.chatIsPresented.sending(\.setChatPresented)) {
                         NavigationStack {
                             GaugeBotChatView(store: gaugeBotStore)
                                 .presentationDetents([.medium, .large], selection: $selectedDetent)
-                            .navigationTitle("GaugeBot")
+                                .navigationTitle("GaugeBot")
                                 .toolbar {
                                     ToolbarItem(placement: .cancellationAction) {
                                         Button("Close", systemImage: "xmark") {
@@ -56,6 +55,8 @@ struct GaugeSearch: View {
     }
 
     // MARK: Private
+
+    @State private var selectedDetent: PresentationDetent = .large
 
     @ViewBuilder
     private func content() -> some View {

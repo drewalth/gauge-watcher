@@ -60,11 +60,10 @@ public struct AppFeature: Sendable {
     // MARK: - Body
 
     public var body: some Reducer<State, Action> {
-        
         Scope(state: \.gaugeBot, action: \.gaugeBot) {
             GaugeBotReducer()
         }
-        
+
         Reduce { state, action in
             switch action {
             case .gaugeSearch, .favorites, .gaugeBot:
