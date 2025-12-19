@@ -94,11 +94,6 @@ struct GaugeDetailInspector: View {
             skeletonContent
         case .loaded(let gauge), .reloading(let gauge):
             gaugeContent(gauge)
-                .overlay {
-                    if store.gauge.isReloading() {
-                        reloadingOverlay
-                    }
-                }
         case .error(let error):
             errorView(error)
         }

@@ -6,7 +6,6 @@
 //
 
 import FoundationModels
-import SharedFeatures
 
 // MARK: - LoadFavoriteGaugesTool
 

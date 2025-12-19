@@ -135,7 +135,7 @@ extension LocationService {
 
 // MARK: - LocationServiceKey + DependencyKey
 
-extension LocationServiceKey: DependencyKey {
+extension LocationServiceKey: @retroactive DependencyKey {
     @MainActor
     public static var liveValue: any LocationServiceProtocol = {
         let client = LocationService()

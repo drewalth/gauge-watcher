@@ -421,18 +421,19 @@ struct GaugeReadingChart: View {
 
     private func formatFlowValue(_ value: Double) -> String {
         if value >= 10000 {
-            return String(format: "%.0fk", value / 1000)
+            return (value / 1000).formatted(.number.precision(.fractionLength(0))) + "k"
         } else if value >= 1000 {
-            return String(format: "%.1fk", value / 1000)
+            return (value / 1000).formatted(.number.precision(.fractionLength(1))) + "k"
         } else if value >= 100 {
-            return String(format: "%.0f", value)
+            return value.formatted(.number.precision(.fractionLength(0)))
         } else {
-            return String(format: "%.1f", value)
+            return value.formatted(.number.precision(.fractionLength(1)))
         }
     }
 
     private func updateSelectedReading(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
-        let xPosition = location.x - geometry[proxy.plotFrame!].origin.x
+        guard let plotFrame = proxy.plotFrame else { return }
+        let xPosition = location.x - geometry[plotFrame].origin.x
 
         guard let date: Date = proxy.value(atX: xPosition) else { return }
 

@@ -18,6 +18,9 @@ struct SettingsView: View {
     var body: some View {
         Form {
             locationSection
+            aboutSection
+            linksSection
+            acknowledgementsSection
         }
         .formStyle(.grouped)
         .frame(minWidth: 450, maxWidth: 550)
@@ -29,6 +32,14 @@ struct SettingsView: View {
     // MARK: Private
 
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
+
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    }
+
+    private var buildNumber: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+    }
 
     private var statusDescription: String {
         switch authorizationStatus {
@@ -82,6 +93,56 @@ struct SettingsView: View {
             }
         } header: {
             Label("Location", systemImage: "location")
+        }
+    }
+
+    @ViewBuilder
+    private var aboutSection: some View {
+        Section {
+            LabeledContent("Version") {
+                Text("\(appVersion) (\(buildNumber))")
+                    .foregroundStyle(.secondary)
+            }
+
+            Text("Gauge Watcher helps you monitor water levels at stream gauges across the United States, Canada, and New Zealand.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+        } header: {
+            Label("About", systemImage: "info.circle")
+        }
+    }
+
+    @ViewBuilder
+    private var linksSection: some View {
+        Section {
+            Link(destination: URL(string: "https://github.com/drewalth/gauge-watcher")!) {
+                Label("Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
+            }
+
+            Link(destination: URL(string: "https://github.com/drewalth/gauge-watcher/issues")!) {
+                Label("Report an Issue", systemImage: "ladybug")
+            }
+
+            Link(destination: URL(string: "https://github.com/drewalth/gauge-watcher/blob/main/LICENSE")!) {
+                Label("License", systemImage: "doc.text")
+            }
+        } header: {
+            Label("Links", systemImage: "link")
+        }
+    }
+
+    @ViewBuilder
+    private var acknowledgementsSection: some View {
+        Section {
+            Text("Data provided by USGS, Environment Canada, Colorado DWR, and LAWA (New Zealand).")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+        } header: {
+            Label("Acknowledgements", systemImage: "heart")
+        } footer: {
+            Text("© 2025 Andrew Althage")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
         }
     }
 
