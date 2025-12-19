@@ -14,26 +14,25 @@ import SwiftUI
 // TODO: prettier styling of assistant Markdown responses
 public struct GaugeBotChatView: View {
 
-  // MARK: Lifecycle
+    // MARK: Lifecycle
 
-  public init(store: StoreOf<GaugeBotReducer>) {
-    self.store = store
-  }
-
-  // MARK: Public
-
-  public var body: some View {
-    AvailabilityCheckView(modelAvailability: model.availability) {
-      ChatAvailableView(store: store)
+    public init(store: StoreOf<GaugeBotReducer>) {
+        self.store = store
     }
-  }
 
-  // MARK: Internal
+    // MARK: Public
 
-  @Bindable var store: StoreOf<GaugeBotReducer>
+    public var body: some View {
+        AvailabilityCheckView(modelAvailability: model.availability) {
+            ChatAvailableView(store: store)
+        }
+    }
 
-  // MARK: Private
+    // MARK: Internal
 
-  private let model = SystemLanguageModel.default
+    @Bindable var store: StoreOf<GaugeBotReducer>
+
+    // MARK: Private
+
+    private let model = SystemLanguageModel.default
 }
-

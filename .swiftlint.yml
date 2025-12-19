@@ -21,6 +21,8 @@ included:
   - GaugeWatcherMac
   - SharedFeatures/Sources
   - SharedFeatures/Tests
+  - GaugeBot/Sources
+  - GaugeBot/Tests
 
 excluded:
   - .build

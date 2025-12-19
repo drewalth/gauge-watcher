@@ -10,22 +10,22 @@ import SwiftUI
 // MARK: - ErrorStateView
 
 struct ErrorStateView: View {
-  let error: Error
+    let error: Error
 
-  var body: some View {
-    VStack(spacing: 12) {
-      Image(systemName: "exclamationmark.triangle")
-        .font(.largeTitle)
-        .foregroundStyle(.red)
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.largeTitle)
+                .foregroundStyle(.red)
 
-      Text("Something went wrong")
-        .font(.headline)
+            Text("Something went wrong")
+                .font(.headline)
 
-      Text(error.localizedDescription)
-        .font(.caption)
-        .foregroundStyle(.secondary)
-        .multilineTextAlignment(.center)
+            Text(error.localizedDescription)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
     }
-    .padding()
-  }
 }
