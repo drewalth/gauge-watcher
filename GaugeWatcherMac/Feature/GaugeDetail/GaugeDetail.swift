@@ -25,7 +25,7 @@ struct GaugeDetail: View {
                 backgroundGradient
             }
             .task {
-                store.send(.load)
+                store.send(.load, animation: .snappy(duration: 0.3))
             }
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {

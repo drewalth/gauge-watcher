@@ -43,7 +43,7 @@ struct GaugeFlowForecast: View {
     // MARK: Private
 
     @State private var selectedDataPoint: ForecastDataPoint?
-    @State private var isExpanded = true
+    @State private var isExpanded = false
 
     @ViewBuilder
     private var headerView: some View {

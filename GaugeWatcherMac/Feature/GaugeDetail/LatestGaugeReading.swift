@@ -35,18 +35,65 @@ struct LatestGaugeReading: View {
     // MARK: Private
 
     private var loadingView: some View {
-        HStack(spacing: 20) {
-            readingCard(
-                title: "Current Reading",
-                isLoading: true,
-                icon: "waveform.path.ecg",
-                gradient: [.blue, .cyan])
+        VStack(spacing: 32) {
+            // Primary card loading
+            VStack {
+                HStack {
+                    Image(systemName: "waveform.path.ecg")
+                        .font(.title3)
+                        .foregroundStyle(.white.opacity(0.8))
+                    Text("Current Reading")
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.8))
+                    Spacer()
+                }
+                Spacer()
+                ProgressView()
+                    .tint(.white)
+                Spacer()
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, minHeight: 100)
+            .background {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing))
+            }
 
-            readingCard(
-                title: "Last Updated",
-                isLoading: true,
-                icon: "clock.fill",
-                gradient: [.purple, .pink])
+            // Secondary cards loading
+            HStack(spacing: 12) {
+                loadingSecondaryCard(title: "Last Updated", icon: "clock.fill")
+                loadingSecondaryCard(title: "Metric", icon: "ruler")
+            }
+        }
+    }
+
+    private func loadingSecondaryCard(title: String, icon: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .foregroundStyle(.secondary)
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            ProgressView()
+                .scaleEffect(0.8)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, minHeight: 70, alignment: .leading)
+        .padding(12)
+        .background {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(.white.opacity(0.1), lineWidth: 1)
         }
     }
 
@@ -82,8 +129,8 @@ struct LatestGaugeReading: View {
 
     @ViewBuilder
     private func heroReadingView(_ reading: GaugeReadingRef) -> some View {
-        HStack(spacing: 16) {
-            // Primary reading card
+        VStack(spacing: 12) {
+            // Primary reading card - full width
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Image(systemName: "waveform.path.ecg")
@@ -105,7 +152,7 @@ struct LatestGaugeReading: View {
 
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(reading.value, format: .number.precision(.fractionLength(2)))
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .font(.system(size: 42, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
                         .contentTransition(.numericText())
 
@@ -113,16 +160,16 @@ struct LatestGaugeReading: View {
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundStyle(.white.opacity(0.7))
+
+                    Spacer()
+
+                    trendIndicator(for: reading)
                 }
-
-                Spacer()
-
-                trendIndicator(for: reading)
             }
-            .padding(20)
+            .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(
                         LinearGradient(
                             colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
@@ -130,16 +177,16 @@ struct LatestGaugeReading: View {
                             endPoint: .bottomTrailing))
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .strokeBorder(.white.opacity(0.2), lineWidth: 1)
             }
-            .shadow(color: .accentColor.opacity(0.3), radius: 20, x: 0, y: 10)
+            .shadow(color: .accentColor.opacity(0.3), radius: 12, x: 0, y: 6)
 
-            // Secondary info cards
-            VStack(spacing: 16) {
+            // Secondary info cards - side by side, 50% each
+            HStack(spacing: 12) {
                 // Time card
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 6) {
                         Image(systemName: "clock.fill")
                             .foregroundStyle(.secondary)
                         Text("Last Updated")
@@ -148,27 +195,27 @@ struct LatestGaugeReading: View {
                     }
 
                     Text(reading.createdAt, style: .relative)
-                        .font(.system(.title3, design: .rounded, weight: .semibold))
+                        .font(.system(.body, design: .rounded, weight: .semibold))
                         .foregroundStyle(.primary)
 
                     Text(reading.createdAt, format: .dateTime.month(.abbreviated).day().hour().minute())
-                        .font(.caption)
+                        .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(16)
+                .padding(12)
                 .background {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .fill(.ultraThinMaterial)
                 }
                 .overlay {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .strokeBorder(.white.opacity(0.1), lineWidth: 1)
                 }
 
                 // Metric card
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 6) {
                         Image(systemName: "ruler")
                             .foregroundStyle(.secondary)
                         Text("Metric")
@@ -176,29 +223,27 @@ struct LatestGaugeReading: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Text(metricDisplayName(reading.metric))
-                        .font(.system(.title3, design: .rounded, weight: .semibold))
+                    Text(reading.metric)
+                        .font(.system(.body, design: .rounded, weight: .semibold))
                         .foregroundStyle(.primary)
 
                     Text(metricDescription(reading.metric))
-                        .font(.caption)
+                        .font(.caption2)
                         .foregroundStyle(.tertiary)
-                        .lineLimit(2)
+                        .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(16)
+                .padding(12)
                 .background {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .fill(.ultraThinMaterial)
                 }
                 .overlay {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .strokeBorder(.white.opacity(0.1), lineWidth: 1)
                 }
             }
-            .frame(width: 200)
         }
-        .frame(height: 180)
     }
 
     @ViewBuilder
@@ -220,46 +265,6 @@ struct LatestGaugeReading: View {
                 .fill(.white.opacity(0.2))
         }
         .foregroundStyle(.white.opacity(0.9))
-    }
-
-    @ViewBuilder
-    private func readingCard(
-        title: String,
-        isLoading: Bool,
-        icon: String,
-        gradient: [Color])
-    -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.title3)
-                Text(title)
-                    .font(.subheadline)
-            }
-            .foregroundStyle(.white.opacity(0.8))
-
-            if isLoading {
-                ProgressView()
-                    .tint(.white)
-                    .scaleEffect(1.2)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            }
-        }
-        .padding(20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: gradient,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing))
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(.white.opacity(0.2), lineWidth: 1)
-        }
-        .frame(height: 180)
     }
 
     private func calculateTrend(current: GaugeReadingRef, readings: [GaugeReadingRef]) -> Trend {
