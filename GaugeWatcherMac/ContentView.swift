@@ -125,7 +125,7 @@ struct ContentView: View {
                 onClose: {
                     gaugeSearchStore.send(.closeInspector, animation: .easeInOut(duration: 0.2))
                 })
-                .inspectorColumnWidth(min: 340, ideal: 420, max: 550)
+                .inspectorColumnWidth(min: 420, ideal: 480, max: 600)
         }
     }
 

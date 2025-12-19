@@ -22,24 +22,65 @@ struct GaugeDetailInspector: View {
     var onClose: () -> Void
 
     var body: some View {
-        content
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background {
-                Color(nsColor: .controlBackgroundColor)
-            }
-            .task {
-                store.send(.load)
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
-                    toolbarContent
-                }
-            }
+        VStack(spacing: 0) {
+            inspectorHeader
+            Divider()
+            content
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            Color(nsColor: .controlBackgroundColor)
+        }
     }
 
     // MARK: Private
 
     @State private var mapCameraPosition: MapCameraPosition = .automatic
+
+    @ViewBuilder
+    private var inspectorHeader: some View {
+        HStack(spacing: 12) {
+            Text("Gauge Details")
+                .font(.headline)
+
+            Spacer()
+
+            if let gauge = store.gauge.unwrap() {
+                Button {
+                    store.send(.toggleFavorite)
+                } label: {
+                    Image(systemName: gauge.favorite ? "star.fill" : "star")
+                        .foregroundStyle(gauge.favorite ? .yellow : .secondary)
+                }
+                .buttonStyle(.borderless)
+                .help(gauge.favorite ? "Remove from favorites" : "Add to favorites")
+
+                if gauge.sourceURL != nil {
+                    Button {
+                        store.send(.openSource)
+                    } label: {
+                        Image(systemName: "safari")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Open gauge source website")
+                }
+            }
+
+            Button {
+                onClose()
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.borderless)
+            .help("Close inspector")
+            .keyboardShortcut(.escape, modifiers: [])
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(.bar)
+    }
 
     @ViewBuilder
     private var content: some View {
@@ -62,37 +103,6 @@ struct GaugeDetailInspector: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    @ViewBuilder
-    private var toolbarContent: some View {
-        if let gauge = store.gauge.unwrap() {
-            Button {
-                store.send(.toggleFavorite)
-            } label: {
-                Label(
-                    gauge.favorite ? "Remove Favorite" : "Add Favorite",
-                    systemImage: gauge.favorite ? "star.fill" : "star")
-            }
-            .help(gauge.favorite ? "Remove from favorites" : "Add to favorites")
-
-            if gauge.sourceURL != nil {
-                Button {
-                    store.send(.openSource)
-                } label: {
-                    Label("View Source", systemImage: "safari")
-                }
-                .help("Open gauge source website")
-            }
-        }
-
-        Button {
-            onClose()
-        } label: {
-            Label("Close", systemImage: "xmark")
-        }
-        .help("Close inspector")
-        .keyboardShortcut(.escape, modifiers: [])
     }
 
     private func errorView(_ error: Error) -> some View {

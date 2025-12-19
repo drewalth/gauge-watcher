@@ -197,8 +197,13 @@ public struct GaugeSearchFeature: Sendable {
             // MARK: - Inspector Actions (macOS)
 
             case .selectGaugeForInspector(let gaugeID):
+                // If same gauge is already selected, do nothing
+                if state.inspectorDetail?.gaugeID == gaugeID {
+                    return .none
+                }
+                // Create new state and trigger load
                 state.inspectorDetail = GaugeDetailFeature.State(gaugeID)
-                return .none
+                return .send(.inspectorDetail(.load))
 
             case .closeInspector:
                 state.inspectorDetail = nil
