@@ -115,6 +115,10 @@ struct SettingsView: View {
     @ViewBuilder
     private var linksSection: some View {
         Section {
+            Link(destination: URL(string: "https://gaugewatcher.com/privacy.html")!) {
+                Label("Privacy Policy", systemImage: "hand.raised")
+            }
+
             Link(destination: URL(string: "https://github.com/drewalth/gauge-watcher")!) {
                 Label("Source Code", systemImage: "chevron.left.forwardslash.chevron.right")
             }

@@ -30,6 +30,8 @@
 		A195856A2EF290500087291B /* GaugeService in Frameworks */ = {isa = PBXBuildFile; productRef = A19585692EF290500087291B /* GaugeService */; };
 		A1AAF2812E7B63A2004253ED /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2802E7B63A2004253ED /* SQLiteData */; };
 		A1AAF2B52E7B711F004253ED /* GaugeSources in Frameworks */ = {isa = PBXBuildFile; productRef = A1AAF2B42E7B711F004253ED /* GaugeSources */; };
+		A1FFC33C2EF5E9A30058BA56 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1FFC33B2EF5E9A30058BA56 /* AppIcon.icon */; };
+		A1FFC33D2EF5E9A30058BA56 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1FFC33B2EF5E9A30058BA56 /* AppIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,7 @@
 		A1FB4A252E7B5DCD00A3C7FE /* GaugeWatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GaugeWatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1FB4A452E7B61EA00A3C7FE /* GaugeWatcherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1FB4A522E7B620000A3C7FE /* GaugeWatcherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaugeWatcherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1FFC33B2EF5E9A30058BA56 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -208,6 +211,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A1FFC33B2EF5E9A30058BA56 /* AppIcon.icon */,
 				A11A4BB62EF4E0050046FE9A /* MarkdownView */,
 				A1502F8B2EF2986700DCCBA0 /* SharedFeatures */,
 				A19585662EF28DEE0087291B /* GaugeService */,
@@ -325,7 +329,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A1FB4A302E7B5DCE00A3C7FE /* Build configuration list for PBXNativeTarget "GaugeWatcher" */;
 			buildPhases = (
-				A1526D992ED589C20063C7FA /* SwiftLint */,
 				A1FB4A212E7B5DCD00A3C7FE /* Sources */,
 				A1FB4A222E7B5DCD00A3C7FE /* Frameworks */,
 				A1FB4A232E7B5DCD00A3C7FE /* Resources */,
@@ -479,6 +482,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1FFC33C2EF5E9A30058BA56 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +504,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1FFC33D2EF5E9A30058BA56 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,27 +523,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		A1526D992ED589C20063C7FA /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A1D0A8B42EF28AC600606285 /* Sources */ = {
