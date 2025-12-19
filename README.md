@@ -15,7 +15,7 @@ An iOS and macOS app for monitoring near-real-time river flow gauge data across 
   - Environment Canada (BC, ON, QC)
   - Colorado Department of Water Resources (DWR)
   - Land, Air, Water Aotearoa (LAWA - New Zealand)
-- **GaugeBot AI Assistant** (macOS): Chat with an on-device AI assistant powered by Apple Intelligence to search gauges, check favorites, and get information about water conditions using natural language
+- **GaugeBot AI Assistant**: Chat with an on-device AI assistant powered by Apple Intelligence to search gauges, check favorites, and get information about water conditions using natural language
 - **Interactive Map**: Search and browse gauges by location with visual clustering
 - **Historical Charts**: View gauge reading trends over customizable time periods
 - **Favorites**: Save frequently monitored gauges for quick access
@@ -35,7 +35,7 @@ GaugeBot is an on-device AI chat assistant powered by Apple Intelligence and the
 ### Requirements
 
 GaugeBot requires:
-- **macOS 26.0+** (Apple Silicon)
+- **iOS 26.0+** / **macOS 26.0+** (Apple Silicon)
 - **Apple Intelligence** enabled on your device
 - The on-device language model must be downloaded (happens automatically when Apple Intelligence is enabled)
 
@@ -43,7 +43,7 @@ GaugeBot requires:
 
 ### Availability
 
-GaugeBot is currently available on **macOS only**. The feature gracefully degrades on unsupported devices or when Apple Intelligence is not enabled, showing helpful guidance on how to enable it.
+GaugeBot is currently available on **iOS and macOS**. The feature gracefully degrades on unsupported devices or when Apple Intelligence is not enabled, showing helpful guidance on how to enable it.
 
 ## Requirements
 
