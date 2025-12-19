@@ -64,7 +64,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A14B1DCB2EF45CE1009A296F /* GaugeBot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeBot; sourceTree = "<group>"; };
 		A1502F8B2EF2986700DCCBA0 /* SharedFeatures */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedFeatures; sourceTree = "<group>"; };
 		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1526CAA2ED5263D0063C7FA /* AppTelemetry */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppTelemetry; sourceTree = "<group>"; };
@@ -208,7 +207,6 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
-				A14B1DCB2EF45CE1009A296F /* GaugeBot */,
 				A1502F8B2EF2986700DCCBA0 /* SharedFeatures */,
 				A19585662EF28DEE0087291B /* GaugeService */,
 				A19585652EF28BDD0087291B /* AppDatabase */,
@@ -916,7 +914,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "GaugeWatcher/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 2BTKYF3W9D;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -954,7 +952,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "GaugeWatcher/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 2BTKYF3W9D;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
