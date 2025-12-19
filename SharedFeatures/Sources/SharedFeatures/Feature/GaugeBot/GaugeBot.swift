@@ -7,43 +7,6 @@ public protocol GaugeBotProtocol: Sendable {
     func query(text: String) async throws -> String
 }
 
-#if os(macOS)
-
-// MARK: - GaugeInfo
-
-/// Simplified gauge representation for LLM tool output
-struct GaugeInfo: Codable, Sendable {
-
-    // MARK: Lifecycle
-
-    init(from gauge: GaugeRef) {
-        id = gauge.id
-        name = gauge.name
-        siteID = gauge.siteID
-        country = gauge.country
-        state = gauge.state
-        source = gauge.source.rawValue
-        latitude = gauge.latitude
-        longitude = gauge.longitude
-        isFavorite = gauge.favorite
-        lastUpdated = gauge.updatedAt.formatted(date: .abbreviated, time: .shortened)
-    }
-
-    // MARK: Internal
-
-    let id: Int
-    let name: String
-    let siteID: String
-    let country: String
-    let state: String
-    let source: String
-    let latitude: Double
-    let longitude: Double
-    let isFavorite: Bool
-    let lastUpdated: String
-
-}
-
 // MARK: - GaugeBot
 
 public struct GaugeBot: GaugeBotProtocol {
@@ -99,22 +62,3 @@ public struct GaugeBot: GaugeBotProtocol {
     private let gaugeService: GaugeService?
 
 }
-
-#else
-
-// MARK: - GaugeBot
-
-public struct GaugeBot: GaugeBotProtocol {
-
-    // MARK: Lifecycle
-
-    public init(gaugeService _: GaugeService? = nil) { }
-
-    // MARK: Public
-
-    public func query(text _: String) async throws -> String {
-        "GaugeBot is not available on this platform. Apple Intelligence is required."
-    }
-}
-
-#endif

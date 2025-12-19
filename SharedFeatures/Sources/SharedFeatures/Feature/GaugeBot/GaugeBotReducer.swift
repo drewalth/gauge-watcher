@@ -22,6 +22,7 @@ public struct GaugeBotReducer: Sendable {
         public var messages: Loadable<[ChatMessage]>
         public var isWaitingForResponse: Bool
         public var inputText: String
+        public var chatIsPresented = false
 
         public init(
             messages: Loadable<[ChatMessage]> = .initial,
@@ -40,12 +41,16 @@ public struct GaugeBotReducer: Sendable {
         case addAssistantMessage(AssistantMessage)
         case sendMessage(String)
         case responseReceived(Result<String, Error>)
+        case setChatPresented(Bool)
     }
 
     public var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
+            case .setChatPresented(let newValue):
+                state.chatIsPresented = newValue
+                return .none
             case .binding:
                 return .none
 

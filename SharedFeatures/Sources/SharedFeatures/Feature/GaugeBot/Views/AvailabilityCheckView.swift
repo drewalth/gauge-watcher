@@ -52,8 +52,10 @@ struct AvailabilityCheckView<Content: View>: View {
                     systemImage: "exclamationmark.triangle")
             }
         }
+        #if os(macOS)
         .frame(minWidth: 400, minHeight: 400)
         .frame(maxWidth: 400, maxHeight: 400)
+        #endif
     }
 
     // MARK: Private

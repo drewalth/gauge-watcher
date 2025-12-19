@@ -41,7 +41,7 @@ struct AppView: View {
                 TabView(selection: $store.selectedTab.sending(\.setSelectedTab)) {
                     Group {
                         if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
-                            GaugeSearch(store: gaugeSearchStore)
+                            GaugeSearch(store: gaugeSearchStore, gaugeBotStore: store.scope(state: \.gaugeBot, action: \.gaugeBot))
                         } else {
                             ContinuousSpinner()
                         }

@@ -47,10 +47,6 @@ struct ContentView: View {
     @State private var inspectorMode: InspectorMode = .nearby
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var sheetIsPresented = false
-    
-//    private var gaugeBotStore = Store(initialState: GaugeBotReducer.State(), reducer: {
-//        GaugeBotReducer()
-//    })
 
     @ViewBuilder
     private var mainContent: some View {
