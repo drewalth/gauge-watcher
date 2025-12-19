@@ -125,7 +125,18 @@ struct GaugeListInspector: View {
                     systemImage: "magnifyingglass",
                     description: Text("No gauges match your filters"))
             } else {
-                filteredResultsList(gauges)
+                VStack(spacing: 0) {
+                    HStack {
+                        Text("\(gauges.count) result\(gauges.count == 1 ? "" : "s")")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+
+                    filteredResultsList(gauges)
+                }
             }
         case .error(let error):
             errorView(error.localizedDescription)
@@ -134,33 +145,16 @@ struct GaugeListInspector: View {
 
     @ViewBuilder
     private func filteredResultsList(_ gauges: [GaugeRef]) -> some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text("\(gauges.count) result\(gauges.count == 1 ? "" : "s")")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                if gaugeSearchStore.results.isReloading() {
-                    ProgressView()
-                        .scaleEffect(0.6)
-                }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-
-            Divider()
-
-            ScrollView {
-                LazyVStack(spacing: 2) {
-                    ForEach(gauges) { gauge in
-                        GaugeListRow(gauge: gauge) {
-                            gaugeSearchStore.send(.selectGaugeForInspector(gauge.id))
-                        }
+        ScrollView {
+            LazyVStack(spacing: 2) {
+                ForEach(gauges) { gauge in
+                    GaugeListRow(gauge: gauge) {
+                        gaugeSearchStore.send(.selectGaugeForInspector(gauge.id))
                     }
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
             }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
         }
     }
 

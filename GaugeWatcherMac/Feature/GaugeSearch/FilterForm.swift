@@ -21,16 +21,14 @@ struct FilterForm: View {
         VStack(spacing: 0) {
             header
             Divider()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    searchField
-                    countryPicker
-                    statePicker
-                    sourcePicker
-                    actionButtons
-                }
-                .padding()
+            VStack(alignment: .leading, spacing: 16) {
+                searchField
+                countryPicker
+                statePicker
+                sourcePicker
+                actionButtons
             }
+            .padding()
         }
     }
 
@@ -71,11 +69,6 @@ struct FilterForm: View {
         default:
             GaugeSource.allCases
         }
-    }
-
-    private var resultCount: Int? {
-        guard case .loaded(let results) = store.results else { return nil }
-        return results.count
     }
 
     // MARK: - Bindings
@@ -219,7 +212,7 @@ struct FilterForm: View {
 
     @ViewBuilder
     private var actionButtons: some View {
-        VStack(spacing: 8) {
+        HStack(spacing: 8) {
             Button(action: applyFilters) {
                 HStack {
                     Spacer()
@@ -230,13 +223,11 @@ struct FilterForm: View {
             .buttonStyle(.borderedProminent)
             .disabled(!store.filterOptions.hasActiveFilters)
 
-            if let count = resultCount {
-                Text("\(count) gauge\(count == 1 ? "" : "s") found")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            if store.results.isLoading() || store.results.isReloading() {
+                ProgressView()
+                    .scaleEffect(0.6)
             }
         }
-        .padding(.top, 8)
     }
 
     private func updateFilter(_ transform: (inout FilterOptions) -> Void) {
