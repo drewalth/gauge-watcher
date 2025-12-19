@@ -152,11 +152,11 @@ struct GaugeListInspector: View {
 
             ScrollView {
                 LazyVStack(spacing: 2) {
-                    ForEach(gauges) { gauge in
-                        GaugeListRow(gauge: gauge) {
-                            gaugeSearchStore.send(.goToGaugeDetail(gauge.id))
-                        }
+                ForEach(gauges) { gauge in
+                    GaugeListRow(gauge: gauge) {
+                        gaugeSearchStore.send(.selectGaugeForInspector(gauge.id))
                     }
+                }
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
@@ -224,7 +224,7 @@ struct GaugeListInspector: View {
             LazyVStack(spacing: 2) {
                 ForEach(displayedGauges) { gauge in
                     GaugeListRow(gauge: gauge) {
-                        gaugeSearchStore.send(.goToGaugeDetail(gauge.id))
+                        gaugeSearchStore.send(.selectGaugeForInspector(gauge.id))
                     }
                 }
             }
@@ -239,7 +239,7 @@ struct GaugeListInspector: View {
             FavoritesInspectorContent(
                 store: store,
                 onGaugeTapped: { gaugeID in
-                    gaugeSearchStore.send(.goToGaugeDetail(gaugeID))
+                    gaugeSearchStore.send(.selectGaugeForInspector(gaugeID))
                 })
         } else {
             errorView("Could not load favorites")

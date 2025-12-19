@@ -10,6 +10,9 @@ import SwiftUI
 
 // MARK: - GaugeSearchView
 
+/// Map-based gauge search view for macOS.
+/// Navigation to gauge detail is handled via inspector in the parent ContentView,
+/// not via NavigationStack push (which is the iOS pattern).
 struct GaugeSearchView: View {
 
     // MARK: Internal
@@ -17,17 +20,10 @@ struct GaugeSearchView: View {
     @Bindable var store: StoreOf<GaugeSearchFeature>
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            content
-                .task {
-                    store.send(.initialize)
-                }
-        } destination: { store in
-            switch store.case {
-            case .gaugeDetail(let gaugeDetailStore):
-                GaugeDetail(store: gaugeDetailStore)
+        content
+            .task {
+                store.send(.initialize)
             }
-        }
     }
 
     // MARK: Private

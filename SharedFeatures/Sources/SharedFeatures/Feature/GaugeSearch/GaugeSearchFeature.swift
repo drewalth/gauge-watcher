@@ -83,7 +83,8 @@ public struct GaugeSearchFeature: Sendable {
             shouldRecenterMap: Bool = false,
             searchMode: SearchMode = .viewport,
             filterOptions: FilterOptions = FilterOptions(),
-            shouldZoomToResults: Bool = false) {
+            shouldZoomToResults: Bool = false,
+            inspectorDetail: GaugeDetailFeature.State? = nil) {
             self.results = results
             self.queryOptions = queryOptions
             self.initialized = initialized
@@ -93,6 +94,7 @@ public struct GaugeSearchFeature: Sendable {
             self.searchMode = searchMode
             self.filterOptions = filterOptions
             self.shouldZoomToResults = shouldZoomToResults
+            self.inspectorDetail = inspectorDetail
         }
 
         // MARK: Public
@@ -117,6 +119,14 @@ public struct GaugeSearchFeature: Sendable {
 
         // Flag to trigger map zoom to fit results after filter query
         public var shouldZoomToResults = false
+
+        // Inspector-based detail (macOS) - alternative to path-based navigation (iOS)
+        public var inspectorDetail: GaugeDetailFeature.State?
+
+        /// Whether the inspector should be shown (computed from inspectorDetail)
+        public var isInspectorPresented: Bool {
+            inspectorDetail != nil
+        }
 
     }
 
@@ -145,6 +155,11 @@ public struct GaugeSearchFeature: Sendable {
         case applyFilters
         case clearFilters
         case zoomToResultsCompleted
+
+        // Inspector-based detail (macOS)
+        case selectGaugeForInspector(Int)
+        case closeInspector
+        case inspectorDetail(GaugeDetailFeature.Action)
     }
 
     // MARK: - Path
@@ -177,6 +192,20 @@ public struct GaugeSearchFeature: Sendable {
                 return .none
 
             case .path:
+                return .none
+
+            // MARK: - Inspector Actions (macOS)
+
+            case .selectGaugeForInspector(let gaugeID):
+                state.inspectorDetail = GaugeDetailFeature.State(gaugeID)
+                return .none
+
+            case .closeInspector:
+                state.inspectorDetail = nil
+                return .none
+
+            case .inspectorDetail:
+                // Handled by child reducer
                 return .none
 
             case .setSearchText(let newValue):
@@ -395,6 +424,9 @@ public struct GaugeSearchFeature: Sendable {
                 state.results = results
                 return .none
             }
+        }
+        .ifLet(\.inspectorDetail, action: \.inspectorDetail) {
+            GaugeDetailFeature()
         }
         .forEach(\.path, action: \.path)
     }

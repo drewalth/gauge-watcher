@@ -60,6 +60,9 @@ struct ContentView: View {
             } detail: {
                 GaugeSearchView(store: gaugeSearchStore)
                     .ignoresSafeArea(.container, edges: .all)
+                    .inspector(isPresented: inspectorBinding(for: gaugeSearchStore)) {
+                        inspectorContent(gaugeSearchStore: gaugeSearchStore)
+                    }
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {
@@ -71,9 +74,7 @@ struct ContentView: View {
                     .keyboardShortcut("s", modifiers: [.command, .option])
                 }
                 ToolbarItemGroup(placement: .primaryAction) {
-                    if gaugeSearchStore.path.isEmpty {
-                        inspectorModeToggle
-                    }
+                    inspectorModeToggle
                     Button {
                         sheetIsPresented.toggle()
                     }
@@ -87,7 +88,8 @@ struct ContentView: View {
                     }.buttonStyle(.borderedProminent)
                 }
 
-            }.sheet(isPresented: $sheetIsPresented) {
+            }
+            .sheet(isPresented: $sheetIsPresented) {
                 NavigationStack {
                     GaugeBotChatView(store: store.scope(state: \.gaugeBot, action: \.gaugeBot))
                         .navigationTitle("GaugeBot")
@@ -102,6 +104,28 @@ struct ContentView: View {
             }
         } else {
             ProgressView()
+        }
+    }
+
+    private func inspectorBinding(for gaugeSearchStore: StoreOf<GaugeSearchFeature>) -> Binding<Bool> {
+        Binding(
+            get: { gaugeSearchStore.isInspectorPresented },
+            set: { newValue in
+                if !newValue {
+                    gaugeSearchStore.send(.closeInspector, animation: .easeInOut(duration: 0.2))
+                }
+            })
+    }
+
+    @ViewBuilder
+    private func inspectorContent(gaugeSearchStore: StoreOf<GaugeSearchFeature>) -> some View {
+        if let detailStore = gaugeSearchStore.scope(state: \.inspectorDetail, action: \.inspectorDetail) {
+            GaugeDetailInspector(
+                store: detailStore,
+                onClose: {
+                    gaugeSearchStore.send(.closeInspector, animation: .easeInOut(duration: 0.2))
+                })
+                .inspectorColumnWidth(min: 340, ideal: 420, max: 550)
         }
     }
 

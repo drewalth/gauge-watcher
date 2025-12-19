@@ -143,3 +143,4 @@ struct GaugeReadingChartControls: View {
     }
 
 }
+

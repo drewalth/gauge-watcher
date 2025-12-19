@@ -267,7 +267,8 @@ extension ClusteredMapView {
                 return
             }
 
-            store.send(.goToGaugeDetail(gaugeAnnotation.gaugeRef.id))
+            // Use inspector-based selection on macOS instead of navigation push
+            store.send(.selectGaugeForInspector(gaugeAnnotation.gaugeRef.id))
             mapView.deselectAnnotation(view.annotation, animated: true)
         }
 

@@ -70,6 +70,10 @@ You are a **Senior iOS Engineer**, specializing in SwiftUI, The Composable Archi
 - Add code comments and documentation comments as needed.
 - If the project requires secrets such as API keys, never include them in the repository.
 
+## macOS instructions
+
+- Always use native macOS best practices for the UI and UX.
+- Animations should be smooth and natural to the macOS platform.
 
 ## PR instructions
 
