@@ -333,8 +333,25 @@ struct GaugeReadingChart: View {
         if let selected = selectedReading {
             tooltipView(for: selected)
         } else {
-            // TODO: make this a look like the tooltipView container. an empty box with border stoke.
-            Color.white.opacity(0.1)
+            // Empty placeholder matching tooltip container style
+            HStack {
+                Image(systemName: "cursorarrow.rays")
+                    .foregroundStyle(.tertiary)
+                Text("Hover over chart for details")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .frame(height: tooltipHeight * 0.5)
+            .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+            .background {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(.white.opacity(0.1), lineWidth: 1)
+            }
         }
     }
 
