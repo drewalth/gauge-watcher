@@ -20,8 +20,8 @@ struct GaugeReadingChartControls: View {
     @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Time period segmented picker
+        HStack(spacing: 8) {
+            // Time period picker
             timePeriodPicker
 
             // Metric picker (if multiple metrics available)
@@ -45,6 +45,7 @@ struct GaugeReadingChartControls: View {
                 } label: {
                     HStack {
                         Text(period.description)
+                        Spacer()
                         if period == store.selectedTimePeriod {
                             Image(systemName: "checkmark")
                         }
@@ -52,27 +53,23 @@ struct GaugeReadingChartControls: View {
                 }
             }
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: "calendar")
-                Text(store.selectedTimePeriod.description)
-                    .lineLimit(1)
-                Image(systemName: "chevron.down")
-                    .font(.caption2)
-            }
-            .font(.caption)
-            .fontWeight(.medium)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background {
-                Capsule()
-                    .fill(.ultraThinMaterial)
-            }
-            .overlay {
-                Capsule()
-                    .strokeBorder(.white.opacity(0.1), lineWidth: 1)
-            }
+            Label(store.selectedTimePeriod.shortDescription, systemImage: "calendar")
+                .labelStyle(.titleAndIcon)
+                .font(.caption)
+                .fontWeight(.medium)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .strokeBorder(.white.opacity(0.1), lineWidth: 1)
+                }
         }
         .buttonStyle(.plain)
+        .help(store.selectedTimePeriod.description)
     }
 
     @ViewBuilder
@@ -83,21 +80,22 @@ struct GaugeReadingChartControls: View {
             Group {
                 if store.readings.isReloading() || store.gauge.isReloading() {
                     ProgressView()
-                        .scaleEffect(0.7)
+                        .scaleEffect(0.6)
                 } else {
                     Image(systemName: "arrow.clockwise")
                 }
             }
-            .frame(width: 16, height: 16)
+            .font(.caption)
+            .frame(width: 14, height: 14)
         }
         .buttonStyle(.plain)
-        .padding(8)
+        .padding(6)
         .background {
-            Circle()
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
                 .fill(.ultraThinMaterial)
         }
         .overlay {
-            Circle()
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
                 .strokeBorder(.white.opacity(0.1), lineWidth: 1)
         }
         .disabled(store.readings.isLoading() || store.gauge.isLoading())
@@ -112,7 +110,8 @@ struct GaugeReadingChartControls: View {
                     store.send(.setSelectedMetric(metric))
                 } label: {
                     HStack {
-                        Text(metric.rawValue)
+                        Text(metric.displayName)
+                        Spacer()
                         if metric == store.selectedMetric {
                             Image(systemName: "checkmark")
                         }
@@ -120,27 +119,59 @@ struct GaugeReadingChartControls: View {
                 }
             }
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: "ruler")
-                Text(store.selectedMetric?.rawValue ?? "Metric")
-                Image(systemName: "chevron.down")
-                    .font(.caption2)
-            }
-            .font(.caption)
-            .fontWeight(.medium)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background {
-                Capsule()
-                    .fill(.ultraThinMaterial)
-            }
-            .overlay {
-                Capsule()
-                    .strokeBorder(.white.opacity(0.1), lineWidth: 1)
-            }
+            Label(store.selectedMetric?.rawValue ?? "Metric", systemImage: "ruler")
+                .labelStyle(.titleAndIcon)
+                .font(.caption)
+                .fontWeight(.medium)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .strokeBorder(.white.opacity(0.1), lineWidth: 1)
+                }
         }
         .buttonStyle(.plain)
+        .help(store.selectedMetric?.displayName ?? "Select metric")
     }
+}
 
+// MARK: - TimePeriod.PredefinedPeriod + ShortDescription
+
+extension TimePeriod.PredefinedPeriod {
+    /// Abbreviated description for compact UI
+    var shortDescription: String {
+        switch self {
+        case .last24Hours:
+            "24h"
+        case .last7Days:
+            "7d"
+        case .last30Days:
+            "30d"
+        case .last90Days:
+            "90d"
+        }
+    }
+}
+
+// MARK: - GaugeSourceMetric + DisplayName
+
+extension GaugeSourceMetric {
+    /// Human-readable display name
+    var displayName: String {
+        switch self {
+        case .cfs:
+            "Discharge (CFS)"
+        case .cms:
+            "Discharge (CMS)"
+        case .feetHeight:
+            "Stage Height (FT)"
+        case .meterHeight:
+            "Stage Height (M)"
+        }
+    }
 }
 
