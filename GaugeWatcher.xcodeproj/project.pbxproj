@@ -64,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A11A4BB62EF4E0050046FE9A /* MarkdownView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MarkdownView; sourceTree = "<group>"; };
 		A1502F8B2EF2986700DCCBA0 /* SharedFeatures */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedFeatures; sourceTree = "<group>"; };
 		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1526CAA2ED5263D0063C7FA /* AppTelemetry */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppTelemetry; sourceTree = "<group>"; };
@@ -207,6 +208,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A11A4BB62EF4E0050046FE9A /* MarkdownView */,
 				A1502F8B2EF2986700DCCBA0 /* SharedFeatures */,
 				A19585662EF28DEE0087291B /* GaugeService */,
 				A19585652EF28BDD0087291B /* AppDatabase */,
@@ -615,7 +617,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2BTKYF3W9D;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -662,7 +664,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2BTKYF3W9D;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;

@@ -5,7 +5,6 @@
 //  Created by Andrew Althage on 12/16/25.
 //
 
-import GaugeBot
 import SharedFeatures
 import SwiftUI
 
