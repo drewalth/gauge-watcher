@@ -7,6 +7,7 @@
 
 import SharedFeatures
 import SwiftUI
+import AccessibleUI
 
 // MARK: - ContentView
 
@@ -72,6 +73,7 @@ struct ContentView: View {
                         }
                     }
                     .keyboardShortcut("s", modifiers: [.command, .option])
+                    .accessibleButton(label: "Toggle Sidebar")
                 }
                 ToolbarItemGroup(placement: .primaryAction) {
                     inspectorModeToggle
@@ -80,11 +82,7 @@ struct ContentView: View {
                     }
                     label: {
                         Label("GaugeBot", systemImage: "bubble.left.and.bubble.right")
-                            .accessibilityLabel("Chat with GaugeBot")
-                            .accessibilityHint("Chat with GaugeBot to get information about water gauges")
-                            .accessibilityValue("Chat with GaugeBot")
-
-                    }
+                    }.accessibleButton(label: "Chat with GaugeBot Assistant")
                 }
             }
             .sheet(isPresented: $sheetIsPresented) {
@@ -96,6 +94,7 @@ struct ContentView: View {
                                 Button("Close", systemImage: "xmark") {
                                     sheetIsPresented.toggle()
                                 }
+                                .accessibleButton(label: "Close GaugeBot Chat")
                             }
                         }
                 }
@@ -115,6 +114,7 @@ struct ContentView: View {
         }
         .pickerStyle(.segmented)
         .labelStyle(.titleAndIcon)
+        .accessiblePicker(label: "Inspector Mode", selectedOption: $inspectorMode, options: InspectorMode.allCases, hint: "Select an inspector mode")
     }
 
     @ViewBuilder
@@ -151,7 +151,7 @@ struct ContentView: View {
 
 // MARK: - InspectorMode
 
-enum InspectorMode: Hashable {
+enum InspectorMode: Hashable, CaseIterable {
     case nearby
     case favorites
 }

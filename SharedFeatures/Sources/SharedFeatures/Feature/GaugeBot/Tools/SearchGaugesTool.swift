@@ -67,26 +67,18 @@ struct SearchGaugesTool: Tool {
             return message + "."
         }
 
-        let limit = min(arguments.limit ?? 15, 25)
+        // Small limit for on-device model context window
+        let limit = min(arguments.limit ?? 5, 10)
         let limitedGauges = Array(gauges.prefix(limit))
-        let gaugeInfos = limitedGauges.map { GaugeInfo(from: $0.ref) }
 
         var result = "Found \(gauges.count) gauge(s)"
         if gauges.count > limit {
-            result += " (showing first \(limit))"
+            result += " (showing \(limit))"
         }
-        result += ":\n\n"
+        result += ":\n"
 
-        for (index, info) in gaugeInfos.enumerated() {
-            result += """
-        \(index + 1). \(info.name)
-           Gauge ID: \(info.id)
-           Site ID: \(info.siteID)
-           Location: \(info.state), \(info.country)
-           Source: \(info.source.uppercased())
-           Favorite: \(info.isFavorite ? "Yes" : "No")
-
-        """
+        for gauge in limitedGauges {
+            result += "• \(gauge.name) [ID: \(gauge.id)] - \(gauge.state)\n"
         }
 
         return result

@@ -22,46 +22,34 @@ struct LoadFavoriteGaugesTool: Tool {
 
     @Generable
     struct Arguments {
-        @Guide(description: "Maximum number of favorites to return (1-50)")
+        @Guide(description: "Maximum number of favorites to return (1-10)")
         var limit: Int?
     }
 
     let name = "loadFavoriteGauges"
     let description = """
-    Loads the user's favorite water gauges from their saved list. \
-    Returns gauge names, locations, and site IDs. Use this when the user asks \
-    about their favorites, saved gauges, or wants to check on specific gauges they track.
+    Lists user's favorite gauges with their IDs. Use gaugeReadings to get actual data.
     """
 
     func call(arguments: Arguments) async throws -> String {
         let gauges = try await gaugeService.loadFavoriteGauges()
 
         if gauges.isEmpty {
-            return "No favorite gauges found. The user hasn't added any gauges to their favorites yet."
+            return "No favorites saved."
         }
 
-        let limit = min(arguments.limit ?? 50, 50)
+        // Small limit for on-device model context window
+        let limit = min(arguments.limit ?? 10, 10)
         let limitedGauges = Array(gauges.prefix(limit))
-        let gaugeInfos = limitedGauges.map { GaugeInfo(from: $0.ref) }
 
-        // Format as readable text for the LLM
-        var result = "Found \(gauges.count) favorite gauge(s)"
+        var result = "\(gauges.count) favorite(s)"
         if gauges.count > limit {
-            result += " (showing first \(limit))"
+            result += " (showing \(limit))"
         }
-        result += ":\n\n"
+        result += ":\n"
 
-        for (index, info) in gaugeInfos.enumerated() {
-            result += """
-        \(index + 1). \(info.name)
-           Gauge ID: \(info.id)
-           Site ID: \(info.siteID)
-           Location: \(info.state), \(info.country)
-           Source: \(info.source.uppercased())
-           Coordinates: \(info.latitude), \(info.longitude)
-           Last Updated: \(info.lastUpdated)
-
-        """
+        for gauge in limitedGauges {
+            result += "• \(gauge.name) [ID: \(gauge.id)] - \(gauge.state)\n"
         }
 
         return result

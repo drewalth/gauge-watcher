@@ -10,6 +10,7 @@ import MapKit
 import SharedFeatures
 import SwiftUI
 import AppTelemetry
+import AccessibleUI
 
 // MARK: - GaugeDetailInspector
 
@@ -77,6 +78,7 @@ struct GaugeDetailInspector: View {
             .help(gauge?.favorite == true ? "Remove from favorites" : "Add to favorites")
             .disabled(!isLoaded)
             .opacity(isLoaded ? 1 : 0.4)
+            .accessibleButton(label: gauge?.favorite == true ? "Remove from favorites" : "Add to favorites")
 
             Button {
                 store.send(.openSource)
@@ -88,6 +90,7 @@ struct GaugeDetailInspector: View {
             .help("Open gauge source website")
             .disabled(gauge?.sourceURL == nil)
             .opacity(gauge?.sourceURL != nil ? 1 : 0.4)
+            .accessibleButton(label: "Open gauge source website")
 
             Button {
                 onClose()
@@ -98,6 +101,7 @@ struct GaugeDetailInspector: View {
             .buttonStyle(.borderless)
             .help("Close inspector")
             .keyboardShortcut(.escape, modifiers: [])
+            .accessibleButton(label: "Close inspector")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -247,6 +251,7 @@ struct GaugeDetailInspector: View {
                 store.send(.load)
             }
             .buttonStyle(.borderedProminent)
+            .accessibleButton(label: "Try Again")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

@@ -8,6 +8,7 @@
 import GaugeSources
 import SharedFeatures
 import SwiftUI
+import AccessibleUI
 
 // MARK: - FilterForm
 
@@ -125,6 +126,7 @@ struct FilterForm: View {
                     .font(.caption)
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
+                    .accessibleButton(label: "Clear Filters")
             }
         }
         .padding()
@@ -141,6 +143,7 @@ struct FilterForm: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.tertiary)
                 TextField("Search by name", text: searchTextBinding)
+                    .accessibleTextField(label: "Search by name")
                     .textFieldStyle(.plain)
                     .onSubmit(applyFilters)
                 if !store.filterOptions.searchText.isEmpty {
@@ -150,6 +153,7 @@ struct FilterForm: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(.tertiary)
                     .labelStyle(.iconOnly)
+                    .accessibleButton(label: "Clear Search")
                 }
             }
             .padding(8)
@@ -172,6 +176,7 @@ struct FilterForm: View {
                 }
             }
             .labelsHidden()
+            .accessiblePicker(label: "Country", selectedOption: countryBinding, options: StatesProvinces.Country.allCases.map { $0.name }, hint: "Select a country")
         }
     }
 
@@ -190,6 +195,7 @@ struct FilterForm: View {
             }
             .labelsHidden()
             .disabled(store.filterOptions.country == nil)
+            .accessiblePicker(label: "\(statePickerLabel)", selectedOption: stateBinding, options: availableStates.map { $0.name }, hint: "Select a \(statePickerLabel)")
         }
     }
 
@@ -207,6 +213,7 @@ struct FilterForm: View {
                 }
             }
             .labelsHidden()
+            .accessiblePicker(label: "Source", selectedOption: sourceBinding, options: availableSources, hint: "Select a data source")
         }
     }
 
@@ -222,6 +229,7 @@ struct FilterForm: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(!store.filterOptions.hasActiveFilters)
+            .accessibleButton(label: "Apply Search Filters")
 
             if store.results.isLoading() || store.results.isReloading() {
                 ProgressView()
