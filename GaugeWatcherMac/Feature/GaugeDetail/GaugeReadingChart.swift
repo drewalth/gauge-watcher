@@ -343,7 +343,7 @@ struct GaugeReadingChart: View {
             }
             .frame(height: tooltipHeight * 0.5)
             .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+            .padding(.vertical, 10)
             .background {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(.ultraThinMaterial)

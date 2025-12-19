@@ -38,6 +38,11 @@ struct LatestGaugeReading: View {
         store.readings.unwrap()?.first
     }
 
+    // Total height for empty/error states
+    private var totalComponentHeight: CGFloat {
+        (primaryCardContentHeight + 32) + 12 + (secondaryCardContentHeight + 24)
+    }
+
     @ViewBuilder
     private var primaryCard: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -134,14 +139,27 @@ struct LatestGaugeReading: View {
         }
     }
 
+    private var emptyView: some View {
+        HStack {
+            ContentUnavailableView(
+                "No Readings",
+                systemImage: "drop.halffull",
+                description: Text("No readings available for this gauge"))
+        }
+        .frame(maxWidth: .infinity, minHeight: totalComponentHeight)
+        .background {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+    }
+
     @ViewBuilder
     private func secondaryCard(
         title: String,
         icon: String,
         primaryText: Text?,
         secondaryText: Text?)
-        -> some View
-    {
+    -> some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header - fixed height
             HStack(spacing: 6) {
@@ -200,25 +218,6 @@ struct LatestGaugeReading: View {
         .overlay {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(.white.opacity(0.1), lineWidth: 1)
-        }
-    }
-
-    // Total height for empty/error states
-    private var totalComponentHeight: CGFloat {
-        (primaryCardContentHeight + 32) + 12 + (secondaryCardContentHeight + 24)
-    }
-
-    private var emptyView: some View {
-        HStack {
-            ContentUnavailableView(
-                "No Readings",
-                systemImage: "drop.halffull",
-                description: Text("No readings available for this gauge"))
-        }
-        .frame(maxWidth: .infinity, minHeight: totalComponentHeight)
-        .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(.ultraThinMaterial)
         }
     }
 

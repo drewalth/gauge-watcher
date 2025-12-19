@@ -199,6 +199,17 @@ struct GaugeDetailInspector: View {
         }
     }
 
+    private var reloadingOverlay: some View {
+        Color.black.opacity(0.1)
+            .ignoresSafeArea()
+            .overlay {
+                ProgressView()
+                    .scaleEffect(1.2)
+                    .padding(20)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+            }
+    }
+
     private func skeletonRect(width: CGFloat? = nil, height: CGFloat) -> some View {
         RoundedRectangle(cornerRadius: 6, style: .continuous)
             .fill(.primary.opacity(0.08))
@@ -212,17 +223,6 @@ struct GaugeDetailInspector: View {
             .fill(.primary.opacity(0.08))
             .frame(width: width, height: 22)
             .shimmering()
-    }
-
-    private var reloadingOverlay: some View {
-        Color.black.opacity(0.1)
-            .ignoresSafeArea()
-            .overlay {
-                ProgressView()
-                    .scaleEffect(1.2)
-                    .padding(20)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
-            }
     }
 
     private func errorView(_ error: Error) -> some View {
@@ -443,8 +443,11 @@ extension View {
     }
 }
 
+// MARK: - ShimmerModifier
+
 struct ShimmerModifier: ViewModifier {
-    @State private var phase: CGFloat = 0
+
+    // MARK: Internal
 
     func body(content: Content) -> some View {
         content
@@ -469,6 +472,11 @@ struct ShimmerModifier: ViewModifier {
                 }
             }
     }
+
+    // MARK: Private
+
+    @State private var phase: CGFloat = 0
+
 }
 
 // MARK: - Preview
