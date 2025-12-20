@@ -45,46 +45,35 @@ struct ContentView: View {
 
     // MARK: Private
 
-    // Track actual available width (default matches window's defaultSize)
-    @State private var availableWidth: CGFloat = 1281
-
     @State private var inspectorMode: InspectorMode = .nearby
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var sheetIsPresented = false
 
-    // Computed column constraints based on available space
+    // Sidebar column constraints—min is the actual initial width on first launch
     private var sidebarWidth: (min: CGFloat, ideal: CGFloat, max: CGFloat) {
-        let minWidth = max(280, availableWidth * 0.25) // 25% of window, floor of 280
-        let idealWidth = availableWidth * 0.3 // 30%
-        let maxWidth = min(500, availableWidth * 0.4) // 40% capped at 500
+        let minWidth: CGFloat = 350 // Floor that accommodates gauge names
+        let idealWidth: CGFloat = 380
+        let maxWidth: CGFloat = 500
         return (minWidth, idealWidth, maxWidth)
     }
 
     @ViewBuilder
     private var mainContent: some View {
         if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
-            GeometryReader { geometry in
-                NavigationSplitView(columnVisibility: $columnVisibility) {
-                    GaugeListInspector(
-                        gaugeSearchStore: gaugeSearchStore,
-                        favoritesStore: store.scope(state: \.favorites, action: \.favorites),
-                        mode: $inspectorMode)
-                        .navigationSplitViewColumnWidth(
-                            min: sidebarWidth.min,
-                            ideal: sidebarWidth.ideal,
-                            max: sidebarWidth.max)
-                        .toolbar(removing: .sidebarToggle)
-                } detail: {
-                    GaugeSearchView(store: gaugeSearchStore)
-                        .ignoresSafeArea(.container, edges: .all)
-                        .inspector(isPresented: inspectorBinding(for: gaugeSearchStore)) {
-                            inspectorContent(gaugeSearchStore: gaugeSearchStore)
-                        }
-                }
-                .onAppear { availableWidth = geometry.size.width }
-                .onChange(of: geometry.size.width) { _, newWidth in
-                    availableWidth = newWidth
-                }
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                GaugeListInspector(
+                    gaugeSearchStore: gaugeSearchStore,
+                    favoritesStore: store.scope(state: \.favorites, action: \.favorites),
+                    mode: $inspectorMode)
+                    .frame(minWidth: sidebarWidth.min - 24, maxWidth: sidebarWidth.max - 24)
+                    .navigationSplitViewColumnWidth(ideal: sidebarWidth.ideal, max: sidebarWidth.max)
+                    .toolbar(removing: .sidebarToggle)
+            } detail: {
+                GaugeSearchView(store: gaugeSearchStore)
+                    .ignoresSafeArea(.container, edges: .all)
+                    .inspector(isPresented: inspectorBinding(for: gaugeSearchStore)) {
+                        inspectorContent(gaugeSearchStore: gaugeSearchStore)
+                    }
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {

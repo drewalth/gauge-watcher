@@ -7,6 +7,7 @@
 
 import SharedFeatures
 import SwiftUI
+import TipKit
 
 // MARK: - GaugeListInspector
 // TODO: split up var computed views into separate structs
@@ -18,6 +19,8 @@ struct GaugeListInspector: View {
     var favoritesStore: StoreOf<FavoriteGaugesFeature>?
 
     @Binding var mode: InspectorMode
+    
+  
 
     var body: some View {
         switch mode {
@@ -61,6 +64,10 @@ struct GaugeListInspector: View {
         .pickerStyle(.segmented)
         .labelsHidden()
         .padding()
+        .popoverTip(OnboardingTips.searchMode, arrowEdge: .leading)
+        .onChange(of: gaugeSearchStore.searchMode, {_, _ in
+            OnboardingTips.searchMode.invalidate(reason: .actionPerformed)
+        })
     }
 
     private var searchModeBinding: Binding<SearchMode> {

@@ -285,6 +285,7 @@ struct GaugeDetailInspector: View {
         }
         .scrollIndicators(.automatic)
     }
+    
 
     @ViewBuilder
     private func heroHeader(_ gauge: GaugeRef) -> some View {

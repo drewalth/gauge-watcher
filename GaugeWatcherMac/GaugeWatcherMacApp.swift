@@ -20,6 +20,7 @@ struct GaugeWatcherMacApp: App {
     init() {
         AppTelemetry.initialize()
         AppDatabase.initialize()
+        OnboardingTips.initialize()
     }
 
     // MARK: Internal

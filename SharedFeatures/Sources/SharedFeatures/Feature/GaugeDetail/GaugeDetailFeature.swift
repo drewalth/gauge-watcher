@@ -11,6 +11,8 @@ import GaugeSources
 import Loadable
 import MapKit
 import os
+import StoreKit
+import Cocoa
 
 // MARK: - GaugeDetailFeature
 
@@ -39,6 +41,7 @@ public struct GaugeDetailFeature: Sendable {
         public var forecastAvailable: Loadable<Bool> = .initial
         public var forecastInfoSheetPresented = false
         public var infoSheetPresented = false
+        @Shared(.appStorage("app-review-requested-01")) public var appReviewRequested = false
 
         public init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
@@ -64,6 +67,8 @@ public struct GaugeDetailFeature: Sendable {
         case setForecastInfoSheetPresented(Bool)
         case setInfoSheetPresented(Bool)
         case openInMaps
+        case setAppReviewRequested(Bool)
+        case requestAppReview
     }
 
     // MARK: - CancelID
@@ -73,12 +78,34 @@ public struct GaugeDetailFeature: Sendable {
         case loadReadings
         case load
     }
+    
+    @Dependency(\.continuousClock) var clock
 
     // MARK: - Body
 
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .requestAppReview:
+                guard !state.appReviewRequested else {
+                    return .none
+                }
+
+                return .run { send in
+                    await send(.setAppReviewRequested(true))
+                    do {
+                        try await clock.sleep(for: .seconds(1))
+                        AppReviewManager.promptForReview()
+                      
+                    } catch {
+                        logger.error("\(error.localizedDescription)")
+                    }
+                    
+                    
+                }
+            case .setAppReviewRequested(let newValue):
+                state.$appReviewRequested.withLock { $0 = newValue }
+                return .none
             case .openInMaps:
                 guard let gauge = state.gauge.unwrap() else {
                     return .none
@@ -168,7 +195,7 @@ public struct GaugeDetailFeature: Sendable {
                     .run { [gaugeID = state.gaugeID] _ in
                         @Dependency(\.gaugeService) var gaugeService
                         try await gaugeService.toggleFavorite(gaugeID)
-                    }, .send(.load))
+                    }, .send(.load), .send(.requestAppReview))
 
             case .setAvailableMetrics(let newValue):
                 state.availableMetrics = newValue
@@ -304,5 +331,13 @@ extension GaugeDetailFeature {
                 "Invalid gauge source URL"
             }
         }
+    }
+}
+
+class AppReviewManager {
+    static func promptForReview() {
+        #if os(macOS)
+        SKStoreReviewController.requestReview()
+        #endif
     }
 }
