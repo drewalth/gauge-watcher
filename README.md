@@ -28,6 +28,8 @@ GaugeBot is an on-device AI chat assistant powered by Apple Intelligence and the
 
 ### Capabilities
 
+> See [GaugeBot Tools](/SharedFeatures/Sources/SharedFeatures/Feature/GaugeBot/Tools/) to see the available tools.
+
 - **Search Gauges**: Ask questions like "Find gauges on the Arkansas River" or "What gauges are in Colorado?"
 - **Check Favorites**: Query your saved gauges with "Show me my favorite gauges" or "What are my saved stations?"
 - **Get Information**: Ask about specific rivers, locations, or gauge data
