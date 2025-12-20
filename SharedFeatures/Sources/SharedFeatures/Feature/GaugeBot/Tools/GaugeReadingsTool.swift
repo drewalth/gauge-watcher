@@ -7,8 +7,8 @@
 
 // this tool will return the latest readings for a given gauge
 
-import FoundationModels
 import Foundation
+import FoundationModels
 
 /// Tool that returns the latest readings for a specific gauge.
 struct GaugeReadingsTool: Tool {

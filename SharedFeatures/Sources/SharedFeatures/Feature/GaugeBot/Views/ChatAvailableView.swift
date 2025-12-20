@@ -5,8 +5,8 @@
 //  Created by Andrew Althage on 12/18/25.
 //
 
-import SwiftUI
 import AppTelemetry
+import SwiftUI
 
 // MARK: - ChatAvailableView
 
@@ -22,11 +22,9 @@ struct ChatAvailableView: View {
             Divider()
             inputSection
         }
-        .trackView("ChatAvailableView", {
-            return [
-                "MessagesCount": store.messages.unwrap()?.count ?? 0,
-            ]
-        }())
+        .trackView("ChatAvailableView", [
+            "MessagesCount": store.messages.unwrap()?.count ?? 0
+        ])
     }
 
     // MARK: Private

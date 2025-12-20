@@ -8,6 +8,7 @@
 import AppTelemetry
 import SharedFeatures
 import SwiftUI
+import AppDatabase
 
 // MARK: - GaugeWatcherMacApp
 
@@ -18,13 +19,7 @@ struct GaugeWatcherMacApp: App {
 
     init() {
         AppTelemetry.initialize()
-        do {
-            try prepareDependencies {
-                try $0.bootstrapDatabase()
-            }
-        } catch {
-            fatalError("Failed to prepare database: \(error)")
-        }
+        AppDatabase.initialize()
     }
 
     // MARK: Internal
@@ -34,14 +29,14 @@ struct GaugeWatcherMacApp: App {
             RootView()
                 .fontDesign(.monospaced)
                 .frame(
-                    minWidth: 800,
+                    minWidth: 1000, // Be honest about what you need
                     maxWidth: .infinity,
                     minHeight: 600,
                     maxHeight: .infinity)
                 .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         }
         .windowResizability(.contentMinSize)
-        .defaultSize(width: 1281, height: 833)  // 2562×1666 @2x. best for app store screenshot
+        .defaultSize(width: 1281, height: 833)
         .windowToolbarStyle(.unified)
 
         Settings {
@@ -54,7 +49,7 @@ struct GaugeWatcherMacApp: App {
 
 private struct RootView: View {
 
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    // MARK: Internal
 
     var body: some View {
         if hasCompletedOnboarding {
@@ -73,4 +68,9 @@ private struct RootView: View {
                 })
         }
     }
+
+    // MARK: Private
+
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
 }

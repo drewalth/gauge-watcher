@@ -149,13 +149,21 @@ struct GaugeReadingChart: View {
 
     @ViewBuilder
     private var chartContent: some View {
-        switch store.readings {
+        switch store.gauge {
         case .initial, .loading:
             loadingView
         case .loaded, .reloading:
-            chartView
+            switch store.readings {
+            case .initial, .loading:
+                loadingView
+            case .loaded, .reloading:
+                chartView
+            case .error(let error):
+                errorView(error)
+            }
         case .error(let error):
             errorView(error)
+            
         }
     }
 
@@ -189,35 +197,10 @@ struct GaugeReadingChart: View {
                 Spacer()
             }
 
-            // Fake wave line skeleton
-            GeometryReader { geometry in
-                Path { path in
-                    let width = geometry.size.width
-                    let height = geometry.size.height
-                    let midY = height * 0.5
-
-                    path.move(to: CGPoint(x: 0, y: midY + 20))
-
-                    // Create a wavy path
-                    let segments = 8
-                    for i in 0 ... segments {
-                        let x = width * CGFloat(i) / CGFloat(segments)
-                        let offsetY = sin(Double(i) * .pi / 2) * 40
-                        path.addLine(to: CGPoint(x: x, y: midY + offsetY))
-                    }
-                }
-                .stroke(
-                    LinearGradient(
-                        colors: [.secondary.opacity(0.3), .secondary.opacity(0.15)],
-                        startPoint: .leading,
-                        endPoint: .trailing),
-                    style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
-            }
-
             // Loading indicator overlay
             VStack {
                 ProgressView()
-                    .scaleEffect(1.0)
+                    .scaleEffect(0.5)
                 Text("Loading readings...")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -327,9 +310,16 @@ struct GaugeReadingChart: View {
         }
     }
 
+    private func getSelectedReading() -> GaugeReadingRef? {
+        if filteredReadings.count == 1 {
+            return filteredReadings.first
+        }
+        return selectedReading
+    }
+    
     @ViewBuilder
     private var tooltipArea: some View {
-        if let selected = selectedReading {
+        if let selected = getSelectedReading() {
             tooltipView(for: selected)
         } else {
             // Empty placeholder matching tooltip container style

@@ -133,7 +133,7 @@ extension LocationService {
     }
 }
 
-// MARK: - LocationServiceKey + DependencyKey
+// MARK: - LocationServiceKey + @retroactive DependencyKey
 
 extension LocationServiceKey: @retroactive DependencyKey {
     @MainActor

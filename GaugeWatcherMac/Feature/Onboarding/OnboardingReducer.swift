@@ -18,8 +18,8 @@ struct OnboardingReducer: Sendable {
     @ObservableState
     struct State: Equatable {
         var authorizationStatus: CLAuthorizationStatus = .notDetermined
-        var locationPermissionRequested: Bool = false
-        var isRequestingPermission: Bool = false
+        var locationPermissionRequested = false
+        var isRequestingPermission = false
     }
 
     // MARK: - Action

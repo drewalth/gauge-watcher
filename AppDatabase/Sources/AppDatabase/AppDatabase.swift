@@ -16,7 +16,7 @@ public enum AppDatabase {
 
   // MARK: Public
 
-  public func initialize() {
+  public static func initialize() {
     do {
       try prepareDependencies {
         try $0.bootstrapDatabase()

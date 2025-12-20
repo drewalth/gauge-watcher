@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 12/18/25.
 //
 
+import AppTelemetry
 import FoundationModels
 import SwiftUI
-import AppTelemetry
 
 // MARK: - AvailabilityCheckView
 

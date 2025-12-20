@@ -16,6 +16,7 @@ struct OnboardingView: View {
     // MARK: Internal
 
     @Bindable var store: StoreOf<OnboardingReducer>
+
     var onComplete: () -> Void
 
     var body: some View {
@@ -42,7 +43,7 @@ struct OnboardingView: View {
                     colors: [
                         .black.opacity(0.7),
                         .black.opacity(0.4),
-                        .black.opacity(0.7),
+                        .black.opacity(0.7)
                     ],
                     startPoint: .top,
                     endPoint: .bottom)
@@ -67,6 +68,7 @@ private struct OnboardingCard: View {
     // MARK: Internal
 
     @Bindable var store: StoreOf<OnboardingReducer>
+
     var onComplete: () -> Void
 
     var body: some View {
@@ -84,6 +86,49 @@ private struct OnboardingCard: View {
     }
 
     // MARK: Private
+
+    private var showPermissionButton: Bool {
+        store.authorizationStatus == .notDetermined
+    }
+
+    private var locationIcon: String {
+        switch store.authorizationStatus {
+        case .authorized, .authorizedAlways:
+            "location.fill"
+        case .denied, .restricted:
+            "location.slash"
+        case .notDetermined:
+            "location"
+        @unknown default:
+            "location"
+        }
+    }
+
+    private var locationIconColor: Color {
+        switch store.authorizationStatus {
+        case .authorized, .authorizedAlways:
+            .green
+        case .denied, .restricted:
+            .orange
+        case .notDetermined:
+            .accentColor
+        @unknown default:
+            .accentColor
+        }
+    }
+
+    private var locationDescription: String {
+        switch store.authorizationStatus {
+        case .authorized, .authorizedAlways:
+            "Location enabled. We'll show you nearby gauges."
+        case .denied, .restricted:
+            "Location access denied. You can enable it later in System Settings."
+        case .notDetermined:
+            "Allow access to find gauges near you."
+        @unknown default:
+            "Allow access to find gauges near you."
+        }
+    }
 
     @ViewBuilder
     private var headerSection: some View {
@@ -181,48 +226,6 @@ private struct OnboardingCard: View {
         }
     }
 
-    private var showPermissionButton: Bool {
-        store.authorizationStatus == .notDetermined
-    }
-
-    private var locationIcon: String {
-        switch store.authorizationStatus {
-        case .authorized, .authorizedAlways:
-            "location.fill"
-        case .denied, .restricted:
-            "location.slash"
-        case .notDetermined:
-            "location"
-        @unknown default:
-            "location"
-        }
-    }
-
-    private var locationIconColor: Color {
-        switch store.authorizationStatus {
-        case .authorized, .authorizedAlways:
-            .green
-        case .denied, .restricted:
-            .orange
-        case .notDetermined:
-            .accentColor
-        @unknown default:
-            .accentColor
-        }
-    }
-
-    private var locationDescription: String {
-        switch store.authorizationStatus {
-        case .authorized, .authorizedAlways:
-            "Location enabled. We'll show you nearby gauges."
-        case .denied, .restricted:
-            "Location access denied. You can enable it later in System Settings."
-        case .notDetermined:
-            "Allow access to find gauges near you."
-        @unknown default:
-            "Allow access to find gauges near you."
-        }
-    }
 }
 
 // MARK: - Preview

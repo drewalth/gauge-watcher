@@ -5,12 +5,12 @@
 //  Created by Andrew Althage on 12/17/25.
 //
 
+import AppTelemetry
 import Charts
 import GaugeService
 import Loadable
 import SharedFeatures
 import SwiftUI
-import AppTelemetry
 
 // MARK: - GaugeFlowForecast
 
@@ -18,12 +18,21 @@ struct GaugeFlowForecast: View {
 
     // MARK: Internal
 
-    var store: StoreOf<GaugeDetailFeature>
+    @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             headerView
             mainContent
+        }.onChange(of: isExpanded, { prev, next in
+            if !prev, next {
+                store.send(.getForecast)
+            }
+        })
+        .sheet(isPresented: $store.forecastInfoSheetPresented.sending(\.setForecastInfoSheetPresented)) {
+            GaugeForecastInfoSheet(onClose: {
+                store.send(.setForecastInfoSheetPresented(false))
+            })
         }
         .background {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -67,17 +76,52 @@ struct GaugeFlowForecast: View {
 
             Spacer()
 
-            Button {
-                withAnimation(.snappy(duration: 0.3)) {
-                    AppTelemetry.captureEvent("GaugeFlowForecast - Toggle Visibility")
-                    isExpanded.toggle()
+            HStack(spacing: 8) {
+                Button {
+                    withAnimation(.snappy(duration: 0.3)) {
+                        AppTelemetry.captureEvent("GaugeFlowForecast - Info")
+                        store.send(.setForecastInfoSheetPresented(true))
+                    }
+                } label: {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(.secondary)
                 }
-            } label: {
-                Image(systemName: "chevron.down")
-                    .rotationEffect(.degrees(isExpanded ? 0 : -90))
-                    .foregroundStyle(.secondary)
+                .buttonStyle(.plain)
+                .padding(6)
+                .background {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .strokeBorder(.white.opacity(0.1), lineWidth: 1)
+                }
+                .frame(width: 14, height: 14)
+                
+                Button {
+                    withAnimation(.snappy(duration: 0.3)) {
+                        AppTelemetry.captureEvent("GaugeFlowForecast - Toggle Visibility")
+                        isExpanded.toggle()
+                        
+                    }
+                } label: {
+                    Image(systemName: "chevron.down")
+                        .rotationEffect(.degrees(isExpanded ? 0 : -90))
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                }
+                .frame(width: 14, height: 14)
+                .buttonStyle(.plain)
+                .padding(6)
+                .background {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .strokeBorder(.white.opacity(0.1), lineWidth: 1)
+                }
             }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
@@ -109,9 +153,7 @@ struct GaugeFlowForecast: View {
                 case .loaded(let isAvailable), .reloading(let isAvailable):
                     if isAvailable {
                         forecastContent
-                            .task {
-                                store.send(.getForecast)
-                            }
+                            
                     } else {
                         unavailableView
                     }

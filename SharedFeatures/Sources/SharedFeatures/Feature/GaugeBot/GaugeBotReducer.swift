@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 12/18/25.
 //
 //
+import AppTelemetry
 import ComposableArchitecture
 import Loadable
-import AppTelemetry
 
 @Reducer
 public struct GaugeBotReducer: Sendable {

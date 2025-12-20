@@ -36,6 +36,8 @@ public struct GaugeDetailFeature: Sendable {
         public var selectedMetric: GaugeSourceMetric?
         public var forecast: Loadable<[ForecastDataPoint]> = .initial
         public var forecastAvailable: Loadable<Bool> = .initial
+        public var forecastInfoSheetPresented = false
+        public var infoSheetPresented = false
 
         public init(_ gaugeID: Int) {
             self.gaugeID = gaugeID
@@ -58,6 +60,8 @@ public struct GaugeDetailFeature: Sendable {
         case getForecast
         case setForecast(Loadable<[ForecastDataPoint]>)
         case setForecastAvailable(Loadable<Bool>)
+        case setForecastInfoSheetPresented(Bool)
+        case setInfoSheetPresented(Bool)
     }
 
     // MARK: - CancelID
@@ -73,6 +77,12 @@ public struct GaugeDetailFeature: Sendable {
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .setInfoSheetPresented(let newValue):
+                state.infoSheetPresented = newValue
+                return .none
+            case .setForecastInfoSheetPresented(let newValue):
+                state.forecastInfoSheetPresented = newValue
+                return .none
             case .setForecastAvailable(let newValue):
                 state.forecastAvailable = newValue
                 return .none
@@ -82,10 +92,14 @@ public struct GaugeDetailFeature: Sendable {
                 return .none
 
             case .getForecast:
-                guard state.gauge.isLoaded(), state.forecastAvailable.unwrap() == true else {
-                    logger.warning("gauge not loaded or unable to determine forecastability...")
+                guard
+                    let gauge = state.gauge.unwrap(),
+                    gauge.source == .usgs
+                else {
+                    state.forecastAvailable = .loaded(false)
                     return .none
                 }
+
                 return .run { [gauge = state.gauge, logger] send in
                     do {
                         guard
@@ -183,7 +197,11 @@ public struct GaugeDetailFeature: Sendable {
                 }
 
                 state.gauge = .reloading(gauge)
-                state.readings = .reloading(state.readings.unwrap() ?? [])
+                if state.readings.isLoaded() {
+                    state.readings = .reloading(state.readings.unwrap()!)
+                } else {
+                    state.readings = .loading
+                }
                 return .run { [gaugeID = state.gaugeID] send in
                     do {
                         @Dependency(\.gaugeService) var gaugeService

@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 12/17/25.
 //
 
+import AppTelemetry
 import SharedFeatures
 import SwiftUI
-import AppTelemetry
 
 // MARK: - GaugeSearchView
 

@@ -5,10 +5,10 @@
 //  Created by Andrew Althage on 12/17/25.
 //
 
+import AccessibleUI
 import GaugeSources
 import SharedFeatures
 import SwiftUI
-import AccessibleUI
 
 // MARK: - FilterForm
 
@@ -176,7 +176,11 @@ struct FilterForm: View {
                 }
             }
             .labelsHidden()
-            .accessiblePicker(label: "Country", selectedOption: countryBinding, options: StatesProvinces.Country.allCases.map { $0.name }, hint: "Select a country")
+            .accessiblePicker(
+                label: "Country",
+                selectedOption: countryBinding,
+                options: StatesProvinces.Country.allCases.map { $0.name },
+                hint: "Select a country")
         }
     }
 
@@ -195,7 +199,11 @@ struct FilterForm: View {
             }
             .labelsHidden()
             .disabled(store.filterOptions.country == nil)
-            .accessiblePicker(label: "\(statePickerLabel)", selectedOption: stateBinding, options: availableStates.map { $0.name }, hint: "Select a \(statePickerLabel)")
+            .accessiblePicker(
+                label: "\(statePickerLabel)",
+                selectedOption: stateBinding,
+                options: availableStates.map { $0.name },
+                hint: "Select a \(statePickerLabel)")
         }
     }
 
