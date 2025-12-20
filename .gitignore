@@ -138,3 +138,6 @@ GaugeDrivers/gauge_drivers_cache/
 .env
 
 __pycache__/
+
+#Ignore cursor AI rules
+.cursor/rules/codacy.mdc
