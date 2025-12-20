@@ -70,8 +70,6 @@ struct GaugeDetailInspector: View {
             let gauge = store.gauge.unwrap()
             let isLoaded = gauge != nil
 
-           
-
             Button {
                 store.send(.toggleFavorite)
             } label: {

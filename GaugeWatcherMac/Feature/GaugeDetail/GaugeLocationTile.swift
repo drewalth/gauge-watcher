@@ -5,10 +5,10 @@
 //  Created by Andrew Althage on 12/20/25.
 //
 
+import AccessibleUI
 import MapKit
 import SharedFeatures
 import SwiftUI
-import AccessibleUI
 
 struct GaugeLocationTile: View {
 
@@ -16,10 +16,12 @@ struct GaugeLocationTile: View {
 
     init(_ gauge: GaugeRef, store: StoreOf<GaugeDetailFeature>) {
         self.gauge = gauge
-        self._store = Bindable(store)
+        _store = Bindable(store)
     }
-    @Bindable var store: StoreOf<GaugeDetailFeature>
+
     // MARK: Internal
+
+    @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -81,9 +83,24 @@ struct GaugeLocationTile: View {
 
 }
 
-
 #Preview("With Gauge") {
-    GaugeLocationTile(GaugeRef(id: 1, name: "Test Gauge", siteID: "1234567890", metric: .cfs, country: "US", state: "CA", zone: "1234567890", source: .usgs, favorite: false, primary: false, latitude: 37.7749, longitude: -122.4194, updatedAt: Date(), createdAt: Date()), store: StoreOf<GaugeDetailFeature>(initialState: GaugeDetailFeature.State(1), reducer: {
-        GaugeDetailFeature()
-    }))
+    GaugeLocationTile(
+        GaugeRef(
+            id: 1,
+            name: "Test Gauge",
+            siteID: "1234567890",
+            metric: .cfs,
+            country: "US",
+            state: "CA",
+            zone: "1234567890",
+            source: .usgs,
+            favorite: false,
+            primary: false,
+            latitude: 37.7749,
+            longitude: -122.4194,
+            updatedAt: Date(),
+            createdAt: Date()),
+        store: StoreOf<GaugeDetailFeature>(initialState: GaugeDetailFeature.State(1), reducer: {
+            GaugeDetailFeature()
+        }))
 }
