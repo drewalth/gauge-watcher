@@ -33,8 +33,6 @@ struct GaugeForecastInfoSheet: View {
                     "If you have any feedback or suggestions for improving the forecast feature, please let us know!\n\nFlow forecasting is a GaugeWatcher open source project. If you're interested in improving this functionality or seeing how it works, please visit [the project on GitHub](https://github.com/drewalth/gauge-watcher).")
             }
         }
-        
-
     }
 
     // MARK: Private

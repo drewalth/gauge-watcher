@@ -163,7 +163,6 @@ struct GaugeReadingChart: View {
             }
         case .error(let error):
             errorView(error)
-            
         }
     }
 
@@ -316,7 +315,7 @@ struct GaugeReadingChart: View {
         }
         return selectedReading
     }
-    
+
     @ViewBuilder
     private var tooltipArea: some View {
         if let selected = getSelectedReading() {

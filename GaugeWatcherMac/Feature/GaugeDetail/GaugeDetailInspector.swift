@@ -77,7 +77,7 @@ struct GaugeDetailInspector: View {
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.borderless)
-            
+
             Button {
                 store.send(.toggleFavorite)
             } label: {
@@ -90,18 +90,18 @@ struct GaugeDetailInspector: View {
             .opacity(isLoaded ? 1 : 0.4)
             .accessibleButton(label: gauge?.favorite == true ? "Remove from favorites" : "Add to favorites")
 
-//            Button {
-//                store.send(.openSource)
-//            } label: {
-//                Image(systemName: "safari")
-//                    .foregroundStyle(.secondary)
-//            }
-//            .buttonStyle(.borderless)
-//            .help("Open gauge source website")
-//            .disabled(gauge?.sourceURL == nil)
-//            .opacity(gauge?.sourceURL != nil ? 1 : 0.4)
-//            .accessibleButton(label: "Open gauge source website")
-            
+            //            Button {
+            //                store.send(.openSource)
+            //            } label: {
+            //                Image(systemName: "safari")
+            //                    .foregroundStyle(.secondary)
+            //            }
+            //            .buttonStyle(.borderless)
+            //            .help("Open gauge source website")
+            //            .disabled(gauge?.sourceURL == nil)
+            //            .opacity(gauge?.sourceURL != nil ? 1 : 0.4)
+            //            .accessibleButton(label: "Open gauge source website")
+
             GaugeSourceButton(store: store)
 
             Button {

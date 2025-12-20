@@ -22,7 +22,7 @@ struct GaugeDetailInfoSheet: View {
 
     var body: some View {
         InfoSheetView(title: "Help", onClose: onClose) {
-            if let gauge = gauge {
+            if let gauge {
                 Section {
                     Text(gauge.name).font(.callout)
                 }

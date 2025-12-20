@@ -13,50 +13,50 @@ import SwiftUI
 /// This view is intended to be used as a modal sheet.
 public struct InfoSheetView<Content: View>: View {
 
-    // MARK: Lifecycle
+  // MARK: Lifecycle
 
-    public init(title: String, onClose: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
-        self.content = content()
-        self.title = title
-        self.onClose = onClose
-    }
+  public init(title: String, onClose: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
+    self.content = content()
+    self.title = title
+    self.onClose = onClose
+  }
 
-    // MARK: Public
+  // MARK: Public
 
-    public var body: some View {
-        NavigationStack {
-            List {
-                content
-            }.navigationTitle(title)
-            .listStyle(.inset)
-            .presentationDetents([.medium])
-            #if os(macOS)
-            .frame(minWidth: 400)
-            .frame(minHeight: 400)
-            .padding(20)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close", systemImage: "xmark") {
-                        onClose()
-                    }
-                }
+  public var body: some View {
+    NavigationStack {
+      List {
+        content
+      }.navigationTitle(title)
+        .listStyle(.inset)
+        .presentationDetents([.medium])
+      #if os(macOS)
+        .frame(minWidth: 400)
+        .frame(minHeight: 400)
+        .padding(20)
+        .toolbar {
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Close", systemImage: "xmark") {
+              onClose()
             }
-            #endif
+          }
         }
+      #endif
     }
+  }
 
-    // MARK: Internal
+  // MARK: Internal
 
-    let onClose: () -> Void
-    let content: Content
-    let title: String
+  let onClose: () -> Void
+  let content: Content
+  let title: String
 
 }
 
 #Preview {
-    InfoSheetView(title: "Test title") {
-        print("Content")
-    } content: {
-        Text("Test")
-    }
+  InfoSheetView(title: "Test title") {
+    print("Content")
+  } content: {
+    Text("Test")
+  }
 }

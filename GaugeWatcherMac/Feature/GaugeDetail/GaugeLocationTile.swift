@@ -5,20 +5,20 @@
 //  Created by Andrew Althage on 12/20/25.
 //
 
-import SwiftUI
-import SharedFeatures
 import MapKit
+import SharedFeatures
+import SwiftUI
 
 struct GaugeLocationTile: View {
-    
-    @State private var mapCameraPosition: MapCameraPosition = .automatic
 
-    private let gauge: GaugeRef
-    
+    // MARK: Lifecycle
+
     init(_ gauge: GaugeRef) {
         self.gauge = gauge
     }
-    
+
+    // MARK: Internal
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Label("Location", systemImage: "map.fill")
@@ -63,4 +63,11 @@ struct GaugeLocationTile: View {
                 .fill(.ultraThinMaterial)
         }
     }
+
+    // MARK: Private
+
+    @State private var mapCameraPosition: MapCameraPosition = .automatic
+
+    private let gauge: GaugeRef
+
 }

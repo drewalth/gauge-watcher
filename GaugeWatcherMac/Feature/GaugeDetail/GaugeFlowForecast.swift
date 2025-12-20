@@ -24,11 +24,11 @@ struct GaugeFlowForecast: View {
         VStack(alignment: .leading, spacing: 0) {
             headerView
             mainContent
-        }.onChange(of: isExpanded, { prev, next in
+        }.onChange(of: isExpanded) { prev, next in
             if !prev, next {
                 store.send(.getForecast)
             }
-        })
+        }
         .sheet(isPresented: $store.forecastInfoSheetPresented.sending(\.setForecastInfoSheetPresented)) {
             GaugeForecastInfoSheet(onClose: {
                 store.send(.setForecastInfoSheetPresented(false))
@@ -97,12 +97,11 @@ struct GaugeFlowForecast: View {
                         .strokeBorder(.white.opacity(0.1), lineWidth: 1)
                 }
                 .frame(width: 14, height: 14)
-                
+
                 Button {
                     withAnimation(.snappy(duration: 0.3)) {
                         AppTelemetry.captureEvent("GaugeFlowForecast - Toggle Visibility")
                         isExpanded.toggle()
-                        
                     }
                 } label: {
                     Image(systemName: "chevron.down")
@@ -153,7 +152,7 @@ struct GaugeFlowForecast: View {
                 case .loaded(let isAvailable), .reloading(let isAvailable):
                     if isAvailable {
                         forecastContent
-                            
+
                     } else {
                         unavailableView
                     }

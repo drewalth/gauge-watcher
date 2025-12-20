@@ -4,19 +4,20 @@
 //
 //  Created by Andrew Althage on 12/20/25.
 //
+import AccessibleUI
 import SharedFeatures
 import SwiftUI
-import AccessibleUI
 
 struct GaugeSourceButton: View {
-    
-    private let hasGaugeSourceURL: Bool
-    private let store: StoreOf<GaugeDetailFeature>
-    
+
+    // MARK: Lifecycle
+
     init(store: StoreOf<GaugeDetailFeature>) {
         self.store = store
-        self.hasGaugeSourceURL = store.gauge.unwrap()?.sourceURL != nil
+        hasGaugeSourceURL = store.gauge.unwrap()?.sourceURL != nil
     }
+
+    // MARK: Internal
 
     var body: some View {
         Button {
@@ -31,4 +32,10 @@ struct GaugeSourceButton: View {
         .opacity(hasGaugeSourceURL ? 1 : 0.5)
         .accessibleButton(label: "Open gauge source website")
     }
+
+    // MARK: Private
+
+    private let hasGaugeSourceURL: Bool
+    private let store: StoreOf<GaugeDetailFeature>
+
 }

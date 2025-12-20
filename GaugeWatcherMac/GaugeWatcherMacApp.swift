@@ -5,10 +5,10 @@
 //  Created by Andrew Althage on 12/16/25.
 //
 
+import AppDatabase
 import AppTelemetry
 import SharedFeatures
 import SwiftUI
-import AppDatabase
 
 // MARK: - GaugeWatcherMacApp
 

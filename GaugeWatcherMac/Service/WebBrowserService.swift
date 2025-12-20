@@ -20,4 +20,3 @@ extension SharedFeatures.WebBrowserService: DependencyKey {
         }
     }
 }
-
