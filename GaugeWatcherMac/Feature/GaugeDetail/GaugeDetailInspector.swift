@@ -70,13 +70,7 @@ struct GaugeDetailInspector: View {
             let gauge = store.gauge.unwrap()
             let isLoaded = gauge != nil
 
-            Button {
-                store.send(.setInfoSheetPresented(true))
-            } label: {
-                Image(systemName: "info.circle")
-                    .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.borderless)
+           
 
             Button {
                 store.send(.toggleFavorite)
@@ -90,17 +84,13 @@ struct GaugeDetailInspector: View {
             .opacity(isLoaded ? 1 : 0.4)
             .accessibleButton(label: gauge?.favorite == true ? "Remove from favorites" : "Add to favorites")
 
-            //            Button {
-            //                store.send(.openSource)
-            //            } label: {
-            //                Image(systemName: "safari")
-            //                    .foregroundStyle(.secondary)
-            //            }
-            //            .buttonStyle(.borderless)
-            //            .help("Open gauge source website")
-            //            .disabled(gauge?.sourceURL == nil)
-            //            .opacity(gauge?.sourceURL != nil ? 1 : 0.4)
-            //            .accessibleButton(label: "Open gauge source website")
+            Button {
+                store.send(.setInfoSheetPresented(true))
+            } label: {
+                Image(systemName: "info.circle")
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.borderless)
 
             GaugeSourceButton(store: store)
 
@@ -285,10 +275,11 @@ struct GaugeDetailInspector: View {
                 GaugeFlowForecast(store: store)
 
                 // Location map (compact)
-                GaugeLocationTile(gauge)
+                GaugeLocationTile(gauge, store: store)
 
                 // Info details
                 infoSection(gauge)
+                    .modifier(OutlinedTileModifier())
 
                 Spacer(minLength: 24)
             }
@@ -377,6 +368,9 @@ struct GaugeDetailInspector: View {
         VStack(alignment: .leading, spacing: 10) {
             Label("Details", systemImage: "info.circle.fill")
                 .font(.headline)
+                .onTapGesture {
+                    store.send(.setInfoSheetPresented(true))
+                }
 
             VStack(spacing: 12) {
                 infoRow(label: "Zone", value: gauge.zone.isEmpty ? "—" : gauge.zone)

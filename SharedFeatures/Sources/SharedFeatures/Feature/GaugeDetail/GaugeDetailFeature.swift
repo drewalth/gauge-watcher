@@ -9,6 +9,7 @@ import GaugeDrivers
 import GaugeService
 import GaugeSources
 import Loadable
+import MapKit
 import os
 
 // MARK: - GaugeDetailFeature
@@ -62,6 +63,7 @@ public struct GaugeDetailFeature: Sendable {
         case setForecastAvailable(Loadable<Bool>)
         case setForecastInfoSheetPresented(Bool)
         case setInfoSheetPresented(Bool)
+        case openInMaps
     }
 
     // MARK: - CancelID
@@ -77,6 +79,26 @@ public struct GaugeDetailFeature: Sendable {
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .openInMaps:
+                guard let gauge = state.gauge.unwrap() else {
+                    return .none
+                }
+                let coordinate = gauge.location.coordinate
+                let regionDistance: CLLocationDistance = 1000
+                let regionSpan = MKCoordinateRegion(
+                    center: coordinate,
+                    latitudinalMeters: regionDistance,
+                    longitudinalMeters: regionDistance)
+                let options = [
+                    MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+                    MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+                ]
+
+                let placemark = MKPlacemark(coordinate: coordinate)
+                let mapItem = MKMapItem(placemark: placemark)
+                mapItem.name = gauge.name
+                mapItem.openInMaps(launchOptions: options)
+                return .none
             case .setInfoSheetPresented(let newValue):
                 state.infoSheetPresented = newValue
                 return .none

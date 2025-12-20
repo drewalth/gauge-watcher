@@ -34,20 +34,7 @@ struct GaugeFlowForecast: View {
                 store.send(.setForecastInfoSheetPresented(false))
             })
         }
-        .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [.white.opacity(0.2), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing),
-                    lineWidth: 1)
-        }
+        .modifier(OutlinedTileModifier())
     }
 
     // MARK: Private
@@ -57,7 +44,7 @@ struct GaugeFlowForecast: View {
 
     @ViewBuilder
     private var headerView: some View {
-        HStack {
+        HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
                     Image(systemName: "chart.line.uptrend.xyaxis")
@@ -76,7 +63,7 @@ struct GaugeFlowForecast: View {
 
             Spacer()
 
-            HStack(spacing: 8) {
+            HStack(spacing: 16) {
                 Button {
                     withAnimation(.snappy(duration: 0.3)) {
                         AppTelemetry.captureEvent("GaugeFlowForecast - Info")
@@ -453,5 +440,25 @@ struct GaugeFlowForecast: View {
         }
 
         selectedDataPoint = closest
+    }
+}
+
+struct OutlinedTileModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .background {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [.white.opacity(0.2), .clear],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing),
+                        lineWidth: 1)
+            }
     }
 }

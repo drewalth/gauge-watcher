@@ -25,21 +25,7 @@ struct GaugeReadingChart: View {
         VStack(alignment: .leading, spacing: 0) {
             chartHeader
             chartContent
-        }
-        .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [.white.opacity(0.2), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing),
-                    lineWidth: 1)
-        }
+        }.modifier(OutlinedTileModifier())
     }
 
     // MARK: Private

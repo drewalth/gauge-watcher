@@ -8,15 +8,17 @@
 import MapKit
 import SharedFeatures
 import SwiftUI
+import AccessibleUI
 
 struct GaugeLocationTile: View {
 
     // MARK: Lifecycle
 
-    init(_ gauge: GaugeRef) {
+    init(_ gauge: GaugeRef, store: StoreOf<GaugeDetailFeature>) {
         self.gauge = gauge
+        self._store = Bindable(store)
     }
-
+    @Bindable var store: StoreOf<GaugeDetailFeature>
     // MARK: Internal
 
     var body: some View {
@@ -24,7 +26,7 @@ struct GaugeLocationTile: View {
             Label("Location", systemImage: "map.fill")
                 .font(.headline)
 
-            Map(position: $mapCameraPosition) {
+            Map(position: $mapCameraPosition, interactionModes: []) {
                 Marker(gauge.name, coordinate: CLLocationCoordinate2D(
                         latitude: gauge.latitude,
                         longitude: gauge.longitude))
@@ -40,7 +42,7 @@ struct GaugeLocationTile: View {
                                                 span: MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15)))
             }
 
-            HStack(spacing: 16) {
+            HStack(alignment: .bottom, spacing: 16) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Lat")
                         .font(.caption2)
@@ -55,13 +57,20 @@ struct GaugeLocationTile: View {
                     Text(gauge.longitude, format: .number.precision(.fractionLength(4)))
                         .font(.system(.caption, design: .monospaced))
                 }
+                Spacer()
+                // open in maps button
+                Button {
+                    store.send(.openInMaps)
+                } label: {
+                    Label("Open in Maps", systemImage: "map.fill")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(14)
-        .background {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.ultraThinMaterial)
-        }
+        .modifier(OutlinedTileModifier())
     }
 
     // MARK: Private
@@ -70,4 +79,11 @@ struct GaugeLocationTile: View {
 
     private let gauge: GaugeRef
 
+}
+
+
+#Preview("With Gauge") {
+    GaugeLocationTile(GaugeRef(id: 1, name: "Test Gauge", siteID: "1234567890", metric: .cfs, country: "US", state: "CA", zone: "1234567890", source: .usgs, favorite: false, primary: false, latitude: 37.7749, longitude: -122.4194, updatedAt: Date(), createdAt: Date()), store: StoreOf<GaugeDetailFeature>(initialState: GaugeDetailFeature.State(1), reducer: {
+        GaugeDetailFeature()
+    }))
 }
