@@ -82,9 +82,11 @@ struct FlowForecastTool: Tool {
     private let gaugeService: GaugeService
 
     private func calculateTrend(from forecasts: [ForecastDataPoint]) -> String {
-        guard forecasts.count >= 2,
-              let first = forecasts.first,
-              let last = forecasts.last else {
+        guard
+            forecasts.count >= 2,
+            let first = forecasts.first,
+            let last = forecasts.last
+        else {
             return "stable"
         }
 
@@ -101,4 +103,3 @@ struct FlowForecastTool: Tool {
     }
 
 }
-

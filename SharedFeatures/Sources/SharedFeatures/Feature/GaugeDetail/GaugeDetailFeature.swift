@@ -3,6 +3,7 @@
 //  SharedFeatures
 //
 
+import Cocoa
 import ComposableArchitecture
 import Foundation
 import GaugeDrivers
@@ -12,7 +13,6 @@ import Loadable
 import MapKit
 import os
 import StoreKit
-import Cocoa
 
 // MARK: - GaugeDetailFeature
 
@@ -78,8 +78,6 @@ public struct GaugeDetailFeature: Sendable {
         case loadReadings
         case load
     }
-    
-    @Dependency(\.continuousClock) var clock
 
     // MARK: - Body
 
@@ -96,12 +94,10 @@ public struct GaugeDetailFeature: Sendable {
                     do {
                         try await clock.sleep(for: .seconds(1))
                         AppReviewManager.promptForReview()
-                      
+
                     } catch {
                         logger.error("\(error.localizedDescription)")
                     }
-                    
-                    
                 }
             case .setAppReviewRequested(let newValue):
                 state.$appReviewRequested.withLock { $0 = newValue }
@@ -306,6 +302,10 @@ public struct GaugeDetailFeature: Sendable {
         }
     }
 
+    // MARK: Internal
+
+    @Dependency(\.continuousClock) var clock
+
     // MARK: Private
 
     private let logger = Logger(category: "GaugeDetailFeature")
@@ -333,6 +333,8 @@ extension GaugeDetailFeature {
         }
     }
 }
+
+// MARK: - AppReviewManager
 
 class AppReviewManager {
     static func promptForReview() {

@@ -136,6 +136,8 @@ extension GaugeTrendTool {
         case falling
         case fallingRapidly
 
+        // MARK: Internal
+
         var label: String {
             switch self {
             case .risingRapidly: "Rising rapidly"
@@ -161,4 +163,3 @@ extension GaugeTrendTool {
         }
     }
 }
-
