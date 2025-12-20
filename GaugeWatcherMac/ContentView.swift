@@ -56,7 +56,7 @@ struct ContentView: View {
                     gaugeSearchStore: gaugeSearchStore,
                     favoritesStore: store.scope(state: \.favorites, action: \.favorites),
                     mode: $inspectorMode)
-                    .navigationSplitViewColumnWidth(min: 300, ideal: 350, max: 400)
+                    .navigationSplitViewColumnWidth(min: 350, ideal: 400, max: 500)
                     .toolbar(removing: .sidebarToggle)
             } detail: {
                 GaugeSearchView(store: gaugeSearchStore)

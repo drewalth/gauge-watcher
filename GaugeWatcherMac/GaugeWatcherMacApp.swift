@@ -5,9 +5,9 @@
 //  Created by Andrew Althage on 12/16/25.
 //
 
+import AppTelemetry
 import SharedFeatures
 import SwiftUI
-import AppTelemetry
 
 // MARK: - GaugeWatcherMacApp
 
@@ -31,22 +31,45 @@ struct GaugeWatcherMacApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(store: Store(initialState: AppFeature.State()) {
-                AppFeature()
-            })
-            .fontDesign(.monospaced)
-            .frame(
-                minWidth: 800,
-                maxWidth: .infinity,
-                minHeight: 600,
-                maxHeight: .infinity)
-            .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+            RootView()
+                .fontDesign(.monospaced)
+                .frame(
+                    minWidth: 800,
+                    maxWidth: .infinity,
+                    minHeight: 600,
+                    maxHeight: .infinity)
+                .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         }
         .windowResizability(.contentMinSize)
         .windowToolbarStyle(.unified)
 
         Settings {
             SettingsView()
+        }
+    }
+}
+
+// MARK: - RootView
+
+private struct RootView: View {
+
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
+    var body: some View {
+        if hasCompletedOnboarding {
+            ContentView(store: Store(initialState: AppFeature.State()) {
+                AppFeature()
+            })
+        } else {
+            OnboardingView(
+                store: Store(initialState: OnboardingReducer.State()) {
+                    OnboardingReducer()
+                },
+                onComplete: {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        hasCompletedOnboarding = true
+                    }
+                })
         }
     }
 }
