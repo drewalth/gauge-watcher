@@ -41,6 +41,7 @@ struct GaugeWatcherMacApp: App {
                 .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         }
         .windowResizability(.contentMinSize)
+        .defaultSize(width: 1281, height: 833)  // 2562×1666 @2x. best for app store screenshot
         .windowToolbarStyle(.unified)
 
         Settings {

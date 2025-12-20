@@ -395,8 +395,22 @@ final class GaugeAnnotationView: MKAnnotationView {
 
     override func mouseEntered(with event: NSEvent) {
         super.mouseEntered(with: event)
-        showPopover()
-        applyHoverEffect(true)
+
+        // Verify the mouse is actually over this view and not obscured by another view (e.g., sidebar)
+        guard let window else { return }
+        let windowLocation = event.locationInWindow
+        guard let hitView = window.contentView?.hitTest(windowLocation) else { return }
+
+        // Only show popover if hit test returns this view or one of its subviews
+        var view: NSView? = hitView
+        while let current = view {
+            if current === self {
+                showPopover()
+                applyHoverEffect(true)
+                return
+            }
+            view = current.superview
+        }
     }
 
     override func mouseExited(with event: NSEvent) {
