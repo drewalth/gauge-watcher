@@ -34,7 +34,9 @@ public struct GaugeBot: GaugeBotProtocol {
         let tools: [any Tool] = [
             LoadFavoriteGaugesTool(gaugeService: service),
             SearchGaugesTool(gaugeService: service),
-            GaugeReadingsTool(gaugeService: service)
+            GaugeReadingsTool(gaugeService: service),
+            FlowForecastTool(gaugeService: service),
+            GaugeTrendTool(gaugeService: service)
         ]
 
         let instructions = """
@@ -43,14 +45,16 @@ public struct GaugeBot: GaugeBotProtocol {
       WORKFLOW for answering questions about river conditions or flow rates:
       1. Use searchGauges to find gauges by river name, location, or site name
       2. From the search results, get the Gauge ID (integer)
-      3. Use gaugeReadings with that Gauge ID to get actual flow/level data
+      3. Use gaugeReadings, gaugeTrend, or flowForecast with that Gauge ID
 
       TOOLS:
       - searchGauges: Find gauges by name (e.g., "Potomac", "Little Falls") or state code
-      - gaugeReadings: Get actual readings using a Gauge ID from search results
+      - gaugeReadings: Get current/recent readings using a Gauge ID
+      - gaugeTrend: Analyze if flow is rising, falling, or stable over recent hours
+      - flowForecast: Get ML-predicted flow forecast (USGS gauges only)
       - loadFavoriteGauges: List the user's saved/favorite gauges
 
-      Be concise. When reporting readings, include the value, metric, and timestamp.
+      Be concise. For trend questions, use gaugeTrend. For forecasts, use flowForecast.
       If no gauges match, suggest broadening the search terms.
       """
 
