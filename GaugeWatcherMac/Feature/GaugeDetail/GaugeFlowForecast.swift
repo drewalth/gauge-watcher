@@ -10,6 +10,7 @@ import GaugeService
 import Loadable
 import SharedFeatures
 import SwiftUI
+import AppTelemetry
 
 // MARK: - GaugeFlowForecast
 
@@ -67,7 +68,8 @@ struct GaugeFlowForecast: View {
             Spacer()
 
             Button {
-                withAnimation(.spring(duration: 0.3)) {
+                withAnimation(.snappy(duration: 0.3)) {
+                    AppTelemetry.captureEvent("GaugeFlowForecast - Toggle Visibility")
                     isExpanded.toggle()
                 }
             } label: {

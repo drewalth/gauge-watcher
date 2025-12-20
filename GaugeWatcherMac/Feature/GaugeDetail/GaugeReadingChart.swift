@@ -317,7 +317,6 @@ struct GaugeReadingChart: View {
                 .frame(height: chartHeight)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 16)
-                .animation(.easeInOut(duration: 0.2), value: selectedReading?.id)
             }
 
             // Tooltip area - fixed height regardless of content
