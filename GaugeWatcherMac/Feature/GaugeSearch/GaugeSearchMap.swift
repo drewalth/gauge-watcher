@@ -600,6 +600,8 @@ final class GaugeClusterAnnotationView: MKAnnotationView {
     private let containerView = NSView()
     private let countLabel = NSTextField(labelWithString: "")
     private var backgroundLayer: CAGradientLayer?
+    private var glowLayer: CALayer?
+    private var outerRingLayer: CALayer?
 
     private func setupView() {
         wantsLayer = true
@@ -633,12 +635,13 @@ final class GaugeClusterAnnotationView: MKAnnotationView {
         backgroundLayer = bgLayer
 
         // Inner glow
-        let glowLayer = CALayer()
-        glowLayer.frame = bounds.insetBy(dx: 3, dy: 3)
-        glowLayer.cornerRadius = (size - 6) / 2
-        glowLayer.borderColor = NSColor.white.withAlphaComponent(0.2).cgColor
-        glowLayer.borderWidth = 1.5
-        containerView.layer?.addSublayer(glowLayer)
+        let glow = CALayer()
+        glow.frame = bounds.insetBy(dx: 3, dy: 3)
+        glow.cornerRadius = (size - 6) / 2
+        glow.borderColor = NSColor.white.withAlphaComponent(0.2).cgColor
+        glow.borderWidth = 1.5
+        containerView.layer?.addSublayer(glow)
+        glowLayer = glow
 
         // Count label
         countLabel.font = NSFont.systemFont(ofSize: 14, weight: .bold)
@@ -657,6 +660,7 @@ final class GaugeClusterAnnotationView: MKAnnotationView {
         outerRing.borderColor = NSColor.white.withAlphaComponent(0.25).cgColor
         outerRing.borderWidth = 2
         containerView.layer?.addSublayer(outerRing)
+        outerRingLayer = outerRing
     }
 
     private func updateCount(_ count: Int) {
@@ -680,18 +684,16 @@ final class GaugeClusterAnnotationView: MKAnnotationView {
         frame = CGRect(x: 0, y: 0, width: size, height: size)
         centerOffset = CGPoint(x: 0, y: -size / 2)
         containerView.frame = bounds
+
+        // Update each layer with its correct geometry
         backgroundLayer?.frame = bounds
         backgroundLayer?.cornerRadius = size / 2
 
-        // Update sublayers
-        containerView.layer?.sublayers?.forEach { layer in
-            if layer !== backgroundLayer {
-                layer.frame = bounds
-                if layer.borderWidth > 0 {
-                    layer.cornerRadius = size / 2
-                }
-            }
-        }
+        glowLayer?.frame = bounds.insetBy(dx: 3, dy: 3)
+        glowLayer?.cornerRadius = (size - 6) / 2
+
+        outerRingLayer?.frame = bounds
+        outerRingLayer?.cornerRadius = size / 2
 
         countLabel.font = NSFont.systemFont(ofSize: fontSize, weight: .bold)
         countLabel.sizeToFit()
