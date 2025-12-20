@@ -3,7 +3,9 @@
 //  SharedFeatures
 //
 
+#if canImport(Cocoa)
 import Cocoa
+#endif
 import ComposableArchitecture
 import Foundation
 import GaugeDrivers

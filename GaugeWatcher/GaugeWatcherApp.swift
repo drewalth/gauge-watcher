@@ -18,14 +18,8 @@ struct GaugeWatcherApp: SwiftUI.App {
 
     init() {
         AppTelemetry.initialize()
+        AppDatabase.initialize()
         loadRocketSimConnect()
-        do {
-            try prepareDependencies {
-                try $0.bootstrapDatabase()
-            }
-        } catch {
-            fatalError("Failed to prepare database")
-        }
     }
 
     // MARK: Internal
