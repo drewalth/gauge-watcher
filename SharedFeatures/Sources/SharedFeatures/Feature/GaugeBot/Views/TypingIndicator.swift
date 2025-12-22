@@ -9,6 +9,7 @@ import SwiftUI
 
 // MARK: - TypingIndicator
 
+/// Animated three-dot indicator shown while waiting for a response.
 struct TypingIndicator: View {
 
     // MARK: Internal

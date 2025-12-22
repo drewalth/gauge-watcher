@@ -9,6 +9,7 @@ import SwiftUI
 
 // MARK: - ErrorStateView
 
+/// Displays error information when the chat encounters a failure.
 struct ErrorStateView: View {
     let error: Error
 

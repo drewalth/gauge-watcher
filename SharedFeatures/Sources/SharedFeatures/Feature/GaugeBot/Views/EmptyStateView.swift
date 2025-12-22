@@ -9,6 +9,7 @@ import SwiftUI
 
 // MARK: - EmptyStateView
 
+/// Welcome placeholder shown when no messages exist.
 struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: 16) {

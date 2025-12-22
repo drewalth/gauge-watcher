@@ -12,10 +12,14 @@ import SQLiteData
 
 // MARK: - AppDatabase
 
+/// Entry point for database initialization. Call `initialize()` at app launch.
 public enum AppDatabase {
 
   // MARK: Public
 
+  /// Bootstraps the SQLite database, runs migrations, and prepares dependencies.
+  ///
+  /// Terminates the app if database initialization fails.
   public static func initialize() {
     do {
       try prepareDependencies {
@@ -33,8 +37,11 @@ public enum AppDatabase {
 private let logger = Logger(subsystem: "com.drewalth.GaugeWatcher", category: "AppDatabase")
 
 extension Database {
+  /// Seeds the database with gauge data from bundled JSON sources.
+  ///
+  /// Filters out items without a valid `source` before inserting.
+  /// Uses sequential IDs starting at 1.
   public func seedGaugeData(_ gaugeData: [GaugeSourceItem]) throws {
-    // Filter out any items without a source before seeding
     let validGauges = gaugeData.filter { $0.source != nil }
 
     try seed {
@@ -58,6 +65,10 @@ extension Database {
 }
 
 extension DependencyValues {
+  /// Configures the SQLite database, enables query tracing in DEBUG, and runs migrations.
+  ///
+  /// In DEBUG builds, `eraseDatabaseOnSchemaChange` is enabled for faster iteration.
+  /// Query profiling is logged to console (previews) or OSLog (device).
   public mutating func bootstrapDatabase() throws {
     @Dependency(\.context) var context
     let database = try SQLiteData.defaultDatabase()
@@ -82,6 +93,10 @@ extension DependencyValues {
     #if DEBUG
     migrator.eraseDatabaseOnSchemaChange = true
     #endif
+
+    // MARK: - Migrations
+
+    // v0.1.0: Initial schema with gauges and readings tables
     migrator.registerMigration("create-tables-0.1.0") { db in
       try #sql("""
         CREATE TABLE "gauges"(
@@ -123,7 +138,7 @@ extension DependencyValues {
       .execute(db)
     }
 
-    // Add spatial indexes for efficient bounding box queries
+    // v0.2.0: Spatial indexes for map bounding box queries
     migrator.registerMigration("add-spatial-indexes-0.2.0") { db in
       try #sql("""
         CREATE INDEX IF NOT EXISTS "idx_gauges_latitude" ON "gauges"("latitude")
@@ -142,22 +157,19 @@ extension DependencyValues {
       .execute(db)
     }
 
-    // Add indexes and constraints for gaugeReadings performance
+    // v0.3.0: Indexes for readings queries and unique constraint for deduplication
     migrator.registerMigration("add-gauge-readings-indexes-0.3.0") { db in
-      // Index for query performance (reading by gaugeID)
       try #sql("""
         CREATE INDEX IF NOT EXISTS "idx_gaugeReadings_gaugeID" ON "gaugeReadings"("gaugeID")
         """)
       .execute(db)
 
-      // Composite index for duplicate detection and time-range queries
       try #sql("""
         CREATE INDEX IF NOT EXISTS "idx_gaugeReadings_gaugeID_createdAt" ON "gaugeReadings"("gaugeID", "createdAt")
         """)
       .execute(db)
 
-      // Unique constraint to prevent duplicate readings
-      // This allows INSERT OR IGNORE to work efficiently
+      // Enables INSERT OR IGNORE for duplicate prevention
       try #sql("""
         CREATE UNIQUE INDEX IF NOT EXISTS "idx_gaugeReadings_unique"
         ON "gaugeReadings"("gaugeID", "siteID", "createdAt", "metric")
@@ -165,7 +177,7 @@ extension DependencyValues {
       .execute(db)
     }
 
-    // Add `status` column to `gauges` table
+    // v0.4.0: Status column for gauge operational state
     migrator.registerMigration("add-status-column-0.4.0") { db in
       try #sql("""
         ALTER TABLE "gauges" ADD COLUMN "status" TEXT NOT NULL DEFAULT "unknown"
@@ -173,7 +185,7 @@ extension DependencyValues {
       .execute(db)
     }
 
-    // Add `status` column to `gaugeReadings` table
+    // v0.5.0: Status column for individual reading state
     migrator.registerMigration("add-status-column-0.5.0") { db in
       try #sql("""
         ALTER TABLE "gaugeReadings" ADD COLUMN "status" TEXT NOT NULL DEFAULT "unknown"

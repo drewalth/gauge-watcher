@@ -10,6 +10,7 @@ import SwiftUI
 
 // MARK: - MessageBubble
 
+/// Chat bubble for user (right-aligned, accent) or assistant (left-aligned, Markdown) messages.
 struct MessageBubble: View {
 
     // MARK: Internal
@@ -43,7 +44,8 @@ struct MessageBubble: View {
 
     // MARK: Private
 
-    /// Custom CSS that adapts to system appearance and matches SwiftUI styling
+    /// CSS for assistant Markdown bubbles. Uses `color-scheme: light dark` and
+    /// Apple system semantic colors for automatic appearance adaptation.
     private static let assistantCSS = """
     :root {
       color-scheme: light dark;

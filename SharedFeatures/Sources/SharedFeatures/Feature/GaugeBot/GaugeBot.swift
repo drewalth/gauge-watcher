@@ -3,21 +3,25 @@ import FoundationModels
 
 // MARK: - GaugeBotProtocol
 
+/// Interface for an LLM-powered gauge assistant.
 public protocol GaugeBotProtocol: Sendable {
     func query(text: String) async throws -> String
 }
 
 // MARK: - GaugeBot
 
-/// An LLM-powered assistant for answering questions about river conditions or flow rates.
-/// This struct is responsible for querying the LLM and returning the response.
-/// See: https://developer.apple.com/documentation/FoundationModels
-/// TODO: Add a streaming API to the GaugeBotProtocol and GaugeBot struct to support streaming responses.
-/// See: https://developer.apple.com/documentation/foundationmodels/languagemodelsession/streamresponse(to:options:)
+/// An LLM-powered assistant for answering questions about river conditions and flow rates.
+///
+/// Uses Foundation Models with tool-augmented responses. The LLM orchestrates these tools:
+/// - `searchGauges` → `gaugeReadings` / `gaugeTrend` / `flowForecast`
+/// - `syncGauge` when local data is missing
+///
+/// Each `query` call creates a new session; state is not retained between calls.
 public struct GaugeBot: GaugeBotProtocol {
 
     // MARK: Lifecycle
 
+    /// - Parameter gaugeService: Optional service for testing. Falls back to TCA dependencies.
     public init(gaugeService: GaugeService? = nil) {
         self.gaugeService = gaugeService
     }

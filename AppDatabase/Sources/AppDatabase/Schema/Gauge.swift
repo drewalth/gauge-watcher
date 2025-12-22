@@ -11,6 +11,7 @@ import SQLiteData
 
 // MARK: - GaugeProtocol
 
+/// Common interface for gauge types, enabling testing with mock implementations.
 public protocol GaugeProtocol {
   var id: Int { get }
   var name: String { get }
@@ -29,19 +30,28 @@ public protocol GaugeProtocol {
 }
 
 // MARK: - Gauge
-// TODO: Check out https://www.gaia-gis.it/fossil/libspatialite/index. Maybe we can improve searching on the map by nearest current location rather than state boundaries.
+
+/// A water monitoring station with location, source provider, and user preferences.
+///
+/// The `siteID` uniquely identifies the gauge within its `source` provider (e.g., USGS site number).
+/// Coordinates enable map display and spatial queries.
+// TODO: Consider libspatialite for nearest-location queries instead of state boundaries.
 @Table
 public struct Gauge: Identifiable, Hashable, GaugeProtocol, Sendable {
   public static let databaseTableName = "gauges"
   public let id: Int
   public var name: String
+  /// Provider-specific identifier (e.g., USGS site number).
   public var siteID: String
   public var metric: GaugeSourceMetric
   public var country: String
   public var state: String
   public var zone: String
+  /// Data provider (USGS, Environment Canada, etc.).
   public var source: GaugeSource
+  /// User has marked this gauge as a favorite.
   public var favorite = false
+  /// User's primary gauge, shown prominently in the UI.
   public var primary = false
   public var latitude: Double
   public var longitude: Double

@@ -10,6 +10,7 @@ import SwiftUI
 
 // MARK: - ChatAvailableView
 
+/// The main chat interface with message list and input field.
 struct ChatAvailableView: View {
 
     // MARK: Internal

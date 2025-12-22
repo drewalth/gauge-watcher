@@ -75,6 +75,14 @@ You are a **Senior iOS Engineer**, specializing in SwiftUI, The Composable Archi
 - Always use native macOS best practices for the UI and UX.
 - Animations should be smooth and natural to the macOS platform.
 
+## Documentation instructions
+
+Follow Apple's API documentation guidelines. Focus on why the code is written a certain way, and not how it works.
+
+- One-sentence summary - that's often all you need
+- Parameters/Returns - only when names aren't self-explanatory
+- Discussion - only for genuinely non-obvious behavior
+
 ## PR instructions
 
 - If installed, make sure SwiftLint returns no warnings or errors before committing.

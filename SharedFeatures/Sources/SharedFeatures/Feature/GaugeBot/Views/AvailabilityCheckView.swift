@@ -11,6 +11,7 @@ import SwiftUI
 
 // MARK: - AvailabilityCheckView
 
+/// Gates content behind Foundation Models availability, showing appropriate error states.
 struct AvailabilityCheckView<Content: View>: View {
 
     // MARK: Lifecycle
@@ -79,6 +80,7 @@ struct AvailabilityCheckView<Content: View>: View {
 
 // MARK: - UnavailableViewContent
 
+/// Standardized layout for unavailability messages with icon, title, and optional help link.
 struct UnavailableViewContent: View {
     let title: String
     let message: String
