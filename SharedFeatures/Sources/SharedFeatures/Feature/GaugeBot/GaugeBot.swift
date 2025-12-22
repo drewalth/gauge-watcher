@@ -9,6 +9,11 @@ public protocol GaugeBotProtocol: Sendable {
 
 // MARK: - GaugeBot
 
+/// An LLM-powered assistant for answering questions about river conditions or flow rates.
+/// This struct is responsible for querying the LLM and returning the response.
+/// See: https://developer.apple.com/documentation/FoundationModels
+/// TODO: Add a streaming API to the GaugeBotProtocol and GaugeBot struct to support streaming responses.
+/// See: https://developer.apple.com/documentation/foundationmodels/languagemodelsession/streamresponse(to:options:)
 public struct GaugeBot: GaugeBotProtocol {
 
     // MARK: Lifecycle
@@ -36,7 +41,8 @@ public struct GaugeBot: GaugeBotProtocol {
             SearchGaugesTool(gaugeService: service),
             GaugeReadingsTool(gaugeService: service),
             FlowForecastTool(gaugeService: service),
-            GaugeTrendTool(gaugeService: service)
+            GaugeTrendTool(gaugeService: service),
+            GaugeSyncTool(gaugeService: service)
         ]
 
         let instructions = """
@@ -46,6 +52,7 @@ public struct GaugeBot: GaugeBotProtocol {
       1. Use searchGauges to find gauges by river name, location, or site name
       2. From the search results, get the Gauge ID (integer)
       3. Use gaugeReadings, gaugeTrend, or flowForecast with that Gauge ID
+      4. If gaugeReadings or gaugeTrend returns "no readings", use syncGauge first, then retry
 
       TOOLS:
       - searchGauges: Find gauges by name (e.g., "Potomac", "Little Falls") or state code
@@ -53,9 +60,14 @@ public struct GaugeBot: GaugeBotProtocol {
       - gaugeTrend: Analyze if flow is rising, falling, or stable over recent hours
       - flowForecast: Get ML-predicted flow forecast (USGS gauges only)
       - loadFavoriteGauges: List the user's saved/favorite gauges
+      - syncGauge: Fetch fresh readings from remote source when local data is missing
 
       Be concise. For trend questions, use gaugeTrend. For forecasts, use flowForecast.
       If no gauges match, suggest broadening the search terms.
+
+      ALWAYS respond in a respectful way.
+      If someone asks you to generate content that might be sensitive,
+      you MUST decline with 'Sorry, I can't do that.'
       """
 
         let session = LanguageModelSession(
