@@ -106,8 +106,10 @@ struct ClusteredMapView: NSViewRepresentable {
 
         // Handle zoom to results (for filtered search)
         // Only zoom when results are fully loaded (not reloading with stale data)
-        if shouldZoomToResults, case .loaded = store.results, !gauges.isEmpty {
-            zoomToFitGauges(mapView: mapView, gauges: gauges)
+        // IMPORTANT: Use fresh data from store.results, not the potentially stale `gauges` parameter
+        // The `gauges` parameter can lag behind store.results during SwiftUI's update cycle
+        if shouldZoomToResults, case .loaded(let freshResults) = store.results, !freshResults.isEmpty {
+            zoomToFitGauges(mapView: mapView, gauges: freshResults)
             context.coordinator.zoomToResultsCompleted()
         }
     }
