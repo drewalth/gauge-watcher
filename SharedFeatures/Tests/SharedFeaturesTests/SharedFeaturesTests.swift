@@ -31,7 +31,8 @@ func makeGaugeRef(
     latitude: Double = 47.6062,
     longitude: Double = -122.3321,
     updatedAt: Date = Date(),
-    createdAt: Date = Date())
+    createdAt: Date = Date(),
+    status: GaugeOperationalStatus = .active)
 -> GaugeRef {
     GaugeRef(
         id: id,
@@ -47,7 +48,8 @@ func makeGaugeRef(
         latitude: latitude,
         longitude: longitude,
         updatedAt: updatedAt,
-        createdAt: createdAt)
+        createdAt: createdAt,
+        status: status)
 }
 
 /// Creates a test GaugeReadingRef with sensible defaults

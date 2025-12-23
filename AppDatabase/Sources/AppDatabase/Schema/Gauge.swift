@@ -27,7 +27,25 @@ public protocol GaugeProtocol {
   var longitude: Double { get }
   var updatedAt: Date { get }
   var createdAt: Date { get }
+  /// Operational status of the gauge (active, inactive, unknown).
+  var status: GaugeOperationalStatus { get }
 }
+
+// MARK: - GaugeOperationalStatus
+
+/// Represents the operational status of a gauge station.
+public enum GaugeOperationalStatus: String, CaseIterable, Sendable, Codable {
+  /// Gauge is actively reporting data.
+  case active
+  /// Gauge is not currently reporting data (offline, decommissioned, seasonal).
+  case inactive
+  /// Status has not been determined yet.
+  case unknown
+}
+
+// MARK: - GaugeOperationalStatus + QueryBindable
+
+extension GaugeOperationalStatus: QueryBindable { }
 
 // MARK: - Gauge
 
@@ -57,4 +75,6 @@ public struct Gauge: Identifiable, Hashable, GaugeProtocol, Sendable {
   public var longitude: Double
   public var updatedAt: Date
   public var createdAt: Date
+  /// Operational status indicating if the gauge is actively reporting data.
+  public var status: GaugeOperationalStatus = .unknown
 }

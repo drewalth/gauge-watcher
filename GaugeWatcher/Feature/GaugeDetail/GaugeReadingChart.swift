@@ -7,6 +7,7 @@
 
 import AccessibleUI
 import Algorithms
+import AppDatabase
 import Charts
 import ComposableArchitecture
 import GaugeDrivers
@@ -34,16 +35,27 @@ struct GaugeReadingChart: View {
 
     @ViewBuilder
     private func content() -> some View {
-        switch store.readings {
-        case .initial, .loading:
-            VStack(alignment: .center) {
-                ContinuousSpinner()
-            }.frame(maxWidth: .infinity, alignment: .center)
-        case .loaded, .reloading:
-            chartContent()
-        case .error(let error):
-            Text(error.localizedDescription)
+        if let gauge = store.gauge.unwrap(), gauge.status == .inactive {
+            inactiveView
+        } else {
+            switch store.readings {
+            case .initial, .loading:
+                VStack(alignment: .center) {
+                    ContinuousSpinner()
+                }.frame(maxWidth: .infinity, alignment: .center)
+            case .loaded, .reloading:
+                chartContent()
+            case .error(let error):
+                Text(error.localizedDescription)
+            }
         }
+    }
+
+    private var inactiveView: some View {
+        ContentUnavailableView(
+            "No Historical Data",
+            systemImage: "chart.line.downtrend.xyaxis",
+            description: Text("This gauge is inactive and has no recent readings to display."))
     }
 
     @ViewBuilder

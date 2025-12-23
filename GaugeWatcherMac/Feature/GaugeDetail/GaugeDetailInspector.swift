@@ -316,11 +316,13 @@ struct GaugeDetailInspector: View {
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
 
             // Location info
             VStack(alignment: .leading, spacing: 4) {
                 Label(gauge.state, systemImage: "mappin.circle.fill")
                 Label("Site \(gauge.siteID)", systemImage: "number.circle.fill")
+                    .textSelection(.enabled)
             }
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -345,20 +347,35 @@ struct GaugeDetailInspector: View {
 
     @ViewBuilder
     private func statusBadge(_ gauge: GaugeRef) -> some View {
-        let isStale = gauge.isStale()
+        let statusInfo = gaugeStatusInfo(gauge)
 
-        Label(
-            isStale ? "Stale" : "Current",
-            systemImage: isStale ? "clock.badge.exclamationmark" : "checkmark.circle")
+        Label(statusInfo.label, systemImage: statusInfo.icon)
             .font(.caption2)
             .fontWeight(.semibold)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background {
                 Capsule()
-                    .fill(isStale ? .orange.opacity(0.15) : .green.opacity(0.15))
+                    .fill(statusInfo.color.opacity(0.15))
             }
-            .foregroundStyle(isStale ? .orange : .green)
+            .foregroundStyle(statusInfo.color)
+    }
+
+    private func gaugeStatusInfo(_ gauge: GaugeRef) -> (label: String, icon: String, color: Color) {
+        switch gauge.status {
+        case .inactive:
+            return ("Inactive", "exclamationmark.triangle.fill", .red)
+        case .unknown:
+            let isStale = gauge.isStale()
+            return isStale
+                ? ("Stale", "clock.badge.exclamationmark", .orange)
+                : ("Current", "checkmark.circle", .green)
+        case .active:
+            let isStale = gauge.isStale()
+            return isStale
+                ? ("Stale", "clock.badge.exclamationmark", .orange)
+                : ("Current", "checkmark.circle", .green)
+        }
     }
 
     @ViewBuilder

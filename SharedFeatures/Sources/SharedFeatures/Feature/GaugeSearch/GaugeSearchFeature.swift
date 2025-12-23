@@ -276,9 +276,11 @@ public struct GaugeSearchFeature: Sendable {
                 // Update query options to use bounding box instead of state/country
                 var newOptions = state.queryOptions
                 newOptions.boundingBox = boundingBox
-                // Clear state/country filters when using bounding box
+                // Clear all manual filters when using viewport-based bounding box queries
                 newOptions.state = nil
                 newOptions.country = nil
+                newOptions.name = nil
+                newOptions.source = nil
 
                 state.queryOptions = newOptions
                 return .send(.query)

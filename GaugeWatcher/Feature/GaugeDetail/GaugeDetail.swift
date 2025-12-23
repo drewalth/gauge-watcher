@@ -5,6 +5,7 @@
 //  Created by Andrew Althage on 11/23/25.
 //
 
+import AppDatabase
 import AppTelemetry
 import ComposableArchitecture
 import GaugeSources
@@ -63,10 +64,10 @@ struct GaugeDetail: View {
 
     @ViewBuilder
     private func gaugeContent(_ gauge: GaugeRef) -> some View {
-        HStack {
+        VStack(alignment: .leading, spacing: 8) {
             Text(gauge.name)
                 .font(.headline)
-            Spacer()
+            statusBadge(gauge)
         }
         GaugeReadingChart(store: store)
         LatestGaugeReading(store: store)
@@ -76,6 +77,39 @@ struct GaugeDetail: View {
                 store.send(.openSource)
             }.buttonStyle(.borderedProminent)
             .listRowBackground(Color.clear)
+        }
+    }
+
+    @ViewBuilder
+    private func statusBadge(_ gauge: GaugeRef) -> some View {
+        let statusInfo = gaugeStatusInfo(gauge)
+
+        Label(statusInfo.label, systemImage: statusInfo.icon)
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background {
+                Capsule()
+                    .fill(statusInfo.color.opacity(0.15))
+            }
+            .foregroundStyle(statusInfo.color)
+    }
+
+    private func gaugeStatusInfo(_ gauge: GaugeRef) -> (label: String, icon: String, color: Color) {
+        switch gauge.status {
+        case .inactive:
+            return ("Inactive", "exclamationmark.triangle.fill", .red)
+        case .unknown:
+            let isStale = gauge.isStale()
+            return isStale
+                ? ("Stale", "clock.badge.exclamationmark", .orange)
+                : ("Current", "checkmark.circle", .green)
+        case .active:
+            let isStale = gauge.isStale()
+            return isStale
+                ? ("Stale", "clock.badge.exclamationmark", .orange)
+                : ("Current", "checkmark.circle", .green)
         }
     }
 }

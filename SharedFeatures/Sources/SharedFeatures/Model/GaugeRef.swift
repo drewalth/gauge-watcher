@@ -30,7 +30,8 @@ public nonisolated struct GaugeRef: Identifiable, Hashable, GaugeProtocol, Senda
         latitude: Double,
         longitude: Double,
         updatedAt: Date,
-        createdAt: Date) {
+        createdAt: Date,
+        status: GaugeOperationalStatus = .unknown) {
         self.id = id
         self.name = name
         self.siteID = siteID
@@ -45,6 +46,7 @@ public nonisolated struct GaugeRef: Identifiable, Hashable, GaugeProtocol, Senda
         self.longitude = longitude
         self.updatedAt = updatedAt
         self.createdAt = createdAt
+        self.status = status
     }
 
     // MARK: Public
@@ -63,6 +65,8 @@ public nonisolated struct GaugeRef: Identifiable, Hashable, GaugeProtocol, Senda
     public let longitude: Double
     public let updatedAt: Date
     public let createdAt: Date
+    /// Operational status indicating if the gauge is actively reporting data.
+    public let status: GaugeOperationalStatus
 
 }
 
@@ -84,7 +88,8 @@ extension Gauge {
             latitude: latitude,
             longitude: longitude,
             updatedAt: updatedAt,
-            createdAt: createdAt)
+            createdAt: createdAt,
+            status: status)
     }
 }
 

@@ -6,6 +6,7 @@
 //
 
 import Algorithms
+import AppDatabase
 import Charts
 import GaugeDrivers
 import GaugeSources
@@ -138,14 +139,18 @@ struct GaugeReadingChart: View {
         switch store.gauge {
         case .initial, .loading:
             loadingView
-        case .loaded, .reloading:
-            switch store.readings {
-            case .initial, .loading:
-                loadingView
-            case .loaded, .reloading:
-                chartView
-            case .error(let error):
-                errorView(error)
+        case .loaded(let gauge), .reloading(let gauge):
+            if gauge.status == .inactive {
+                inactiveGaugeView
+            } else {
+                switch store.readings {
+                case .initial, .loading:
+                    loadingView
+                case .loaded, .reloading:
+                    chartView
+                case .error(let error):
+                    errorView(error)
+                }
             }
         case .error(let error):
             errorView(error)
@@ -342,6 +347,23 @@ struct GaugeReadingChart: View {
                 "Error Loading Data",
                 systemImage: "exclamationmark.triangle",
                 description: Text(error.localizedDescription))
+                .frame(height: chartHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
+
+            Color.clear
+                .frame(height: tooltipHeight)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 12)
+        }
+    }
+
+    private var inactiveGaugeView: some View {
+        VStack(spacing: 0) {
+            ContentUnavailableView(
+                "No Historical Data",
+                systemImage: "chart.line.downtrend.xyaxis",
+                description: Text("This gauge is inactive and has no recent readings to display."))
                 .frame(height: chartHeight)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 16)
