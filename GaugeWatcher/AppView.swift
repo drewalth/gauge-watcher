@@ -6,6 +6,7 @@
 //
 
 import AppTelemetry
+import ComposableArchitecture
 import SharedFeatures
 import SwiftUI
 import UIComponents
@@ -21,13 +22,36 @@ struct AppView: View {
     var body: some View {
         Group {
             content()
-        }.trackView("AppView")
+        }
+        .trackView("AppView")
         .task {
             store.send(.initialize)
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView(
+                store: onboardingStore,
+                onComplete: {
+                    hasCompletedOnboarding = true
+                    showOnboarding = false
+                })
+        }
+        .onAppear {
+            if !hasCompletedOnboarding {
+                showOnboarding = true
+            }
         }
     }
 
     // MARK: Private
+
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var showOnboarding = false
+
+    private var onboardingStore: StoreOf<OnboardingReducer> {
+        Store(initialState: OnboardingReducer.State()) {
+            OnboardingReducer()
+        }
+    }
 
     @ViewBuilder
     private func content() -> some View {

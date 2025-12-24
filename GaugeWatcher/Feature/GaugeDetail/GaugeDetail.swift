@@ -22,9 +22,11 @@ struct GaugeDetail: View {
     @Bindable var store: StoreOf<GaugeDetailFeature>
 
     var body: some View {
-        List {
+        ScrollView {
             content()
-        }.gaugeWatcherList()
+                .padding(20)
+        }
+        .background(Color(.systemGroupedBackground))
         .trackView("GaugeDetail", {
             if let gauge = store.gauge.unwrap() {
                 return [
@@ -39,7 +41,8 @@ struct GaugeDetail: View {
         }())
         .task {
             store.send(.load)
-        }.toolbar {
+        }
+        .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 GaugeFavoriteToggle(onPress: {
                     store.send(.toggleFavorite)
@@ -54,7 +57,7 @@ struct GaugeDetail: View {
     private func content() -> some View {
         switch store.gauge {
         case .initial, .loading:
-            ContinuousSpinner()
+            skeletonContent
         case .loaded(let gauge), .reloading(let gauge):
             gaugeContent(gauge)
         case .error(let error):
@@ -63,53 +66,111 @@ struct GaugeDetail: View {
     }
 
     @ViewBuilder
-    private func gaugeContent(_ gauge: GaugeRef) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(gauge.name)
-                .font(.headline)
-            statusBadge(gauge)
-        }
-        GaugeReadingChart(store: store)
-        LatestGaugeReading(store: store)
-        GaugeFlowForecast(store: store)
-        if gauge.sourceURL != nil {
-            Button("Source") {
-                store.send(.openSource)
-            }.buttonStyle(.borderedProminent)
-            .listRowBackground(Color.clear)
+    private var skeletonContent: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            // Header skeleton
+            GaugeDetailHeader(gauge: nil)
+
+            // Latest reading card skeleton
+            LatestGaugeReadingCard(
+                reading: nil,
+                readings: [],
+                isLoading: true,
+                gaugeStatus: .active)
+
+            // Chart skeleton
+            GaugeReadingChartView(
+                readings: [],
+                selectedTimePeriod: store.selectedTimePeriod,
+                selectedMetric: store.selectedMetric,
+                isLoading: true,
+                isInactive: false,
+                onTimePeriodChange: { store.send(.setSelectedTimePeriod($0)) },
+                onMetricChange: { store.send(.setSelectedMetric($0)) },
+                availableMetrics: store.availableMetrics ?? [])
+
+            Spacer(minLength: 24)
         }
     }
 
     @ViewBuilder
-    private func statusBadge(_ gauge: GaugeRef) -> some View {
-        let statusInfo = gaugeStatusInfo(gauge)
+    private func gaugeContent(_ gauge: GaugeRef) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            // Hero header with badges
+            GaugeDetailHeader(gauge: gauge)
 
-        Label(statusInfo.label, systemImage: statusInfo.icon)
-            .font(.caption2)
-            .fontWeight(.semibold)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background {
-                Capsule()
-                    .fill(statusInfo.color.opacity(0.15))
+            // Latest reading card
+            LatestGaugeReadingCard(
+                reading: store.readings.unwrap()?.first,
+                readings: store.readings.unwrap() ?? [],
+                isLoading: store.readings.isLoading(),
+                gaugeStatus: gauge.status)
+
+            // Flow chart
+            GaugeReadingChartView(
+                readings: store.readings.unwrap() ?? [],
+                selectedTimePeriod: store.selectedTimePeriod,
+                selectedMetric: store.selectedMetric,
+                isLoading: store.readings.isLoading(),
+                isInactive: gauge.status == .inactive,
+                onTimePeriodChange: { store.send(.setSelectedTimePeriod($0)) },
+                onMetricChange: { store.send(.setSelectedMetric($0)) },
+                availableMetrics: store.availableMetrics ?? [])
+
+            // Forecast
+            GaugeFlowForecastView(
+                forecast: store.forecast,
+                forecastAvailable: store.forecastAvailable,
+                onLoadForecast: { store.send(.getForecast) },
+                onInfoTapped: { store.send(.setForecastInfoSheetPresented(true)) })
+
+            // Info section
+            infoSection(gauge)
+
+            // Source button
+            if gauge.sourceURL != nil {
+                Button {
+                    store.send(.openSource)
+                } label: {
+                    HStack {
+                        Spacer()
+                        Label("View Source", systemImage: "safari")
+                        Spacer()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
             }
-            .foregroundStyle(statusInfo.color)
+
+            Spacer(minLength: 24)
+        }
     }
 
-    private func gaugeStatusInfo(_ gauge: GaugeRef) -> (label: String, icon: String, color: Color) {
-        switch gauge.status {
-        case .inactive:
-            return ("Inactive", "exclamationmark.triangle.fill", .red)
-        case .unknown:
-            let isStale = gauge.isStale()
-            return isStale
-                ? ("Stale", "clock.badge.exclamationmark", .orange)
-                : ("Current", "checkmark.circle", .green)
-        case .active:
-            let isStale = gauge.isStale()
-            return isStale
-                ? ("Stale", "clock.badge.exclamationmark", .orange)
-                : ("Current", "checkmark.circle", .green)
+    @ViewBuilder
+    private func infoSection(_ gauge: GaugeRef) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Details", systemImage: "info.circle.fill")
+                .font(.headline)
+
+            VStack(spacing: 12) {
+                infoRow(label: "Zone", value: gauge.zone.isEmpty ? "—" : gauge.zone)
+                infoRow(label: "Primary Metric", value: gauge.metric.rawValue)
+                infoRow(label: "Last Updated", value: gauge.updatedAt.formatted(date: .abbreviated, time: .shortened))
+            }
+        }
+        .padding(14)
+        .outlinedTile()
+    }
+
+    @ViewBuilder
+    private func infoRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .font(.callout)
+                .fontWeight(.medium)
         }
     }
 }

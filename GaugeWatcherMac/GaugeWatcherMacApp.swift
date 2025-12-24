@@ -59,8 +59,8 @@ private struct RootView: View {
             })
         } else {
             OnboardingView(
-                store: Store(initialState: OnboardingReducer.State()) {
-                    OnboardingReducer()
+                store: Store(initialState: SharedFeatures.OnboardingReducer.State()) {
+                    SharedFeatures.OnboardingReducer()
                 },
                 onComplete: {
                     withAnimation(.easeInOut(duration: 0.3)) {

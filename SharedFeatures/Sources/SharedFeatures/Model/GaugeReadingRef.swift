@@ -29,6 +29,16 @@ public nonisolated struct GaugeReadingRef: Identifiable, Hashable, GaugeReadingP
         self.createdAt = createdAt
     }
 
+    /// Convenience initializer for previews and testing.
+    public init(id: Int, value: Double, metric: String, createdAt: Date, gaugeID: Int) {
+        self.id = id
+        self.siteID = ""
+        self.value = value
+        self.metric = metric
+        self.gaugeID = gaugeID
+        self.createdAt = createdAt
+    }
+
     // MARK: Public
 
     public let id: Int

@@ -21,31 +21,37 @@ struct GaugeSearch: View {
 
     var body: some View {
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            Group {
-                content()
-                    .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            Button("Chat", systemImage: "bubble.left.and.bubble.right") {
-                                gaugeBotStore.send(.setChatPresented(true))
-                            }
+            content()
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("Chat", systemImage: "bubble.left.and.bubble.right") {
+                            gaugeBotStore.send(.setChatPresented(true))
                         }
                     }
-                    .sheet(isPresented: $gaugeBotStore.chatIsPresented.sending(\.setChatPresented)) {
-                        NavigationStack {
-                            GaugeBotChatView(store: gaugeBotStore)
-                                .presentationDetents([.medium, .large], selection: $selectedDetent)
-                                .navigationTitle("GaugeBot")
-                                .toolbar {
-                                    ToolbarItem(placement: .cancellationAction) {
-                                        Button("Close", systemImage: "xmark") {
-                                            gaugeBotStore.send(.setChatPresented(false))
-                                        }
+                }
+                .sheet(isPresented: $gaugeBotStore.chatIsPresented.sending(\.setChatPresented)) {
+                    NavigationStack {
+                        GaugeBotChatView(store: gaugeBotStore)
+                            .presentationDetents([.medium, .large], selection: $chatDetent)
+                            .navigationTitle("GaugeBot")
+                            .toolbar {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button("Close", systemImage: "xmark") {
+                                        gaugeBotStore.send(.setChatPresented(false))
                                     }
                                 }
-                        }
+                            }
                     }
-            }
-            .trackView("GaugeSearch")
+                }
+                .sheet(isPresented: $gaugeListSheetPresented) {
+                    GaugeListSheet(store: store, selectedDetent: $gaugeListDetent)
+                        .presentationDetents([.height(56), .medium, .large], selection: $gaugeListDetent)
+                        .presentationDragIndicator(.hidden)
+                        .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                        .presentationCornerRadius(20)
+                        .interactiveDismissDisabled()
+                }
+                .trackView("GaugeSearch")
         } destination: { store in
             switch store.case {
             case .gaugeDetail(let gaugeDetailStore):
@@ -56,7 +62,9 @@ struct GaugeSearch: View {
 
     // MARK: Private
 
-    @State private var selectedDetent: PresentationDetent = .large
+    @State private var chatDetent: PresentationDetent = .large
+    @State private var gaugeListDetent: PresentationDetent = .height(56)
+    @State private var gaugeListSheetPresented = true
 
     @ViewBuilder
     private func content() -> some View {

@@ -1,8 +1,8 @@
 //
 //  OnboardingView.swift
-//  GaugeWatcherMac
+//  GaugeWatcher
 //
-//  Created by Andrew Althage on 12/19/25.
+//  Welcome screen with location permission request for iOS.
 //
 
 import CoreLocation
@@ -11,18 +11,23 @@ import SwiftUI
 
 // MARK: - OnboardingView
 
+/// iOS onboarding view with welcome message and location permission request.
 struct OnboardingView: View {
 
     // MARK: Internal
 
-    @Bindable var store: StoreOf<SharedFeatures.OnboardingReducer>
+    @Bindable var store: StoreOf<OnboardingReducer>
 
     var onComplete: () -> Void
 
     var body: some View {
-        ZStack {
-            backgroundImage
-            cardContent
+        GeometryReader { geometry in
+            ZStack {
+                backgroundGradient
+                cardContent
+                    .frame(width: min(geometry.size.width - 48, 400))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .ignoresSafeArea()
         .task {
@@ -33,21 +38,15 @@ struct OnboardingView: View {
     // MARK: Private
 
     @ViewBuilder
-    private var backgroundImage: some View {
-        Image("Hero")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .overlay {
-                LinearGradient(
-                    colors: [
-                        .black.opacity(0.7),
-                        .black.opacity(0.4),
-                        .black.opacity(0.7)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom)
-            }
+    private var backgroundGradient: some View {
+        LinearGradient(
+            colors: [
+                Color.accentColor.opacity(0.8),
+                Color.accentColor.opacity(0.4),
+                Color(.systemBackground)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing)
     }
 
     @ViewBuilder
@@ -57,7 +56,6 @@ struct OnboardingView: View {
                 store: store,
                 onComplete: onComplete)
         }
-        .frame(maxWidth: 480)
     }
 }
 
@@ -67,7 +65,7 @@ private struct OnboardingCard: View {
 
     // MARK: Internal
 
-    @Bindable var store: StoreOf<SharedFeatures.OnboardingReducer>
+    @Bindable var store: StoreOf<OnboardingReducer>
 
     var onComplete: () -> Void
 
@@ -77,11 +75,15 @@ private struct OnboardingCard: View {
             locationSection
             actionSection
         }
-        .padding(40)
+        .padding(32)
         .background {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.3), radius: 20, y: 10)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.regularMaterial)
+                .shadow(color: .black.opacity(0.15), radius: 30, y: 15)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .strokeBorder(.white.opacity(0.2), lineWidth: 1)
         }
     }
 
@@ -93,7 +95,7 @@ private struct OnboardingCard: View {
 
     private var locationIcon: String {
         switch store.authorizationStatus {
-        case .authorized, .authorizedAlways:
+        case .authorizedWhenInUse, .authorizedAlways:
             "location.fill"
         case .denied, .restricted:
             "location.slash"
@@ -106,7 +108,7 @@ private struct OnboardingCard: View {
 
     private var locationIconColor: Color {
         switch store.authorizationStatus {
-        case .authorized, .authorizedAlways:
+        case .authorizedWhenInUse, .authorizedAlways:
             .green
         case .denied, .restricted:
             .orange
@@ -119,10 +121,10 @@ private struct OnboardingCard: View {
 
     private var locationDescription: String {
         switch store.authorizationStatus {
-        case .authorized, .authorizedAlways:
+        case .authorizedWhenInUse, .authorizedAlways:
             "Location enabled. We'll show you nearby gauges."
         case .denied, .restricted:
-            "Location access denied. You can enable it later in System Settings."
+            "Location access denied. You can enable it later in Settings."
         case .notDetermined:
             "Allow access to find gauges near you."
         @unknown default:
@@ -132,16 +134,20 @@ private struct OnboardingCard: View {
 
     @ViewBuilder
     private var headerSection: some View {
-        VStack(spacing: 16) {
-            Image("Logo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
-                .opacity(0.5)
+        VStack(spacing: 20) {
+            // App icon
+            Image(systemName: "drop.fill")
+                .font(.system(size: 64))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [.accentColor, .accentColor.opacity(0.6)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing))
+                .shadow(color: .accentColor.opacity(0.3), radius: 10, y: 5)
 
             VStack(spacing: 8) {
                 Text("Welcome to GaugeWatcher")
-                    .font(.title)
+                    .font(.title2)
                     .bold()
 
                 Text("Monitor river gauges and water levels across North America and New Zealand")
@@ -161,7 +167,7 @@ private struct OnboardingCard: View {
                 Image(systemName: locationIcon)
                     .font(.title2)
                     .foregroundStyle(locationIconColor)
-                    .frame(width: 44, height: 44)
+                    .frame(width: 48, height: 48)
                     .background {
                         Circle()
                             .fill(locationIconColor.opacity(0.15))
@@ -174,13 +180,14 @@ private struct OnboardingCard: View {
                     Text(locationDescription)
                         .font(.callout)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-                Spacer()
+                Spacer(minLength: 0)
             }
             .padding()
             .background {
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(.background.opacity(0.5))
             }
         }
@@ -196,15 +203,16 @@ private struct OnboardingCard: View {
                     HStack {
                         if store.isRequestingPermission {
                             ProgressView()
-                                .controlSize(.small)
+                                .tint(.white)
                         } else {
                             Text("Enable Location")
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 44)
+                    .frame(height: 50)
                 }
                 .buttonStyle(.borderedProminent)
+                .controlSize(.large)
                 .disabled(store.isRequestingPermission)
 
                 Button("Skip for Now") {
@@ -219,37 +227,38 @@ private struct OnboardingCard: View {
                 } label: {
                     Text("Get Started")
                         .frame(maxWidth: .infinity)
-                        .frame(height: 44)
+                        .frame(height: 50)
                 }
                 .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
         }
     }
-
 }
 
 // MARK: - Preview
 
 #Preview("Not Determined") {
     OnboardingView(
-        store: Store(initialState: SharedFeatures.OnboardingReducer.State()) {
-            SharedFeatures.OnboardingReducer()
+        store: Store(initialState: OnboardingReducer.State()) {
+            OnboardingReducer()
         },
         onComplete: { })
 }
 
 #Preview("Authorized") {
     OnboardingView(
-        store: Store(initialState: SharedFeatures.OnboardingReducer.State(authorizationStatus: .authorized)) {
-            SharedFeatures.OnboardingReducer()
+        store: Store(initialState: OnboardingReducer.State(authorizationStatus: .authorizedWhenInUse)) {
+            OnboardingReducer()
         },
         onComplete: { })
 }
 
 #Preview("Denied") {
     OnboardingView(
-        store: Store(initialState: SharedFeatures.OnboardingReducer.State(authorizationStatus: .denied)) {
-            SharedFeatures.OnboardingReducer()
+        store: Store(initialState: OnboardingReducer.State(authorizationStatus: .denied)) {
+            OnboardingReducer()
         },
         onComplete: { })
 }
+
