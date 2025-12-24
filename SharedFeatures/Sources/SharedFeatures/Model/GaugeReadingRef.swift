@@ -32,7 +32,7 @@ public nonisolated struct GaugeReadingRef: Identifiable, Hashable, GaugeReadingP
     /// Convenience initializer for previews and testing.
     public init(id: Int, value: Double, metric: String, createdAt: Date, gaugeID: Int) {
         self.id = id
-        self.siteID = ""
+        siteID = ""
         self.value = value
         self.metric = metric
         self.gaugeID = gaugeID

@@ -14,7 +14,7 @@ public struct ShimmerModifier: ViewModifier {
 
     // MARK: Lifecycle
 
-    public init() {}
+    public init() { }
 
     // MARK: Public
 
@@ -132,4 +132,3 @@ public struct SkeletonPill: View {
     private let height: CGFloat
 
 }
-

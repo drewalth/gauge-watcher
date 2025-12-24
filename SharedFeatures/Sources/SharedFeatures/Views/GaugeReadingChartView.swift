@@ -27,8 +27,7 @@ public struct GaugeReadingChartView: View {
         isInactive: Bool,
         onTimePeriodChange: @escaping (TimePeriod.PredefinedPeriod) -> Void,
         onMetricChange: @escaping (GaugeSourceMetric) -> Void,
-        availableMetrics: [GaugeSourceMetric])
-    {
+        availableMetrics: [GaugeSourceMetric]) {
         self.readings = readings
         self.selectedTimePeriod = selectedTimePeriod
         self.selectedMetric = selectedMetric
@@ -51,6 +50,8 @@ public struct GaugeReadingChartView: View {
 
     // MARK: Private
 
+    @State private var selectedReading: GaugeReadingRef?
+
     private let readings: [GaugeReadingRef]
     private let selectedTimePeriod: TimePeriod.PredefinedPeriod
     private let selectedMetric: GaugeSourceMetric?
@@ -62,8 +63,6 @@ public struct GaugeReadingChartView: View {
 
     private let chartHeight: CGFloat = 250
     private let tooltipHeight: CGFloat = 64
-
-    @State private var selectedReading: GaugeReadingRef?
 
     private var areaGradient: LinearGradient {
         LinearGradient(
@@ -88,7 +87,7 @@ public struct GaugeReadingChartView: View {
 
         let filtered = readings.filter {
             isInTimePeriod(reading: $0, timePeriod: selectedTimePeriod) &&
-            $0.metric.uppercased() == metric.rawValue
+                $0.metric.uppercased() == metric.rawValue
         }
 
         if selectedTimePeriod == .last24Hours {
@@ -337,19 +336,19 @@ public struct GaugeReadingChartView: View {
                 }
                 #else
                 .chartOverlay { proxy in
-                    GeometryReader { geometry in
-                        Rectangle()
-                            .fill(.clear)
-                            .contentShape(.rect)
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { value in
-                                        updateSelectedReading(at: value.location, proxy: proxy, geometry: geometry)
-                                    }
-                                    .onEnded { _ in
-                                        selectedReading = nil
-                                    })
-                    }
+                GeometryReader { geometry in
+                Rectangle()
+                .fill(.clear)
+                .contentShape(.rect)
+                .gesture(
+                DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                updateSelectedReading(at: value.location, proxy: proxy, geometry: geometry)
+                }
+                .onEnded { _ in
+                selectedReading = nil
+                })
+                }
                 }
                 #endif
                 .chartBackground { _ in
@@ -368,13 +367,6 @@ public struct GaugeReadingChartView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 12)
         }
-    }
-
-    private func getDisplayReading() -> GaugeReadingRef? {
-        if filteredReadings.count == 1 {
-            return filteredReadings.first
-        }
-        return selectedReading
     }
 
     @ViewBuilder
@@ -472,6 +464,13 @@ public struct GaugeReadingChartView: View {
         .transition(.opacity.combined(with: .scale(scale: 0.95)))
     }
 
+    private func getDisplayReading() -> GaugeReadingRef? {
+        if filteredReadings.count == 1 {
+            return filteredReadings.first
+        }
+        return selectedReading
+    }
+
     private func formatFlowValue(_ value: Double) -> String {
         if value >= 10000 {
             return (value / 1000).formatted(.number.precision(.fractionLength(0))) + "k"
@@ -531,4 +530,3 @@ public struct GaugeReadingChartView: View {
         .frame(height: 400)
         .padding()
 }
-

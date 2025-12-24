@@ -361,23 +361,6 @@ struct GaugeDetailInspector: View {
             .foregroundStyle(statusInfo.color)
     }
 
-    private func gaugeStatusInfo(_ gauge: GaugeRef) -> (label: String, icon: String, color: Color) {
-        switch gauge.status {
-        case .inactive:
-            return ("Inactive", "exclamationmark.triangle.fill", .red)
-        case .unknown:
-            let isStale = gauge.isStale()
-            return isStale
-                ? ("Stale", "clock.badge.exclamationmark", .orange)
-                : ("Current", "checkmark.circle", .green)
-        case .active:
-            let isStale = gauge.isStale()
-            return isStale
-                ? ("Stale", "clock.badge.exclamationmark", .orange)
-                : ("Current", "checkmark.circle", .green)
-        }
-    }
-
     @ViewBuilder
     private func infoSection(_ gauge: GaugeRef) -> some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -413,6 +396,23 @@ struct GaugeDetailInspector: View {
         }
     }
 
+    private func gaugeStatusInfo(_ gauge: GaugeRef) -> (label: String, icon: String, color: Color) {
+        switch gauge.status {
+        case .inactive:
+            return ("Inactive", "exclamationmark.triangle.fill", .red)
+        case .unknown:
+            let isStale = gauge.isStale()
+            return isStale
+                ? ("Stale", "clock.badge.exclamationmark", .orange)
+                : ("Current", "checkmark.circle", .green)
+        case .active:
+            let isStale = gauge.isStale()
+            return isStale
+                ? ("Stale", "clock.badge.exclamationmark", .orange)
+                : ("Current", "checkmark.circle", .green)
+        }
+    }
+
     private func sourceStyle(for source: GaugeSource) -> (Color, String) {
         switch source {
         case .usgs:
@@ -426,7 +426,6 @@ struct GaugeDetailInspector: View {
         }
     }
 }
-
 
 // MARK: - Preview
 

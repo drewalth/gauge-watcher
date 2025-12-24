@@ -62,14 +62,13 @@ struct AppView: View {
             UtilityBlockView(kind: .error("Something went wrong"))
         case .loaded(let isInitialized):
             if isInitialized {
-                if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch),
-                   let favoritesStore = store.scope(state: \.favorites, action: \.favorites)
-                {
+                if
+                    let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch),
+                    let favoritesStore = store.scope(state: \.favorites, action: \.favorites) {
                     GaugeSearch(
                         store: gaugeSearchStore,
                         gaugeBotStore: store.scope(state: \.gaugeBot, action: \.gaugeBot),
-                        favoritesStore: favoritesStore
-                    )
+                        favoritesStore: favoritesStore)
                 } else {
                     ContinuousSpinner()
                 }

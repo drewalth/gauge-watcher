@@ -261,4 +261,3 @@ private struct OnboardingCard: View {
         },
         onComplete: { })
 }
-

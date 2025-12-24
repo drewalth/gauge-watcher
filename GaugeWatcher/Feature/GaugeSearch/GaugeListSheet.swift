@@ -67,6 +67,31 @@ struct GaugeListSheet: View {
             set: { store.send(.setSearchMode($0)) })
     }
 
+    private var compactSummaryText: String {
+        if store.searchMode == .filtered {
+            if store.filterOptions.hasActiveFilters {
+                return "Filters active"
+            } else {
+                return "Search by filters"
+            }
+        } else {
+            let count = allGauges.count
+            if count == 0 {
+                return "Pan map to find gauges"
+            } else {
+                return "\(count) gauge\(count == 1 ? "" : "s") in view"
+            }
+        }
+    }
+
+    private var headerTitle: String {
+        if searchText.isEmpty {
+            "\(allGauges.count) gauge\(allGauges.count == 1 ? "" : "s")"
+        } else {
+            "\(displayedGauges.count) of \(allGauges.count)"
+        }
+    }
+
     // MARK: - Compact Header
 
     @ViewBuilder
@@ -93,23 +118,6 @@ struct GaugeListSheet: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
-    }
-
-    private var compactSummaryText: String {
-        if store.searchMode == .filtered {
-            if store.filterOptions.hasActiveFilters {
-                return "Filters active"
-            } else {
-                return "Search by filters"
-            }
-        } else {
-            let count = allGauges.count
-            if count == 0 {
-                return "Pan map to find gauges"
-            } else {
-                return "\(count) gauge\(count == 1 ? "" : "s") in view"
-            }
-        }
     }
 
     @ViewBuilder
@@ -194,14 +202,6 @@ struct GaugeListSheet: View {
         .background {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .fill(Color(.secondarySystemBackground))
-        }
-    }
-
-    private var headerTitle: String {
-        if searchText.isEmpty {
-            "\(allGauges.count) gauge\(allGauges.count == 1 ? "" : "s")"
-        } else {
-            "\(displayedGauges.count) of \(allGauges.count)"
         }
     }
 
@@ -369,4 +369,3 @@ struct GaugeListSheet: View {
             GaugeSearchFeature()
         })
 }
-

@@ -82,4 +82,3 @@ extension GaugeRef {
             status: .active)
     }
 }
-

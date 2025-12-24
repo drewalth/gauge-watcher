@@ -54,18 +54,6 @@ struct GaugeDetail: View {
     // MARK: Private
 
     @ViewBuilder
-    private func content() -> some View {
-        switch store.gauge {
-        case .initial, .loading:
-            skeletonContent
-        case .loaded(let gauge), .reloading(let gauge):
-            gaugeContent(gauge)
-        case .error(let error):
-            UtilityBlockView(kind: .error(error.localizedDescription))
-        }
-    }
-
-    @ViewBuilder
     private var skeletonContent: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Header skeleton
@@ -90,6 +78,18 @@ struct GaugeDetail: View {
                 availableMetrics: store.availableMetrics ?? [])
 
             Spacer(minLength: 24)
+        }
+    }
+
+    @ViewBuilder
+    private func content() -> some View {
+        switch store.gauge {
+        case .initial, .loading:
+            skeletonContent
+        case .loaded(let gauge), .reloading(let gauge):
+            gaugeContent(gauge)
+        case .error(let error):
+            UtilityBlockView(kind: .error(error.localizedDescription))
         }
     }
 

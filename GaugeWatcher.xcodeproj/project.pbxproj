@@ -71,6 +71,7 @@
 		A1502F8B2EF2986700DCCBA0 /* SharedFeatures */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedFeatures; sourceTree = "<group>"; };
 		A1526C762ED51F410063C7FA /* UIAppearance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIAppearance; sourceTree = "<group>"; };
 		A1526CAA2ED5263D0063C7FA /* AppTelemetry */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppTelemetry; sourceTree = "<group>"; };
+		A15669DB2EFB812400F6AB3B /* GaugeWatcherMac.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = GaugeWatcherMac.playground; path = GaugeWatcherMac/GaugeWatcherMac.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A18830222EDE27540033F911 /* UIComponents */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UIComponents; sourceTree = "<group>"; };
 		A19585652EF28BDD0087291B /* AppDatabase */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppDatabase; sourceTree = "<group>"; };
 		A19585662EF28DEE0087291B /* GaugeService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GaugeService; sourceTree = "<group>"; };
@@ -223,6 +224,7 @@
 		A1FB4A1C2E7B5DCD00A3C7FE = {
 			isa = PBXGroup;
 			children = (
+				A15669DB2EFB812400F6AB3B /* GaugeWatcherMac.playground */,
 				A1FFC33B2EF5E9A30058BA56 /* AppIcon.icon */,
 				A11A4BB62EF4E0050046FE9A /* MarkdownView */,
 				A1502F8B2EF2986700DCCBA0 /* SharedFeatures */,

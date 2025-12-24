@@ -84,6 +84,8 @@ public struct GaugeSearchFeature: Sendable {
             searchMode: SearchMode = .viewport,
             filterOptions: FilterOptions = FilterOptions(),
             shouldZoomToResults: Bool = false,
+            shouldFitAllPins: Bool = false,
+            shouldCenterOnSelection: Bool = false,
             inspectorDetail: GaugeDetailFeature.State? = nil) {
             self.results = results
             self.queryOptions = queryOptions
@@ -94,6 +96,8 @@ public struct GaugeSearchFeature: Sendable {
             self.searchMode = searchMode
             self.filterOptions = filterOptions
             self.shouldZoomToResults = shouldZoomToResults
+            self.shouldFitAllPins = shouldFitAllPins
+            self.shouldCenterOnSelection = shouldCenterOnSelection
             self.inspectorDetail = inspectorDetail
         }
 
@@ -119,6 +123,12 @@ public struct GaugeSearchFeature: Sendable {
 
         // Flag to trigger map zoom to fit results after filter query
         public var shouldZoomToResults = false
+
+        // Flag to trigger map zoom to fit all pins
+        public var shouldFitAllPins = false
+
+        // Flag to trigger map center on selected gauge
+        public var shouldCenterOnSelection = false
 
         // Inspector-based detail (macOS) - alternative to path-based navigation (iOS)
         public var inspectorDetail: GaugeDetailFeature.State?
@@ -155,6 +165,12 @@ public struct GaugeSearchFeature: Sendable {
         case applyFilters
         case clearFilters
         case zoomToResultsCompleted
+
+        // Map control actions
+        case fitAllPins
+        case fitAllPinsCompleted
+        case centerOnSelectedGauge
+        case centerOnSelectionCompleted
 
         // Inspector-based detail (macOS)
         case selectGaugeForInspector(Int)
@@ -331,6 +347,26 @@ public struct GaugeSearchFeature: Sendable {
 
             case .zoomToResultsCompleted:
                 state.shouldZoomToResults = false
+                return .none
+
+            // MARK: - Map Control Actions
+
+            case .fitAllPins:
+                guard let results = state.results.unwrap(), !results.isEmpty else { return .none }
+                state.shouldFitAllPins = true
+                return .none
+
+            case .fitAllPinsCompleted:
+                state.shouldFitAllPins = false
+                return .none
+
+            case .centerOnSelectedGauge:
+                guard state.inspectorDetail != nil else { return .none }
+                state.shouldCenterOnSelection = true
+                return .none
+
+            case .centerOnSelectionCompleted:
+                state.shouldCenterOnSelection = false
                 return .none
 
             case .initialize:

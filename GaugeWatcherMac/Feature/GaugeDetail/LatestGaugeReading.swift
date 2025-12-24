@@ -152,6 +152,41 @@ struct LatestGaugeReading: View {
         }
     }
 
+    private var inactiveGaugeView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.title2)
+                    .foregroundStyle(.red)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Gauge Inactive")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    Text("This gauge is not currently reporting data")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+
+            Text(
+                "The gauge may be offline, decommissioned, or experiencing seasonal shutdown. Check back later or view the source for more information.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity)
+        .background {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(.red.opacity(0.08))
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(.red.opacity(0.2), lineWidth: 1)
+        }
+    }
+
     @ViewBuilder
     private func secondaryCard(
         title: String,
@@ -231,40 +266,6 @@ struct LatestGaugeReading: View {
         .background {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(.red.opacity(0.1))
-        }
-    }
-
-    private var inactiveGaugeView: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.title2)
-                    .foregroundStyle(.red)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Gauge Inactive")
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-                    Text("This gauge is not currently reporting data")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-            }
-
-            Text("The gauge may be offline, decommissioned, or experiencing seasonal shutdown. Check back later or view the source for more information.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity)
-        .background {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(.red.opacity(0.08))
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(.red.opacity(0.2), lineWidth: 1)
         }
     }
 

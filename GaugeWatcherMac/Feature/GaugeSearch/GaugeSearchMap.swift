@@ -22,15 +22,52 @@ struct GaugeSearchMap: View {
             store: store,
             userLocation: store.currentLocation,
             shouldRecenter: store.shouldRecenterMap,
-            shouldZoomToResults: store.shouldZoomToResults)
+            shouldZoomToResults: store.shouldZoomToResults,
+            shouldFitAllPins: store.shouldFitAllPins,
+            shouldCenterOnSelection: store.shouldCenterOnSelection,
+            selectedGaugeID: store.inspectorDetail?.gaugeID)
+            .overlay(alignment: .bottomTrailing) {
+                if store.searchMode == .filtered, store.filterOptions.hasActiveFilters {
+                    FilterIndicatorBanner(onClear: { store.send(.clearFilters) })
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                        .padding()
+                }
+            }
+            .animation(.snappy, value: store.filterOptions.hasActiveFilters)
             .toolbar(removing: .title)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    if store.currentLocation != nil {
-                        Button("Center on Location", systemImage: "location.fill") {
-                            store.send(.recenterOnUserLocation)
+                    Menu {
+                        // Fit All Gauges only makes sense in filtered mode where results are user-driven
+                        if store.searchMode == .filtered {
+                            Button {
+                                store.send(.fitAllPins)
+                            } label: {
+                                Label("Fit All Gauges", systemImage: "arrow.up.left.and.arrow.down.right")
+                            }
+                            .disabled(store.results.unwrap()?.isEmpty ?? true)
+
+                            Divider()
                         }
-                        .labelStyle(.iconOnly)
+
+                        Button {
+                            store.send(.recenterOnUserLocation)
+                        } label: {
+                            Label("Reset View", systemImage: "arrow.counterclockwise")
+                        }
+                        .disabled(store.currentLocation == nil)
+
+                        if store.inspectorDetail != nil {
+                            Divider()
+
+                            Button {
+                                store.send(.centerOnSelectedGauge)
+                            } label: {
+                                Label("Center on Selection", systemImage: "scope")
+                            }
+                        }
+                    } label: {
+                        Label("Map Options", systemImage: "map")
                     }
                 }
             }
@@ -48,6 +85,9 @@ struct ClusteredMapView: NSViewRepresentable {
     let userLocation: CurrentLocation?
     let shouldRecenter: Bool
     let shouldZoomToResults: Bool
+    let shouldFitAllPins: Bool
+    let shouldCenterOnSelection: Bool
+    let selectedGaugeID: Int?
 
     func makeNSView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -111,6 +151,24 @@ struct ClusteredMapView: NSViewRepresentable {
         if shouldZoomToResults, case .loaded(let freshResults) = store.results, !freshResults.isEmpty {
             zoomToFitGauges(mapView: mapView, gauges: freshResults)
             context.coordinator.zoomToResultsCompleted()
+        }
+
+        // Handle fit all pins
+        if shouldFitAllPins, case .loaded(let freshResults) = store.results, !freshResults.isEmpty {
+            zoomToFitGauges(mapView: mapView, gauges: freshResults)
+            context.coordinator.fitAllPinsCompleted()
+        }
+
+        // Handle center on selection
+        if shouldCenterOnSelection,
+           let gaugeID = selectedGaugeID,
+           let gauge = gauges.first(where: { $0.id == gaugeID }) {
+            let region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: gauge.latitude, longitude: gauge.longitude),
+                latitudinalMeters: 50_000,
+                longitudinalMeters: 50_000)
+            mapView.setRegion(region, animated: true)
+            context.coordinator.centerOnSelectionCompleted()
         }
     }
 
@@ -189,6 +247,14 @@ extension ClusteredMapView {
 
         func zoomToResultsCompleted() {
             store.send(.zoomToResultsCompleted)
+        }
+
+        func fitAllPinsCompleted() {
+            store.send(.fitAllPinsCompleted)
+        }
+
+        func centerOnSelectionCompleted() {
+            store.send(.centerOnSelectionCompleted)
         }
 
         // MARK: - MKMapViewDelegate

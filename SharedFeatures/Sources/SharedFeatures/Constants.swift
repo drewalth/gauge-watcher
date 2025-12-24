@@ -11,4 +11,3 @@ public enum LocalStorageKey: String {
     case gaugesSeeded = "gauges-seeded"
     case currentLocation = "current-location"
 }
-

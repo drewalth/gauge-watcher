@@ -88,12 +88,12 @@ public struct GaugeListRow: View {
 
     // MARK: Private
 
-    private let gauge: GaugeRef
-    private let onTap: () -> Void
-
     #if os(macOS)
     @State private var isHovering = false
     #endif
+
+    private let gauge: GaugeRef
+    private let onTap: () -> Void
 
 }
 
@@ -167,12 +167,12 @@ public struct FavoriteGaugeListRow: View {
 
     // MARK: Private
 
-    private let gauge: GaugeRef
-    private let onTap: () -> Void
-
     #if os(macOS)
     @State private var isHovering = false
     #endif
+
+    private let gauge: GaugeRef
+    private let onTap: () -> Void
 
 }
 
@@ -186,4 +186,3 @@ public struct FavoriteGaugeListRow: View {
     }
     .padding()
 }
-

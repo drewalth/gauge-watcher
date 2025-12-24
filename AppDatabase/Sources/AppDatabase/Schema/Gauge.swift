@@ -43,7 +43,7 @@ public enum GaugeOperationalStatus: String, CaseIterable, Sendable, Codable {
   case unknown
 }
 
-// MARK: - GaugeOperationalStatus + QueryBindable
+// MARK: QueryBindable
 
 extension GaugeOperationalStatus: QueryBindable { }
 
@@ -57,6 +57,7 @@ extension GaugeOperationalStatus: QueryBindable { }
 @Table
 public struct Gauge: Identifiable, Hashable, GaugeProtocol, Sendable {
   public static let databaseTableName = "gauges"
+
   public let id: Int
   public var name: String
   /// Provider-specific identifier (e.g., USGS site number).

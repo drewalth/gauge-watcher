@@ -33,6 +33,38 @@ public struct GaugeDetailHeader: View {
 
     private let gauge: GaugeRef?
 
+    private var favoriteBadge: some View {
+        Label("Favorite", systemImage: "star.fill")
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background {
+                Capsule()
+                    .fill(.yellow.opacity(0.2))
+            }
+            .foregroundStyle(.yellow)
+    }
+
+    private var skeletonContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // Badges skeleton
+            HStack(spacing: 8) {
+                SkeletonPill(width: 80)
+                SkeletonPill(width: 60)
+            }
+
+            // Name skeleton
+            SkeletonRect(height: 24)
+
+            // Location skeleton
+            VStack(alignment: .leading, spacing: 4) {
+                SkeletonRect(width: 120, height: 14)
+                SkeletonRect(width: 100, height: 14)
+            }
+        }
+    }
+
     @ViewBuilder
     private func content(_ gauge: GaugeRef) -> some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -67,37 +99,6 @@ public struct GaugeDetailHeader: View {
         }
     }
 
-    private var favoriteBadge: some View {
-        Label("Favorite", systemImage: "star.fill")
-            .font(.caption2)
-            .fontWeight(.semibold)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background {
-                Capsule()
-                    .fill(.yellow.opacity(0.2))
-            }
-            .foregroundStyle(.yellow)
-    }
-
-    private var skeletonContent: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // Badges skeleton
-            HStack(spacing: 8) {
-                SkeletonPill(width: 80)
-                SkeletonPill(width: 60)
-            }
-
-            // Name skeleton
-            SkeletonRect(height: 24)
-
-            // Location skeleton
-            VStack(alignment: .leading, spacing: 4) {
-                SkeletonRect(width: 120, height: 14)
-                SkeletonRect(width: 100, height: 14)
-            }
-        }
-    }
 }
 
 // MARK: - GaugeDetailHeaderCompact
@@ -144,4 +145,3 @@ public struct GaugeDetailHeaderCompact: View {
     }
     .padding()
 }
-

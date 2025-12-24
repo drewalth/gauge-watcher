@@ -96,4 +96,3 @@ extension GaugeSource {
     }
     .padding()
 }
-

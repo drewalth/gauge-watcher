@@ -95,9 +95,10 @@ extension Trend {
             .filter { $0.metric == currentMetric && $0.createdAt >= oneDayAgo }
             .sorted { $0.createdAt < $1.createdAt }
 
-        guard recentReadings.count >= 2,
-              let oldest = recentReadings.first,
-              let newest = recentReadings.last
+        guard
+            recentReadings.count >= 2,
+            let oldest = recentReadings.first,
+            let newest = recentReadings.last
         else {
             return .stable
         }
@@ -126,4 +127,3 @@ extension Trend {
     .padding()
     .background(Color.accentColor)
 }
-

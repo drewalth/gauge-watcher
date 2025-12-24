@@ -15,7 +15,7 @@ public struct OnboardingReducer: Sendable {
 
     // MARK: Lifecycle
 
-    public init() {}
+    public init() { }
 
     // MARK: Public
 
@@ -29,8 +29,7 @@ public struct OnboardingReducer: Sendable {
         public init(
             authorizationStatus: CLAuthorizationStatus = .notDetermined,
             locationPermissionRequested: Bool = false,
-            isRequestingPermission: Bool = false)
-        {
+            isRequestingPermission: Bool = false) {
             self.authorizationStatus = authorizationStatus
             self.locationPermissionRequested = locationPermissionRequested
             self.isRequestingPermission = isRequestingPermission
@@ -95,4 +94,3 @@ public struct OnboardingReducer: Sendable {
     @Dependency(\.locationService) private var locationService
 
 }
-

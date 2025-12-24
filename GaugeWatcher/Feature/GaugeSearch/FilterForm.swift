@@ -121,6 +121,28 @@ struct FilterForm: View {
             })
     }
 
+    private var countryDisplayText: String {
+        if
+            let code = store.filterOptions.country,
+            let country = StatesProvinces.Country(rawValue: code) {
+            return country.name
+        }
+        return "Any"
+    }
+
+    private var stateDisplayText: String {
+        if
+            let abbr = store.filterOptions.state,
+            let state = availableStates.first(where: { $0.abbreviation == abbr }) {
+            return state.name
+        }
+        return "Any"
+    }
+
+    private var sourceDisplayText: String {
+        store.filterOptions.source?.displayName ?? "Any"
+    }
+
     // MARK: - Views
 
     @ViewBuilder
@@ -155,18 +177,6 @@ struct FilterForm: View {
     }
 
     @ViewBuilder
-    private func filterRow<Content: View>(label: String, content: Content) -> some View {
-        HStack {
-            Text(label)
-                .foregroundStyle(.primary)
-            Spacer()
-            content
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-    }
-
-    @ViewBuilder
     private var countryPicker: some View {
         Menu {
             Button("Any Country") {
@@ -197,15 +207,6 @@ struct FilterForm: View {
         }
     }
 
-    private var countryDisplayText: String {
-        if let code = store.filterOptions.country,
-           let country = StatesProvinces.Country(rawValue: code)
-        {
-            return country.name
-        }
-        return "Any"
-    }
-
     @ViewBuilder
     private var statePicker: some View {
         Menu {
@@ -230,15 +231,6 @@ struct FilterForm: View {
         .opacity(store.filterOptions.country == nil ? 0.5 : 1)
     }
 
-    private var stateDisplayText: String {
-        if let abbr = store.filterOptions.state,
-           let state = availableStates.first(where: { $0.abbreviation == abbr })
-        {
-            return state.name
-        }
-        return "Any"
-    }
-
     @ViewBuilder
     private var sourcePicker: some View {
         Menu {
@@ -261,10 +253,6 @@ struct FilterForm: View {
         }
     }
 
-    private var sourceDisplayText: String {
-        store.filterOptions.source?.displayName ?? "Any"
-    }
-
     @ViewBuilder
     private var searchButton: some View {
         Button {
@@ -283,6 +271,18 @@ struct FilterForm: View {
         }
         .buttonStyle(.borderedProminent)
         .disabled(!store.filterOptions.hasActiveFilters)
+    }
+
+    @ViewBuilder
+    private func filterRow(label: String, content: some View) -> some View {
+        HStack {
+            Text(label)
+                .foregroundStyle(.primary)
+            Spacer()
+            content
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
     // MARK: - Helpers
@@ -318,4 +318,3 @@ struct FilterForm: View {
         GaugeSearchFeature()
     })
 }
-

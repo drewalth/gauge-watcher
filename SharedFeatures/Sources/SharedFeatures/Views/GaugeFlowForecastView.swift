@@ -21,8 +21,7 @@ public struct GaugeFlowForecastView: View {
         forecast: Loadable<[ForecastDataPoint]>,
         forecastAvailable: Loadable<Bool>,
         onLoadForecast: @escaping () -> Void,
-        onInfoTapped: @escaping () -> Void)
-    {
+        onInfoTapped: @escaping () -> Void) {
         self.forecast = forecast
         self.forecastAvailable = forecastAvailable
         self.onLoadForecast = onLoadForecast
@@ -41,13 +40,13 @@ public struct GaugeFlowForecastView: View {
 
     // MARK: Private
 
+    @State private var selectedDataPoint: ForecastDataPoint?
+    @State private var isExpanded = false
+
     private let forecast: Loadable<[ForecastDataPoint]>
     private let forecastAvailable: Loadable<Bool>
     private let onLoadForecast: () -> Void
     private let onInfoTapped: () -> Void
-
-    @State private var selectedDataPoint: ForecastDataPoint?
-    @State private var isExpanded = false
 
     @ViewBuilder
     private var headerView: some View {
@@ -354,19 +353,19 @@ public struct GaugeFlowForecastView: View {
             }
             #else
             .chartOverlay { proxy in
-                GeometryReader { geometry in
-                    Rectangle()
-                        .fill(.clear)
-                        .contentShape(.rect)
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { value in
-                                    updateSelectedDataPoint(at: value.location, proxy: proxy, geometry: geometry, data: data)
-                                }
-                                .onEnded { _ in
-                                    selectedDataPoint = nil
-                                })
-                }
+            GeometryReader { geometry in
+            Rectangle()
+            .fill(.clear)
+            .contentShape(.rect)
+            .gesture(
+            DragGesture(minimumDistance: 0)
+            .onChanged { value in
+            updateSelectedDataPoint(at: value.location, proxy: proxy, geometry: geometry, data: data)
+            }
+            .onEnded { _ in
+            selectedDataPoint = nil
+            })
+            }
             }
             #endif
             .frame(height: 220)
@@ -421,7 +420,8 @@ public struct GaugeFlowForecastView: View {
                 Text("Confidence Range")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text("\(dataPoint.lowerErrorBound, format: .number.precision(.fractionLength(0))) – \(dataPoint.upperErrorBound, format: .number.precision(.fractionLength(0)))")
+                Text(
+                    "\(dataPoint.lowerErrorBound, format: .number.precision(.fractionLength(0))) – \(dataPoint.upperErrorBound, format: .number.precision(.fractionLength(0)))")
                     .font(.system(.caption, design: .monospaced))
             }
         }
@@ -452,8 +452,7 @@ public struct GaugeFlowForecastView: View {
         at location: CGPoint,
         proxy: ChartProxy,
         geometry: GeometryProxy,
-        data: [ForecastDataPoint])
-    {
+        data: [ForecastDataPoint]) {
         guard let plotFrame = proxy.plotFrame else { return }
         let xPosition = location.x - geometry[plotFrame].origin.x
 
@@ -478,4 +477,3 @@ public struct GaugeFlowForecastView: View {
         .frame(height: 400)
         .padding()
 }
-

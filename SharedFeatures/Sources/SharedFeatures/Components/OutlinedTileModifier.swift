@@ -15,7 +15,7 @@ public struct OutlinedTileModifier: ViewModifier {
 
     // MARK: Lifecycle
 
-    public init() {}
+    public init() { }
 
     // MARK: Public
 
@@ -44,4 +44,3 @@ extension View {
         modifier(OutlinedTileModifier())
     }
 }
-
