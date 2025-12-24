@@ -81,7 +81,6 @@ public struct GaugeSearchFeature: Sendable {
             path: StackState<Path.State> = .init(),
             mapRegion: MKCoordinateRegion? = nil,
             shouldRecenterMap: Bool = false,
-            searchMode: SearchMode = .viewport,
             filterOptions: FilterOptions = FilterOptions(),
             shouldZoomToResults: Bool = false,
             shouldFitAllPins: Bool = false,
@@ -93,7 +92,6 @@ public struct GaugeSearchFeature: Sendable {
             self.path = path
             self.mapRegion = mapRegion
             self.shouldRecenterMap = shouldRecenterMap
-            self.searchMode = searchMode
             self.filterOptions = filterOptions
             self.shouldZoomToResults = shouldZoomToResults
             self.shouldFitAllPins = shouldFitAllPins
@@ -115,11 +113,13 @@ public struct GaugeSearchFeature: Sendable {
         // Flag to trigger recenter animation in MKMapView
         public var shouldRecenterMap = false
 
-        // Search mode determines query behavior
-        public var searchMode: SearchMode = .viewport
-
-        // Manual filter options (used when searchMode == .filtered)
+        // Manual filter options for filtered search mode
         public var filterOptions = FilterOptions()
+
+        /// Search mode derived from filter state - filtered when filters are active, viewport otherwise
+        public var searchMode: SearchMode {
+            filterOptions.hasActiveFilters ? .filtered : .viewport
+        }
 
         // Flag to trigger map zoom to fit results after filter query
         public var shouldZoomToResults = false
@@ -159,8 +159,7 @@ public struct GaugeSearchFeature: Sendable {
         case recenterOnUserLocation
         case recenterCompleted
 
-        // Search mode actions
-        case setSearchMode(SearchMode)
+        // Filter actions
         case updateFilterOptions(FilterOptions)
         case applyFilters
         case clearFilters
@@ -259,8 +258,8 @@ public struct GaugeSearchFeature: Sendable {
                 return .none
 
             case .mapRegionChanged(let region):
-                // Only trigger viewport queries when in viewport mode
-                guard state.searchMode == .viewport else { return .none }
+                // Only trigger viewport queries when no filters are active
+                guard !state.filterOptions.hasActiveFilters else { return .none }
 
                 // Don't update state immediately - only store when debounce fires
                 // This prevents excessive state updates during pan/zoom
@@ -273,8 +272,8 @@ public struct GaugeSearchFeature: Sendable {
                 .cancellable(id: CancelID.mapRegionDebounce, cancelInFlight: true)
 
             case .mapRegionChangeDebounced(let region):
-                // Double-check we're still in viewport mode (could have changed during debounce)
-                guard state.searchMode == .viewport else { return .none }
+                // Double-check filters haven't been applied during debounce
+                guard !state.filterOptions.hasActiveFilters else { return .none }
 
                 // Only update state after user has stopped moving the map
                 state.mapRegion = region
@@ -301,24 +300,7 @@ public struct GaugeSearchFeature: Sendable {
                 state.queryOptions = newOptions
                 return .send(.query)
 
-            // MARK: - Search Mode Actions
-
-            case .setSearchMode(let mode):
-                let previousMode = state.searchMode
-                state.searchMode = mode
-
-                // When switching to viewport mode, trigger a query based on current map region
-                if mode == .viewport, previousMode == .filtered, let region = state.mapRegion {
-                    return .send(.mapRegionChangeDebounced(region))
-                }
-
-                // When switching to filtered mode, clear results until user applies filters
-                if mode == .filtered, previousMode == .viewport {
-                    // Keep existing results visible until new filters are applied
-                    return .none
-                }
-
-                return .none
+            // MARK: - Filter Actions
 
             case .updateFilterOptions(let options):
                 state.filterOptions = options
@@ -342,6 +324,10 @@ public struct GaugeSearchFeature: Sendable {
 
             case .clearFilters:
                 state.filterOptions = FilterOptions()
+                // Resume viewport-based queries if we have a map region
+                if let region = state.mapRegion {
+                    return .send(.mapRegionChangeDebounced(region))
+                }
                 state.results = .loaded([])
                 return .none
 

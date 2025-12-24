@@ -18,11 +18,11 @@ struct FilterIndicatorBanner: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                .foregroundStyle(.secondary)
+//                .foregroundStyle(.secondary)
 
             Text("Filters Active")
                 .font(.callout)
-                .foregroundStyle(.primary)
+//                .foregroundStyle(.primary)
 
             Button("Clear", action: onClear)
                 .buttonStyle(.bordered)
@@ -30,9 +30,9 @@ struct FilterIndicatorBanner: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
-        .clipShape(.capsule)
-        .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+        .glassEffect(.regular.tint(Color.yellow.opacity(0.25)).interactive())
+//        .clipShape(.capsule)
+//        .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
     }
 }
 

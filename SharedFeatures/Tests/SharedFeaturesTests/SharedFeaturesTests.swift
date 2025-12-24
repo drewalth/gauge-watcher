@@ -833,18 +833,19 @@ struct GaugeSearchFeatureTests {
         }
     }
 
-    @Test("setSearchMode from viewport to filtered preserves results")
-    func setSearchModeToFiltered() async {
+    @Test("searchMode is computed from filterOptions.hasActiveFilters")
+    func searchModeIsComputed() async {
         var state = GaugeSearchFeature.State()
-        state.results = .loaded([makeGaugeRef()])
+        // No active filters = viewport mode
+        #expect(state.searchMode == .viewport)
 
-        let store = TestStore(initialState: state) {
-            GaugeSearchFeature()
-        }
+        // With active filters = filtered mode
+        state.filterOptions = FilterOptions(country: "US")
+        #expect(state.searchMode == .filtered)
 
-        await store.send(.setSearchMode(.filtered)) {
-            $0.searchMode = .filtered
-        }
+        // Clear filters = back to viewport mode
+        state.filterOptions = FilterOptions()
+        #expect(state.searchMode == .viewport)
     }
 
     @Test("updateFilterOptions updates filter options")
@@ -860,11 +861,12 @@ struct GaugeSearchFeatureTests {
         }
     }
 
-    @Test("clearFilters resets filter options and results")
-    func clearFilters() async {
+    @Test("clearFilters resets filter options and results when no map region")
+    func clearFiltersWithoutMapRegion() async {
         var state = GaugeSearchFeature.State()
         state.filterOptions = FilterOptions(country: "US", state: "WA")
         state.results = .loaded([makeGaugeRef()])
+        // No map region set
 
         let store = TestStore(initialState: state) {
             GaugeSearchFeature()

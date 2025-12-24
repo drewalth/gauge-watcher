@@ -27,7 +27,7 @@ struct GaugeSearchMap: View {
             shouldCenterOnSelection: store.shouldCenterOnSelection,
             selectedGaugeID: store.inspectorDetail?.gaugeID)
             .overlay(alignment: .bottomTrailing) {
-                if store.searchMode == .filtered, store.filterOptions.hasActiveFilters {
+                if store.filterOptions.hasActiveFilters {
                     FilterIndicatorBanner(onClear: { store.send(.clearFilters) })
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                         .padding()
@@ -38,8 +38,8 @@ struct GaugeSearchMap: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
-                        // Fit All Gauges only makes sense in filtered mode where results are user-driven
-                        if store.searchMode == .filtered {
+                        // Fit All Gauges only makes sense when filters are active
+                        if store.filterOptions.hasActiveFilters {
                             Button {
                                 store.send(.fitAllPins)
                             } label: {

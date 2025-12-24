@@ -7,10 +7,9 @@
 
 import SharedFeatures
 import SwiftUI
-import TipKit
 
 // MARK: - GaugeListInspector
-// TODO: split up var computed views into separate structs
+
 struct GaugeListInspector: View {
 
     // MARK: Internal
@@ -32,55 +31,102 @@ struct GaugeListInspector: View {
     // MARK: Private
 
     @State private var searchText = ""
+    @State private var isFiltersExpanded = false
 
     private var allGauges: [GaugeRef] {
         gaugeSearchStore.results.unwrap() ?? []
     }
 
     private var displayedGauges: [GaugeRef] {
-        filteredGauges(allGauges)
+        localFilteredGauges(allGauges)
+    }
+
+    private var hasActiveFilters: Bool {
+        gaugeSearchStore.filterOptions.hasActiveFilters
     }
 
     @ViewBuilder
     private var nearbyContent: some View {
         VStack(spacing: 0) {
-            searchModeToggle
+            // Search field at top
+            searchField
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+
+            // Collapsible filters
+            collapsibleFiltersSection
+
             Divider()
-            searchModeContent
+                .padding(.horizontal, 16)
+
+            gaugeResultsContent
             Spacer()
         }
     }
 
+    // MARK: - Search Field
+
     @ViewBuilder
-    private var searchModeToggle: some View {
-        Picker("Search Mode", selection: searchModeBinding) {
-            Label("Map View", systemImage: "map")
-                .tag(SearchMode.viewport)
+    private var searchField: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField("Search gauges", text: $searchText)
+                .textFieldStyle(.plain)
+            if !searchText.isEmpty {
+                Button("Clear", systemImage: "xmark.circle.fill", action: clearSearch)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .labelStyle(.iconOnly)
+            }
+        }
+        .padding(8)
+        .background(.quaternary.opacity(0.5))
+        .clipShape(.rect(cornerRadius: 8))
+    }
+
+    // MARK: - Collapsible Filters Section
+
+    @ViewBuilder
+    private var collapsibleFiltersSection: some View {
+        DisclosureGroup(isExpanded: $isFiltersExpanded) {
+            CollapsibleFilterForm(store: gaugeSearchStore)
+        } label: {
+            filterDisclosureLabel
+        }
+        .disclosureGroupStyle(CustomDisclosureStyle())
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+    }
+
+    @ViewBuilder
+    private var filterDisclosureLabel: some View {
+        HStack(spacing: 8) {
             Label("Filters", systemImage: "line.3.horizontal.decrease.circle")
-                .tag(SearchMode.filtered)
-        }
-        .pickerStyle(.segmented)
-        .labelsHidden()
-        .padding()
-        .popoverTip(OnboardingTips.searchMode, arrowEdge: .leading)
-        .onChange(of: gaugeSearchStore.searchMode) { _, _ in
-            OnboardingTips.searchMode.invalidate(reason: .actionPerformed)
+                .font(.subheadline)
+                .foregroundStyle(hasActiveFilters ? .primary : .secondary)
+
+            if hasActiveFilters {
+                Text("Active")
+                    .font(.caption2)
+                    .bold()
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(.blue, in: .capsule)
+            }
         }
     }
 
-    private var searchModeBinding: Binding<SearchMode> {
-        Binding(
-            get: { gaugeSearchStore.searchMode },
-            set: { gaugeSearchStore.send(.setSearchMode($0)) })
-    }
+    // MARK: - Results Content
 
     @ViewBuilder
-    private var searchModeContent: some View {
-        switch gaugeSearchStore.searchMode {
-        case .viewport:
+    private var gaugeResultsContent: some View {
+        if hasActiveFilters {
+            filteredResultsContent
+        } else {
             viewportContent
-        case .filtered:
-            filteredContent
         }
     }
 
@@ -101,24 +147,11 @@ struct GaugeListInspector: View {
     }
 
     @ViewBuilder
-    private var filteredContent: some View {
-        VStack(spacing: 0) {
-            FilterForm(store: gaugeSearchStore)
-
-            // Show results below the form when filters are applied
-            if gaugeSearchStore.filterOptions.hasActiveFilters {
-                Divider()
-                filteredResultsContent
-            }
-        }
-    }
-
-    @ViewBuilder
     private var filteredResultsContent: some View {
         switch gaugeSearchStore.results {
         case .initial:
             ContentUnavailableView(
-                "Set Filters",
+                "Apply Filters",
                 systemImage: "line.3.horizontal.decrease.circle",
                 description: Text("Configure filters above and tap Search"))
         case .loading:
@@ -131,16 +164,9 @@ struct GaugeListInspector: View {
                     description: Text("No gauges match your filters"))
             } else {
                 VStack(spacing: 0) {
-                    HStack {
-                        Text("\(gauges.count) result\(gauges.count == 1 ? "" : "s")")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-
-                    filteredResultsList(gauges)
+                    filteredResultsHeader(count: gauges.count)
+                    Divider()
+                    gaugeResultsList(gauges)
                 }
             }
         case .error(let error):
@@ -149,7 +175,22 @@ struct GaugeListInspector: View {
     }
 
     @ViewBuilder
-    private func filteredResultsList(_ gauges: [GaugeRef]) -> some View {
+    private func filteredResultsHeader(count: Int) -> some View {
+        HStack {
+            Text("\(count) result\(count == 1 ? "" : "s")")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            if gaugeSearchStore.results.isLoading() || gaugeSearchStore.results.isReloading() {
+                ProgressView()
+                    .scaleEffect(0.5)
+            }
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func gaugeResultsList(_ gauges: [GaugeRef]) -> some View {
         ScrollView {
             LazyVStack(spacing: 2) {
                 ForEach(gauges) { gauge in
@@ -166,8 +207,9 @@ struct GaugeListInspector: View {
     @ViewBuilder
     private var gaugeListContent: some View {
         VStack(spacing: 0) {
-            inspectorHeader
+            gaugeCountHeader
             Divider()
+                .padding(.horizontal, 16)
             if displayedGauges.isEmpty {
                 noSearchResultsView
             } else {
@@ -177,36 +219,20 @@ struct GaugeListInspector: View {
     }
 
     @ViewBuilder
-    private var inspectorHeader: some View {
-        VStack(spacing: 12) {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                TextField("Search gauges", text: $searchText)
-                    .textFieldStyle(.plain)
-                if !searchText.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill", action: clearSearch)
-                        .buttonStyle(.plain)
-                        .foregroundStyle(.secondary)
-                        .labelStyle(.iconOnly)
-                }
+    private var gaugeCountHeader: some View {
+        HStack(alignment: .center) {
+            Text(headerTitle)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            if gaugeSearchStore.results.isLoading() || gaugeSearchStore.results.isReloading() {
+                ProgressView()
+                    .scaleEffect(0.5)
             }
-            .padding(8)
-            .background(.quaternary.opacity(0.5))
-            .clipShape(.rect(cornerRadius: 8))
-
-            HStack(alignment: .center) {
-                Text(headerTitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                if gaugeSearchStore.results.isLoading() || gaugeSearchStore.results.isReloading() {
-                    ProgressView()
-                        .scaleEffect(0.5)
-                }
-            }.frame(height: 30)
         }
-        .padding()
+        .frame(height: 30)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
     }
 
     private var headerTitle: String {
@@ -279,7 +305,8 @@ struct GaugeListInspector: View {
             description: Text(message))
     }
 
-    private func filteredGauges(_ gauges: [GaugeRef]) -> [GaugeRef] {
+    /// Filters gauges locally based on the search text field (not the feature-level filters)
+    private func localFilteredGauges(_ gauges: [GaugeRef]) -> [GaugeRef] {
         guard !searchText.isEmpty else { return gauges }
         return gauges.filter { gauge in
             gauge.name.localizedStandardContains(searchText)
@@ -541,4 +568,108 @@ struct FavoriteRowView: View {
         },
         mode: .constant(.nearby))
         .frame(width: 320, height: 600)
+}
+
+
+// MARK: - CustomDisclosureStyle
+
+/// A custom disclosure group style with improved hit testing and macOS-native feel.
+///
+/// Features:
+/// - Full-width tappable header area
+/// - Hover effect for visual feedback
+/// - Smooth expand/collapse animation with proper clipping
+/// - "show/hide" toggle text instead of chevron
+struct CustomDisclosureStyle: DisclosureGroupStyle {
+
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            DisclosureHeader(
+                isExpanded: configuration.isExpanded,
+                onToggle: { configuration.isExpanded.toggle() },
+                label: { configuration.label })
+
+            // Animated content with smooth height transition
+            DisclosureContent(isExpanded: configuration.isExpanded) {
+                configuration.content
+            }
+        }
+    }
+}
+
+// MARK: - DisclosureContent
+
+/// Wrapper that provides smooth height animation for disclosure content.
+private struct DisclosureContent<Content: View>: View {
+
+    let isExpanded: Bool
+    @ViewBuilder let content: () -> Content
+
+    @State private var contentHeight: CGFloat = 0
+
+    var body: some View {
+        content()
+            .background {
+                GeometryReader { geometry in
+                    Color.clear
+                        .onAppear { contentHeight = geometry.size.height }
+                        .onChange(of: geometry.size.height) { _, newHeight in
+                            contentHeight = newHeight
+                        }
+                }
+            }
+            .frame(height: isExpanded ? nil : 0, alignment: .top)
+            .clipped()
+            .opacity(isExpanded ? 1 : 0)
+            .animation(.smooth(duration: 0.25), value: isExpanded)
+    }
+}
+
+// MARK: - DisclosureHeader
+
+/// The tappable header row for the disclosure group.
+private struct DisclosureHeader<Label: View>: View {
+
+    let isExpanded: Bool
+    let onToggle: () -> Void
+    @ViewBuilder let label: () -> Label
+
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: onToggle) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                label()
+                Spacer(minLength: 0)
+                toggleIndicator
+            }
+            .padding(.vertical, 4)
+            .contentShape(.rect)
+        }
+        .buttonStyle(DisclosureHeaderButtonStyle(isHovering: isHovering))
+        .onHover { hovering in
+            isHovering = hovering
+        }
+    }
+
+    @ViewBuilder
+    private var toggleIndicator: some View {
+        Text(isExpanded ? "hide" : "show")
+            .font(.caption.lowercaseSmallCaps())
+            .foregroundStyle(isHovering ? Color.primary : Color.accentColor)
+            .contentTransition(.identity)
+    }
+}
+
+// MARK: - DisclosureHeaderButtonStyle
+
+/// Custom button style for the disclosure header with hover feedback.
+private struct DisclosureHeaderButtonStyle: ButtonStyle {
+
+    let isHovering: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.7 : 1.0)
+    }
 }

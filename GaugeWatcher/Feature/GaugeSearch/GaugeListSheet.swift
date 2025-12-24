@@ -27,18 +27,17 @@ struct GaugeListSheet: View {
             Divider()
                 .padding(.horizontal, 16)
 
-            // Mode toggle
-            searchModeToggle
+            // Collapsible filters section
+            filtersSection
 
             Divider()
                 .padding(.horizontal, 16)
 
-            // Content based on mode
-            switch store.searchMode {
-            case .viewport:
-                viewportContent
-            case .filtered:
+            // Content based on filter state
+            if hasActiveFilters {
                 filteredContent
+            } else {
+                viewportContent
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -47,6 +46,7 @@ struct GaugeListSheet: View {
     // MARK: Private
 
     @State private var searchText = ""
+    @State private var isFiltersExpanded = false
 
     private var allGauges: [GaugeRef] {
         store.results.unwrap() ?? []
@@ -61,19 +61,13 @@ struct GaugeListSheet: View {
         }
     }
 
-    private var searchModeBinding: Binding<SearchMode> {
-        Binding(
-            get: { store.searchMode },
-            set: { store.send(.setSearchMode($0)) })
+    private var hasActiveFilters: Bool {
+        store.filterOptions.hasActiveFilters
     }
 
     private var compactSummaryText: String {
-        if store.searchMode == .filtered {
-            if store.filterOptions.hasActiveFilters {
-                return "Filters active"
-            } else {
-                return "Search by filters"
-            }
+        if hasActiveFilters {
+            return "Filters active"
         } else {
             let count = allGauges.count
             if count == 0 {
@@ -98,9 +92,9 @@ struct GaugeListSheet: View {
     private var compactHeader: some View {
         HStack(spacing: 12) {
             // Icon
-            Image(systemName: store.searchMode == .viewport ? "map" : "line.3.horizontal.decrease.circle")
+            Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "map")
                 .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(hasActiveFilters ? .blue : .secondary)
 
             // Summary text
             Text(compactSummaryText)
@@ -121,14 +115,28 @@ struct GaugeListSheet: View {
     }
 
     @ViewBuilder
-    private var searchModeToggle: some View {
-        Picker("Search Mode", selection: searchModeBinding) {
-            Text("Map View")
-                .tag(SearchMode.viewport)
-            Text("Filters")
-                .tag(SearchMode.filtered)
+    private var filtersSection: some View {
+        DisclosureGroup(isExpanded: $isFiltersExpanded) {
+            FilterForm(store: store)
+        } label: {
+            HStack(spacing: 8) {
+                Label("Filters", systemImage: "line.3.horizontal.decrease.circle")
+                    .font(.subheadline)
+                    .foregroundStyle(hasActiveFilters ? .primary : .secondary)
+
+                if hasActiveFilters {
+                    Text("Active")
+                        .font(.caption2)
+                        .bold()
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(.blue, in: .capsule)
+                }
+
+                Spacer()
+            }
         }
-        .pickerStyle(.segmented)
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
     }
