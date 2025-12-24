@@ -23,7 +23,6 @@ struct FilterForm: View {
             header
             Divider()
             VStack(alignment: .leading, spacing: 16) {
-                searchField
                 countryPicker
                 statePicker
                 sourcePicker
@@ -74,14 +73,6 @@ struct FilterForm: View {
 
     // MARK: - Bindings
 
-    private var searchTextBinding: Binding<String> {
-        Binding(
-            get: { store.filterOptions.searchText },
-            set: { newValue in
-                updateFilter { $0.searchText = newValue }
-            })
-    }
-
     private var countryBinding: Binding<String?> {
         Binding(
             get: { store.filterOptions.country },
@@ -130,36 +121,6 @@ struct FilterForm: View {
             }
         }
         .padding()
-    }
-
-    @ViewBuilder
-    private var searchField: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Name")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.tertiary)
-                TextField("Search by name", text: searchTextBinding)
-                    .accessibleTextField(label: "Search by name")
-                    .textFieldStyle(.plain)
-                    .onSubmit(applyFilters)
-                if !store.filterOptions.searchText.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill") {
-                        updateFilter { $0.searchText = "" }
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.tertiary)
-                    .labelStyle(.iconOnly)
-                    .accessibleButton(label: "Clear Search")
-                }
-            }
-            .padding(8)
-            .background(.quaternary.opacity(0.5))
-            .clipShape(.rect(cornerRadius: 6))
-        }
     }
 
     @ViewBuilder
@@ -301,7 +262,6 @@ struct CollapsibleFilterForm: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            searchField
             countryPicker
             statePicker
             sourcePicker
@@ -351,14 +311,6 @@ struct CollapsibleFilterForm: View {
 
     // MARK: - Bindings
 
-    private var searchTextBinding: Binding<String> {
-        Binding(
-            get: { store.filterOptions.searchText },
-            set: { newValue in
-                updateFilter { $0.searchText = newValue }
-            })
-    }
-
     private var countryBinding: Binding<String?> {
         Binding(
             get: { store.filterOptions.country },
@@ -387,36 +339,6 @@ struct CollapsibleFilterForm: View {
             set: { newValue in
                 updateFilter { $0.source = newValue }
             })
-    }
-
-    @ViewBuilder
-    private var searchField: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Name")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.tertiary)
-                TextField("Search by name", text: searchTextBinding)
-                    .accessibleTextField(label: "Search by name")
-                    .textFieldStyle(.plain)
-                    .onSubmit(applyFilters)
-                if !store.filterOptions.searchText.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill") {
-                        updateFilter { $0.searchText = "" }
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.tertiary)
-                    .labelStyle(.iconOnly)
-                    .accessibleButton(label: "Clear Search")
-                }
-            }
-            .padding(6)
-            .background(.quaternary.opacity(0.5))
-            .clipShape(.rect(cornerRadius: 6))
-        }
     }
 
     @ViewBuilder

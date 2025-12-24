@@ -18,7 +18,7 @@ struct GaugeSearchMap: View {
 
     var body: some View {
         ClusteredMapView(
-            gauges: store.results.unwrap() ?? [],
+            gauges: store.filteredResults,
             store: store,
             userLocation: store.currentLocation,
             shouldRecenter: store.shouldRecenterMap,
@@ -160,9 +160,10 @@ struct ClusteredMapView: NSViewRepresentable {
         }
 
         // Handle center on selection
+        // Use gauge data from inspectorDetail directly instead of searching filteredResults
+        // since the selected gauge may not be in filteredResults if the map viewport changed
         if shouldCenterOnSelection,
-           let gaugeID = selectedGaugeID,
-           let gauge = gauges.first(where: { $0.id == gaugeID }) {
+           let gauge = store.inspectorDetail?.gauge.unwrap() {
             let region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: gauge.latitude, longitude: gauge.longitude),
                 latitudinalMeters: 50_000,

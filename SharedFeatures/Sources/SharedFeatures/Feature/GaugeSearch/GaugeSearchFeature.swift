@@ -25,7 +25,9 @@ public enum SearchMode: Equatable, Sendable {
 
 // MARK: - FilterOptions
 
-/// Manual filter options for filtered search mode
+/// Manual filter options for filtered search mode.
+/// Note: Name-based searching is handled locally via the search bar in GaugeListInspector,
+/// not as part of backend filter queries.
 public struct FilterOptions: Equatable, Sendable {
 
     // MARK: Lifecycle
@@ -33,12 +35,10 @@ public struct FilterOptions: Equatable, Sendable {
     public init(
         country: String? = nil,
         state: String? = nil,
-        source: GaugeSource? = nil,
-        searchText: String = "") {
+        source: GaugeSource? = nil) {
         self.country = country
         self.state = state
         self.source = source
-        self.searchText = searchText
     }
 
     // MARK: Public
@@ -46,11 +46,10 @@ public struct FilterOptions: Equatable, Sendable {
     public var country: String?
     public var state: String?
     public var source: GaugeSource?
-    public var searchText = ""
 
     /// Returns true if any filter is actively set
     public var hasActiveFilters: Bool {
-        country != nil || state != nil || source != nil || !searchText.isEmpty
+        country != nil || state != nil || source != nil
     }
 }
 
@@ -138,6 +137,25 @@ public struct GaugeSearchFeature: Sendable {
             inspectorDetail != nil
         }
 
+        // Local search text for filtering displayed results (client-side, not backend query)
+        // `localSearchText` updates immediately (for TextField binding)
+        // `appliedSearchText` updates after debounce (for filtering)
+        public var localSearchText = ""
+        public var appliedSearchText = ""
+
+        /// Results filtered by applied search text. Use this for display instead of raw results.
+        /// Uses `appliedSearchText` (debounced) to avoid excessive re-renders.
+        public var filteredResults: [GaugeRef] {
+            guard let gauges = results.unwrap(), !appliedSearchText.isEmpty else {
+                return results.unwrap() ?? []
+            }
+            return gauges.filter { gauge in
+                gauge.name.localizedStandardContains(appliedSearchText)
+                    || gauge.state.localizedStandardContains(appliedSearchText)
+                    || gauge.zone.localizedStandardContains(appliedSearchText)
+            }
+        }
+
     }
 
     // MARK: - Action
@@ -175,6 +193,10 @@ public struct GaugeSearchFeature: Sendable {
         case selectGaugeForInspector(Int)
         case closeInspector
         case inspectorDetail(GaugeDetailFeature.Action)
+
+        // Local search (client-side filtering)
+        case setLocalSearchText(String)
+        case applyLocalSearchText(String)
     }
 
     // MARK: - Path
@@ -189,6 +211,7 @@ public struct GaugeSearchFeature: Sendable {
     nonisolated public enum CancelID: Sendable {
         case query
         case mapRegionDebounce
+        case localSearchDebounce
     }
 
     // MARK: - Display Mode
@@ -312,9 +335,6 @@ public struct GaugeSearchFeature: Sendable {
                 queryOptions.country = state.filterOptions.country
                 queryOptions.state = state.filterOptions.state
                 queryOptions.source = state.filterOptions.source
-                if !state.filterOptions.searchText.isEmpty {
-                    queryOptions.name = state.filterOptions.searchText.lowercased()
-                }
                 // No bounding box for filtered queries
                 queryOptions.boundingBox = nil
 
@@ -451,6 +471,30 @@ public struct GaugeSearchFeature: Sendable {
 
             case .setResults(let results):
                 state.results = results
+                return .none
+
+            case .setLocalSearchText(let text):
+                // Update text field immediately for responsive typing
+                state.localSearchText = text
+
+                // If clearing, apply immediately without debounce
+                if text.isEmpty {
+                    state.appliedSearchText = ""
+                    return .cancel(id: CancelID.localSearchDebounce)
+                }
+
+                // Debounce the actual filtering to avoid excessive re-renders
+                return .run { send in
+                    @Dependency(\.continuousClock) var clock
+                    try await clock.sleep(for: .milliseconds(300))
+                    await send(.applyLocalSearchText(text))
+                }
+                .cancellable(id: CancelID.localSearchDebounce, cancelInFlight: true)
+
+            case .applyLocalSearchText(let text):
+                // Only apply if it still matches current input (user may have typed more)
+                guard text == state.localSearchText else { return .none }
+                state.appliedSearchText = text
                 return .none
             }
         }

@@ -30,7 +30,6 @@ struct GaugeListInspector: View {
 
     // MARK: Private
 
-    @State private var searchText = ""
     @State private var isFiltersExpanded = false
 
     private var allGauges: [GaugeRef] {
@@ -38,11 +37,19 @@ struct GaugeListInspector: View {
     }
 
     private var displayedGauges: [GaugeRef] {
-        localFilteredGauges(allGauges)
+        gaugeSearchStore.filteredResults
     }
 
     private var hasActiveFilters: Bool {
         gaugeSearchStore.filterOptions.hasActiveFilters
+    }
+
+    private var searchText: String {
+        gaugeSearchStore.localSearchText
+    }
+
+    private var appliedSearchText: String {
+        gaugeSearchStore.appliedSearchText
     }
 
     @ViewBuilder
@@ -67,12 +74,18 @@ struct GaugeListInspector: View {
 
     // MARK: - Search Field
 
+    private var searchTextBinding: Binding<String> {
+        Binding(
+            get: { gaugeSearchStore.localSearchText },
+            set: { gaugeSearchStore.send(.setLocalSearchText($0)) })
+    }
+
     @ViewBuilder
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
-            TextField("Search gauges", text: $searchText)
+            TextField("Search gauges", text: searchTextBinding)
                 .textFieldStyle(.plain)
             if !searchText.isEmpty {
                 Button("Clear", systemImage: "xmark.circle.fill", action: clearSearch)
@@ -164,9 +177,13 @@ struct GaugeListInspector: View {
                     description: Text("No gauges match your filters"))
             } else {
                 VStack(spacing: 0) {
-                    filteredResultsHeader(count: gauges.count)
+                    filteredResultsHeader(totalCount: gauges.count, displayedCount: displayedGauges.count)
                     Divider()
-                    gaugeResultsList(gauges)
+                    if displayedGauges.isEmpty {
+                        noSearchResultsView
+                    } else {
+                        gaugeResultsList(displayedGauges)
+                    }
                 }
             }
         case .error(let error):
@@ -175,11 +192,17 @@ struct GaugeListInspector: View {
     }
 
     @ViewBuilder
-    private func filteredResultsHeader(count: Int) -> some View {
+    private func filteredResultsHeader(totalCount: Int, displayedCount: Int) -> some View {
         HStack {
-            Text("\(count) result\(count == 1 ? "" : "s")")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            if appliedSearchText.isEmpty {
+                Text("\(totalCount) result\(totalCount == 1 ? "" : "s")")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("\(displayedCount) of \(totalCount) results")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
             Spacer()
             if gaugeSearchStore.results.isLoading() || gaugeSearchStore.results.isReloading() {
                 ProgressView()
@@ -236,7 +259,7 @@ struct GaugeListInspector: View {
     }
 
     private var headerTitle: String {
-        if searchText.isEmpty {
+        if appliedSearchText.isEmpty {
             "\(allGauges.count) gauges in view"
         } else {
             "\(displayedGauges.count) of \(allGauges.count) gauges"
@@ -305,29 +328,23 @@ struct GaugeListInspector: View {
             description: Text(message))
     }
 
-    /// Filters gauges locally based on the search text field (not the feature-level filters)
-    private func localFilteredGauges(_ gauges: [GaugeRef]) -> [GaugeRef] {
-        guard !searchText.isEmpty else { return gauges }
-        return gauges.filter { gauge in
-            gauge.name.localizedStandardContains(searchText)
-                || gauge.state.localizedStandardContains(searchText)
-                || gauge.zone.localizedStandardContains(searchText)
-        }
-    }
-
     private func clearSearch() {
-        searchText = ""
+        gaugeSearchStore.send(.setLocalSearchText(""))
     }
 }
 
 // MARK: - GaugeListRow
 
-struct GaugeListRow: View {
+struct GaugeListRow: View, Equatable {
 
     // MARK: Internal
 
     let gauge: GaugeRef
     let onTap: () -> Void
+    
+    static func == (lhs: GaugeListRow, rhs: GaugeListRow) -> Bool {
+        lhs.gauge.id == rhs.gauge.id
+    }
 
     var body: some View {
         Button(action: onTap) {
@@ -381,6 +398,10 @@ struct GaugeListRow: View {
             .background(isHovering ? Color.primary.opacity(0.06) : .clear)
             .clipShape(.rect(cornerRadius: 8))
             .contentShape(.rect)
+        }
+        .if(gauge.favorite) {
+//            $0.glassEffect(.regular.tint(Color.yellow.opacity(0.25)).interactive())
+            $0.glassEffect(in: .rect(cornerRadius: 8.0))
         }
         .buttonStyle(.plain)
         .onHover { hovering in

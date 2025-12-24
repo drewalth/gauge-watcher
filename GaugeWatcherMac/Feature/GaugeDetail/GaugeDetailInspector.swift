@@ -61,8 +61,20 @@ struct GaugeDetailInspector: View {
     @ViewBuilder
     private var inspectorHeader: some View {
         HStack(spacing: 12) {
-            Text("Gauge Details")
-                .font(.headline)
+            Text({
+                if let gauge = store.gauge.unwrap() {
+                    return gauge.name
+                }
+                return "Gauge Details"
+            }())
+                .font(.title2)
+                .textSelection(.enabled)
+                .truncationMode(.middle)
+                .kerning(0.5)
+            
+            .lineLimit(2)
+            .layoutPriority(1)
+            
 
             Spacer()
 
@@ -312,11 +324,11 @@ struct GaugeDetailInspector: View {
             }
 
             // Gauge name
-            Text(gauge.name)
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .foregroundStyle(.primary)
-                .fixedSize(horizontal: false, vertical: true)
-                .textSelection(.enabled)
+//            Text(gauge.name)
+//                .font(.system(size: 20, weight: .bold, design: .rounded))
+//                .foregroundStyle(.primary)
+//                .fixedSize(horizontal: false, vertical: true)
+//                .textSelection(.enabled)
 
             // Location info
             VStack(alignment: .leading, spacing: 4) {
@@ -430,10 +442,12 @@ struct GaugeDetailInspector: View {
 // MARK: - Preview
 
 #Preview {
-    GaugeDetailInspector(
-        store: Store(initialState: GaugeDetailFeature.State(1)) {
-            GaugeDetailFeature()
-        },
-        onClose: { })
-        .frame(width: 400, height: 800)
+    NavigationStack {
+        GaugeDetailInspector(
+            store: Store(initialState: GaugeDetailFeature.State(1)) {
+                GaugeDetailFeature()
+            },
+            onClose: { })
+            .frame(width: 400, height: 800)
+    }
 }

@@ -30,7 +30,8 @@ struct FilterIndicatorBanner: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .glassEffect(.regular.tint(Color.yellow.opacity(0.25)).interactive())
+//        .glassEffect(.regular.tint(Color.primary.opacity(0.10)).interactive())
+        .glassEffect(in: .rect(cornerRadius: 16.0))
 //        .clipShape(.capsule)
 //        .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
     }
