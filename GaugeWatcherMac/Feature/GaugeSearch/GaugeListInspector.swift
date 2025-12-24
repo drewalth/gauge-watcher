@@ -341,17 +341,13 @@ struct GaugeListRow: View, Equatable {
 
     let gauge: GaugeRef
     let onTap: () -> Void
-    
-    static func == (lhs: GaugeListRow, rhs: GaugeListRow) -> Bool {
-        lhs.gauge.id == rhs.gauge.id
-    }
 
     var body: some View {
         Button(action: onTap) {
             HStack(alignment: .top, spacing: 12) {
                 // Source indicator
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(sourceColor)
+                    .fill(gauge.source.color)
                     .frame(width: 4)
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -364,7 +360,7 @@ struct GaugeListRow: View, Equatable {
                         Text(gauge.source.rawValue.uppercased())
                             .font(.caption2)
                             .fontWeight(.semibold)
-                            .foregroundStyle(sourceColor)
+                            .foregroundStyle(gauge.source.color)
 
                         Text("•")
                             .font(.caption2)
@@ -400,7 +396,6 @@ struct GaugeListRow: View, Equatable {
             .contentShape(.rect)
         }
         .if(gauge.favorite) {
-//            $0.glassEffect(.regular.tint(Color.yellow.opacity(0.25)).interactive())
             $0.glassEffect(in: .rect(cornerRadius: 8.0))
         }
         .buttonStyle(.plain)
@@ -409,20 +404,13 @@ struct GaugeListRow: View, Equatable {
         }
     }
 
+    static func == (lhs: GaugeListRow, rhs: GaugeListRow) -> Bool {
+        lhs.gauge.id == rhs.gauge.id
+    }
+
     // MARK: Private
 
     @State private var isHovering = false
-
-    private var sourceColor: Color {
-        switch gauge.source.rawValue.lowercased() {
-        case "usgs":
-            .blue
-        case "dwr":
-            .green
-        default:
-            .orange
-        }
-    }
 }
 
 // MARK: - FavoritesInspectorContent
@@ -591,7 +579,6 @@ struct FavoriteRowView: View {
         .frame(width: 320, height: 600)
 }
 
-
 // MARK: - CustomDisclosureStyle
 
 /// A custom disclosure group style with improved hit testing and macOS-native feel.
@@ -623,10 +610,10 @@ struct CustomDisclosureStyle: DisclosureGroupStyle {
 /// Wrapper that provides smooth height animation for disclosure content.
 private struct DisclosureContent<Content: View>: View {
 
+    // MARK: Internal
+
     let isExpanded: Bool
     @ViewBuilder let content: () -> Content
-
-    @State private var contentHeight: CGFloat = 0
 
     var body: some View {
         content()
@@ -644,6 +631,11 @@ private struct DisclosureContent<Content: View>: View {
             .opacity(isExpanded ? 1 : 0)
             .animation(.smooth(duration: 0.25), value: isExpanded)
     }
+
+    // MARK: Private
+
+    @State private var contentHeight: CGFloat = 0
+
 }
 
 // MARK: - DisclosureHeader
@@ -651,11 +643,11 @@ private struct DisclosureContent<Content: View>: View {
 /// The tappable header row for the disclosure group.
 private struct DisclosureHeader<Label: View>: View {
 
+    // MARK: Internal
+
     let isExpanded: Bool
     let onToggle: () -> Void
     @ViewBuilder let label: () -> Label
-
-    @State private var isHovering = false
 
     var body: some View {
         Button(action: onToggle) {
@@ -672,6 +664,10 @@ private struct DisclosureHeader<Label: View>: View {
             isHovering = hovering
         }
     }
+
+    // MARK: Private
+
+    @State private var isHovering = false
 
     @ViewBuilder
     private var toggleIndicator: some View {

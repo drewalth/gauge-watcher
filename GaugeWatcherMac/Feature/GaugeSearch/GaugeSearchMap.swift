@@ -162,8 +162,9 @@ struct ClusteredMapView: NSViewRepresentable {
         // Handle center on selection
         // Use gauge data from inspectorDetail directly instead of searching filteredResults
         // since the selected gauge may not be in filteredResults if the map viewport changed
-        if shouldCenterOnSelection,
-           let gauge = store.inspectorDetail?.gauge.unwrap() {
+        if
+            shouldCenterOnSelection,
+            let gauge = store.inspectorDetail?.gauge.unwrap() {
             let region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: gauge.latitude, longitude: gauge.longitude),
                 latitudinalMeters: 50_000,

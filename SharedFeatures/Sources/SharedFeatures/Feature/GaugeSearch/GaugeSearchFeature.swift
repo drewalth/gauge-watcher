@@ -115,11 +115,6 @@ public struct GaugeSearchFeature: Sendable {
         // Manual filter options for filtered search mode
         public var filterOptions = FilterOptions()
 
-        /// Search mode derived from filter state - filtered when filters are active, viewport otherwise
-        public var searchMode: SearchMode {
-            filterOptions.hasActiveFilters ? .filtered : .viewport
-        }
-
         // Flag to trigger map zoom to fit results after filter query
         public var shouldZoomToResults = false
 
@@ -132,16 +127,21 @@ public struct GaugeSearchFeature: Sendable {
         // Inspector-based detail (macOS) - alternative to path-based navigation (iOS)
         public var inspectorDetail: GaugeDetailFeature.State?
 
-        /// Whether the inspector should be shown (computed from inspectorDetail)
-        public var isInspectorPresented: Bool {
-            inspectorDetail != nil
-        }
-
         // Local search text for filtering displayed results (client-side, not backend query)
         // `localSearchText` updates immediately (for TextField binding)
         // `appliedSearchText` updates after debounce (for filtering)
         public var localSearchText = ""
         public var appliedSearchText = ""
+
+        /// Search mode derived from filter state - filtered when filters are active, viewport otherwise
+        public var searchMode: SearchMode {
+            filterOptions.hasActiveFilters ? .filtered : .viewport
+        }
+
+        /// Whether the inspector should be shown (computed from inspectorDetail)
+        public var isInspectorPresented: Bool {
+            inspectorDetail != nil
+        }
 
         /// Results filtered by applied search text. Use this for display instead of raw results.
         /// Uses `appliedSearchText` (debounced) to avoid excessive re-renders.

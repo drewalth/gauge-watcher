@@ -67,14 +67,12 @@ struct GaugeDetailInspector: View {
                 }
                 return "Gauge Details"
             }())
-                .font(.title2)
-                .textSelection(.enabled)
-                .truncationMode(.middle)
-                .kerning(0.5)
-            
+            .font(.title2)
+            .textSelection(.enabled)
+            .truncationMode(.middle)
+            .kerning(0.5)
             .lineLimit(2)
             .layoutPriority(1)
-            
 
             Spacer()
 
@@ -301,7 +299,7 @@ struct GaugeDetailInspector: View {
     @ViewBuilder
     private func heroHeader(_ gauge: GaugeRef) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            // Badges row
+            // MARK: Badges row
             HStack(spacing: 8) {
                 sourceBadge(gauge.source)
 
@@ -323,14 +321,7 @@ struct GaugeDetailInspector: View {
                 Spacer()
             }
 
-            // Gauge name
-//            Text(gauge.name)
-//                .font(.system(size: 20, weight: .bold, design: .rounded))
-//                .foregroundStyle(.primary)
-//                .fixedSize(horizontal: false, vertical: true)
-//                .textSelection(.enabled)
-
-            // Location info
+            // MARK: Location info
             VStack(alignment: .leading, spacing: 4) {
                 Label(gauge.state, systemImage: "mappin.circle.fill")
                 Label("Site \(gauge.siteID)", systemImage: "number.circle.fill")
@@ -340,6 +331,8 @@ struct GaugeDetailInspector: View {
             .foregroundStyle(.secondary)
         }
     }
+
+    // MARK: sourceBadge
 
     @ViewBuilder
     private func sourceBadge(_ source: GaugeSource) -> some View {
@@ -357,6 +350,8 @@ struct GaugeDetailInspector: View {
             .foregroundStyle(color)
     }
 
+    // MARK: statusBadge
+
     @ViewBuilder
     private func statusBadge(_ gauge: GaugeRef) -> some View {
         let statusInfo = gaugeStatusInfo(gauge)
@@ -372,6 +367,8 @@ struct GaugeDetailInspector: View {
             }
             .foregroundStyle(statusInfo.color)
     }
+
+    // MARK: infoSection
 
     @ViewBuilder
     private func infoSection(_ gauge: GaugeRef) -> some View {
@@ -395,6 +392,8 @@ struct GaugeDetailInspector: View {
         }
     }
 
+    // MARK: infoRow
+
     @ViewBuilder
     private func infoRow(label: String, value: String) -> some View {
         HStack {
@@ -407,6 +406,8 @@ struct GaugeDetailInspector: View {
                 .fontWeight(.medium)
         }
     }
+
+    // MARK: gaugeStatusInfo
 
     private func gaugeStatusInfo(_ gauge: GaugeRef) -> (label: String, icon: String, color: Color) {
         switch gauge.status {
@@ -425,17 +426,21 @@ struct GaugeDetailInspector: View {
         }
     }
 
+    // MARK: sourceStyle
+
     private func sourceStyle(for source: GaugeSource) -> (Color, String) {
-        switch source {
+        let systemImage = switch source {
         case .usgs:
-            (.blue, "building.columns.fill")
+            "building.columns.fill"
         case .environmentCanada:
-            (.red, "leaf.fill")
-        case .dwr:
-            (.orange, "mountain.2.fill")
+            "leaf.fill"
         case .lawa:
-            (.teal, "water.waves")
+            "water.waves"
+        case .dwr:
+            "mountain.2.fill"
         }
+
+        return (source.color, systemImage)
     }
 }
 

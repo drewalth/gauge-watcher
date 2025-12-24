@@ -1,6 +1,7 @@
 import Foundation
 import os
 import SQLiteData
+import SwiftUI
 
 // MARK: - GaugeSources
 
@@ -263,6 +264,19 @@ public enum GaugeSource: String, Codable, CaseIterable, Sendable {
     case environmentCanada = "ENVIRONMENT_CANADA"
     case lawa = "LAWA"
     case dwr = "DWR"
+
+    public var color: Color {
+        switch self {
+        case .dwr:
+            Color.green
+        case .environmentCanada:
+            Color.red
+        case .lawa:
+            Color.orange
+        case .usgs:
+            Color.blue
+        }
+    }
 }
 
 // MARK: - CanadianProvince
