@@ -25,6 +25,12 @@ struct GaugeSearch: View {
             mapContent()
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
+                        Button("My Location", systemImage: "location") {
+                            store.send(.recenterOnUserLocation)
+                        }
+                        .disabled(store.currentLocation == nil)
+                    }
+                    ToolbarItem(placement: .primaryAction) {
                         Button("Favorites", systemImage: "star") {
                             showFavorites = true
                         }
