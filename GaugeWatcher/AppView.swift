@@ -62,30 +62,16 @@ struct AppView: View {
             UtilityBlockView(kind: .error("Something went wrong"))
         case .loaded(let isInitialized):
             if isInitialized {
-                TabView(selection: $store.selectedTab.sending(\.setSelectedTab)) {
-                    Group {
-                        if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch) {
-                            GaugeSearch(store: gaugeSearchStore, gaugeBotStore: store.scope(state: \.gaugeBot, action: \.gaugeBot))
-                        } else {
-                            ContinuousSpinner()
-                        }
-                    }
-                    .tabItem {
-                        Label("Search", systemImage: "magnifyingglass")
-                    }
-                    .tag(AppFeature.RootTab.search)
-
-                    Group {
-                        if let favoriteGaugesStore = store.scope(state: \.favorites, action: \.favorites) {
-                            FavoriteGaugesView(store: favoriteGaugesStore)
-                        } else {
-                            ContinuousSpinner()
-                        }
-                    }
-                    .tabItem {
-                        Label("Favorites", systemImage: "star.fill")
-                    }
-                    .tag(AppFeature.RootTab.favorites)
+                if let gaugeSearchStore = store.scope(state: \.gaugeSearch, action: \.gaugeSearch),
+                   let favoritesStore = store.scope(state: \.favorites, action: \.favorites)
+                {
+                    GaugeSearch(
+                        store: gaugeSearchStore,
+                        gaugeBotStore: store.scope(state: \.gaugeBot, action: \.gaugeBot),
+                        favoritesStore: favoritesStore
+                    )
+                } else {
+                    ContinuousSpinner()
                 }
             } else {
                 UtilityBlockView(kind: .error("Something went wrong"))

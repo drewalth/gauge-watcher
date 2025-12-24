@@ -28,7 +28,7 @@ struct GaugeWatcherApp: SwiftUI.App {
         WindowGroup {
             AppView(store: Store(initialState: AppFeature.State(), reducer: {
                 AppFeature()
-            }))
+            })).fontDesign(.monospaced)
         }
     }
 

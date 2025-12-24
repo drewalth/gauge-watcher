@@ -18,20 +18,30 @@ struct GaugeListSheet: View {
     // MARK: Internal
 
     @Bindable var store: StoreOf<GaugeSearchFeature>
-    @Binding var selectedDetent: PresentationDetent
 
     var body: some View {
         VStack(spacing: 0) {
             // Compact header - always visible
             compactHeader
 
-            // Expanded content - only when not at smallest detent
-            if selectedDetent != .height(56) {
-                expandedContent
+            Divider()
+                .padding(.horizontal, 16)
+
+            // Mode toggle
+            searchModeToggle
+
+            Divider()
+                .padding(.horizontal, 16)
+
+            // Content based on mode
+            switch store.searchMode {
+            case .viewport:
+                viewportContent
+            case .filtered:
+                filteredContent
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color(.systemBackground))
     }
 
     // MARK: Private
@@ -57,49 +67,32 @@ struct GaugeListSheet: View {
             set: { store.send(.setSearchMode($0)) })
     }
 
-    // MARK: - Compact Header (always visible)
+    // MARK: - Compact Header
 
     @ViewBuilder
     private var compactHeader: some View {
-        VStack(spacing: 0) {
-            // Tap target to expand
-            Button {
-                withAnimation(.snappy(duration: 0.25)) {
-                    if selectedDetent == .height(56) {
-                        selectedDetent = .medium
-                    }
-                }
-            } label: {
-                HStack(spacing: 12) {
-                    // Search icon or status
-                    Image(systemName: store.searchMode == .viewport ? "map" : "line.3.horizontal.decrease.circle")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(.secondary)
+        HStack(spacing: 12) {
+            // Icon
+            Image(systemName: store.searchMode == .viewport ? "map" : "line.3.horizontal.decrease.circle")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(.secondary)
 
-                    // Summary text
-                    Text(compactSummaryText)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.primary)
+            // Summary text
+            Text(compactSummaryText)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.primary)
 
-                    Spacer()
+            Spacer()
 
-                    // Loading indicator or chevron
-                    if store.results.isLoading() || store.results.isReloading() {
-                        ProgressView()
-                            .scaleEffect(0.7)
-                    } else {
-                        Image(systemName: "chevron.up")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.tertiary)
-                            .rotationEffect(.degrees(selectedDetent == .height(56) ? 0 : 180))
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
+            // Loading indicator
+            if store.results.isLoading() || store.results.isReloading() {
+                ProgressView()
+                    .scaleEffect(0.7)
             }
-            .buttonStyle(.plain)
         }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
     }
 
     private var compactSummaryText: String {
@@ -115,27 +108,6 @@ struct GaugeListSheet: View {
                 return "Pan map to find gauges"
             } else {
                 return "\(count) gauge\(count == 1 ? "" : "s") in view"
-            }
-        }
-    }
-
-    // MARK: - Expanded Content
-
-    @ViewBuilder
-    private var expandedContent: some View {
-        VStack(spacing: 0) {
-            // Mode toggle
-            searchModeToggle
-
-            Divider()
-                .padding(.horizontal, 16)
-
-            // Content based on mode
-            switch store.searchMode {
-            case .viewport:
-                viewportContent
-            case .filtered:
-                filteredContent
             }
         }
     }
@@ -392,11 +364,9 @@ struct GaugeListSheet: View {
 // MARK: - Preview
 
 #Preview {
-    @Previewable @State var detent: PresentationDetent = .medium
     GaugeListSheet(
         store: Store(initialState: GaugeSearchFeature.State()) {
             GaugeSearchFeature()
-        },
-        selectedDetent: $detent)
+        })
 }
 

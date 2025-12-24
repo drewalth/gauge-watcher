@@ -18,11 +18,17 @@ struct GaugeSearch: View {
 
     @Bindable var store: StoreOf<GaugeSearchFeature>
     @Bindable var gaugeBotStore: StoreOf<GaugeBotReducer>
+    @Bindable var favoritesStore: StoreOf<FavoriteGaugesFeature>
 
     var body: some View {
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            content()
+            mapContent()
                 .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("Favorites", systemImage: "star") {
+                            showFavorites = true
+                        }
+                    }
                     ToolbarItem(placement: .primaryAction) {
                         Button("Chat", systemImage: "bubble.left.and.bubble.right") {
                             gaugeBotStore.send(.setChatPresented(true))
@@ -43,12 +49,24 @@ struct GaugeSearch: View {
                             }
                     }
                 }
-                .sheet(isPresented: $gaugeListSheetPresented) {
-                    GaugeListSheet(store: store, selectedDetent: $gaugeListDetent)
-                        .presentationDetents([.height(56), .medium, .large], selection: $gaugeListDetent)
-                        .presentationDragIndicator(.hidden)
+                .sheet(isPresented: $showFavorites) {
+                    NavigationStack {
+                        FavoriteGaugesView(store: favoritesStore)
+                            .presentationDetents([.medium, .large], selection: $favoritesDetent)
+                            .toolbar {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button("Close", systemImage: "xmark") {
+                                        showFavorites = false
+                                    }
+                                }
+                            }
+                    }
+                }
+                .sheet(isPresented: .constant(true)) {
+                    GaugeListSheet(store: store)
+                        .presentationDetents([.height(120), .medium, .large], selection: $gaugeListDetent)
+                        .presentationDragIndicator(.visible)
                         .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-                        .presentationCornerRadius(20)
                         .interactiveDismissDisabled()
                 }
                 .trackView("GaugeSearch")
@@ -63,11 +81,12 @@ struct GaugeSearch: View {
     // MARK: Private
 
     @State private var chatDetent: PresentationDetent = .large
-    @State private var gaugeListDetent: PresentationDetent = .height(56)
-    @State private var gaugeListSheetPresented = true
+    @State private var favoritesDetent: PresentationDetent = .large
+    @State private var gaugeListDetent: PresentationDetent = .height(120)
+    @State private var showFavorites = false
 
     @ViewBuilder
-    private func content() -> some View {
+    private func mapContent() -> some View {
         switch store.initialized {
         case .initial, .loading:
             ContinuousSpinner()
@@ -84,4 +103,19 @@ struct GaugeSearch: View {
             UtilityBlockView(kind: .error(error.localizedDescription))
         }
     }
+}
+
+// MARK: - Preview
+
+#Preview {
+    GaugeSearch(
+        store: Store(initialState: GaugeSearchFeature.State()) {
+            GaugeSearchFeature()
+        },
+        gaugeBotStore: Store(initialState: GaugeBotReducer.State()) {
+            GaugeBotReducer()
+        },
+        favoritesStore: Store(initialState: FavoriteGaugesFeature.State()) {
+            FavoriteGaugesFeature()
+        })
 }
