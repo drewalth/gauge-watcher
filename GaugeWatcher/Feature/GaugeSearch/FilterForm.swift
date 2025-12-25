@@ -85,9 +85,9 @@ struct FilterForm: View {
 
     private var searchTextBinding: Binding<String> {
         Binding(
-            get: { store.filterOptions.searchText },
+            get: { store.localSearchText },
             set: { newValue in
-                updateFilter { $0.searchText = newValue }
+                store.send(.setLocalSearchText(newValue))
             })
     }
 
@@ -157,9 +157,9 @@ struct FilterForm: View {
                 .font(.body)
                 .onSubmit(applyFilters)
 
-            if !store.filterOptions.searchText.isEmpty {
+            if !store.localSearchText.isEmpty {
                 Button {
-                    updateFilter { $0.searchText = "" }
+                    store.send(.setLocalSearchText(""))
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 16))
