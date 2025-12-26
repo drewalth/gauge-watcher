@@ -1,16 +1,16 @@
 //
-//  SearchGaugesTool.swift
+//  LoadGaugesTool.swift
 //  GaugeBot
 //
-//  Created by Andrew Althage on 12/18/25.
+//  Created by Andrew Althage on 12/26/25.
 //
 
 import FoundationModels
 
-// MARK: - SearchGaugesTool
+// MARK: - LoadGaugesTool
 
-/// Tool that searches for water gauges by name or location.
-struct SearchGaugesTool: Tool {
+/// Tool that loads water gauges from the database with optional filtering.
+struct LoadGaugesTool: Tool {
 
     // MARK: Lifecycle
 
@@ -22,7 +22,7 @@ struct SearchGaugesTool: Tool {
 
     @Generable
     struct Arguments {
-        @Guide(description: "Search keywords to find gauges (e.g., 'Potomac Little Falls' matches all words)")
+        @Guide(description: "Search keywords to find gauges (e.g., 'Potomac Little Falls')")
         var name: String?
 
         @Guide(description: "Two-letter US state code (e.g., 'CO', 'AK', 'CA', 'MD', 'VA')")
@@ -31,40 +31,34 @@ struct SearchGaugesTool: Tool {
         @Guide(description: "Two-letter country code (e.g., 'US', 'CA' for Canada)")
         var country: String?
 
-        @Guide(description: "Maximum number of results to return (1-25)")
+        @Guide(description: "Filter to only show favorite gauges")
+        var favoritesOnly: Bool?
+
+        @Guide(description: "Maximum number of results to return (1-10)")
         var limit: Int?
     }
 
-    let name = "searchGauges"
+    let name = "loadGauges"
     let description = """
-    Searches for water gauges by name or location. Use this when the user wants to find \
-    gauges in a specific area, river, or by name. You can filter by state, country, or \
-    search by name. Returns matching gauge information.
+    Loads water gauges. Can search by name, filter by location, or show only favorites. \
+    Use gaugeReadings to get actual data after finding gauges.
     """
 
     func call(arguments: Arguments) async throws -> String {
-        // Build query options - clear defaults if user provides specific filters
         let options = GaugeQueryOptions(
             name: arguments.name,
             country: arguments.country ?? (arguments.state != nil ? "US" : nil),
             state: arguments.state,
             zone: nil,
             source: nil,
-            favorite: nil,
+            favorite: arguments.favoritesOnly,
             primary: nil,
             boundingBox: nil)
 
         let gauges = try await gaugeService.loadGauges(options)
 
         if gauges.isEmpty {
-            var message = "No gauges found"
-            if let name = arguments.name {
-                message += " matching '\(name)'"
-            }
-            if let state = arguments.state {
-                message += " in \(state)"
-            }
-            return message + "."
+            return buildEmptyMessage(arguments: arguments)
         }
 
         // Small limit for on-device model context window
@@ -87,5 +81,20 @@ struct SearchGaugesTool: Tool {
     // MARK: Private
 
     private let gaugeService: GaugeService
+
+    private func buildEmptyMessage(arguments: Arguments) -> String {
+        if arguments.favoritesOnly == true {
+            return "No favorites saved."
+        }
+
+        var message = "No gauges found"
+        if let name = arguments.name {
+            message += " matching '\(name)'"
+        }
+        if let state = arguments.state {
+            message += " in \(state)"
+        }
+        return message + "."
+    }
 
 }

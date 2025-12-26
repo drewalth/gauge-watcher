@@ -13,7 +13,7 @@ public protocol GaugeBotProtocol: Sendable {
 /// An LLM-powered assistant for answering questions about river conditions and flow rates.
 ///
 /// Uses Foundation Models with tool-augmented responses. The LLM orchestrates these tools:
-/// - `searchGauges` → `gaugeReadings` / `gaugeTrend` / `flowForecast`
+/// - `loadGauges` → `gaugeReadings` / `gaugeTrend` / `flowForecast`
 /// - `syncGauge` when local data is missing
 ///
 /// Each `query` call creates a new session; state is not retained between calls.
@@ -23,12 +23,8 @@ public struct GaugeBot: GaugeBotProtocol {
 
     /// - Parameter gaugeService: Optional service for testing. Falls back to TCA dependencies.
     public init(gaugeService: GaugeService? = nil) {
-        self.gaugeService = gaugeService
-    }
+        //        self.gaugeService = gaugeService
 
-    // MARK: Public
-
-    public func query(text: String) async throws -> String {
         let model = SystemLanguageModel.default
 
         // Use provided service or get from TCA dependencies
@@ -41,8 +37,7 @@ public struct GaugeBot: GaugeBotProtocol {
         }
 
         let tools: [any Tool] = [
-            LoadFavoriteGaugesTool(gaugeService: service),
-            SearchGaugesTool(gaugeService: service),
+            LoadGaugesTool(gaugeService: service),
             GaugeReadingsTool(gaugeService: service),
             FlowForecastTool(gaugeService: service),
             GaugeTrendTool(gaugeService: service),
@@ -53,17 +48,16 @@ public struct GaugeBot: GaugeBotProtocol {
       You are GaugeBot, a helpful assistant for water gauge monitoring.
 
       WORKFLOW for answering questions about river conditions or flow rates:
-      1. Use searchGauges to find gauges by river name, location, or site name
-      2. From the search results, get the Gauge ID (integer)
+      1. Use loadGauges to find gauges by river name, location, or favorites
+      2. From the results, get the Gauge ID (integer)
       3. Use gaugeReadings, gaugeTrend, or flowForecast with that Gauge ID
       4. If gaugeReadings or gaugeTrend returns "no readings", use syncGauge first, then retry
 
       TOOLS:
-      - searchGauges: Find gauges by name (e.g., "Potomac", "Little Falls") or state code
+      - loadGauges: Find gauges by name, state, or filter to favorites only
       - gaugeReadings: Get current/recent readings using a Gauge ID
       - gaugeTrend: Analyze if flow is rising, falling, or stable over recent hours
       - flowForecast: Get ML-predicted flow forecast (USGS gauges only)
-      - loadFavoriteGauges: List the user's saved/favorite gauges
       - syncGauge: Fetch fresh readings from remote source when local data is missing
 
       Be concise. For trend questions, use gaugeTrend. For forecasts, use flowForecast.
@@ -74,17 +68,22 @@ public struct GaugeBot: GaugeBotProtocol {
       you MUST decline with 'Sorry, I can't do that.'
       """
 
-        let session = LanguageModelSession(
+        session = LanguageModelSession(
             model: model,
             tools: tools,
             instructions: instructions)
+    }
 
+    // MARK: Public
+
+    public func query(text: String) async throws -> String {
         let response = try await session.respond(to: text)
         return response.content
     }
 
     // MARK: Private
 
-    private let gaugeService: GaugeService?
+    //    private let gaugeService: GaugeService?
+    private let session: LanguageModelSession
 
 }
