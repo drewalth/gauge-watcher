@@ -23,7 +23,7 @@
 </div>
 
 > [!WARNING]
-> This is very much a work in progress. There will be bugs, incomplete features, and other issues. Please report them!
+> This is very much a work in progress and the macOS app has thus far been the primary focus. There will be bugs, incomplete features, and other issues. Please report them!
 
 ## Features
 
