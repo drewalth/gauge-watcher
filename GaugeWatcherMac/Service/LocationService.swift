@@ -105,9 +105,45 @@ extension LocationService: CLLocationManagerDelegate {
 extension LocationService {
 
     nonisolated public func requestWhenInUseAuthorization() async {
+        let cachedStatus = await currentAuthorizationStatus
+
         await MainActor.run {
             logger.info("Requesting Location Services Authorization")
             locationManager.requestWhenInUseAuthorization()
+        }
+
+        // macOS workaround: The delegate callback locationManagerDidChangeAuthorization
+        // is not reliably called after the user grants permission through the system dialog.
+        // Check immediately and poll if the status is still undetermined.
+
+        // Immediate check - status might already be determined
+        let immediateStatus = await MainActor.run { locationManager.authorizationStatus }
+        if immediateStatus != cachedStatus {
+            await MainActor.run {
+                currentAuthorizationStatus = immediateStatus
+                delegateSubject.send(.didChangeAuthorization(immediateStatus))
+            }
+            return
+        }
+
+        // If already determined, no need to poll
+        if immediateStatus != .notDetermined {
+            return
+        }
+
+        // Poll for status changes for up to 30 seconds (user interacting with dialog)
+        for _ in 0..<60 {
+            try? await Task.sleep(for: .milliseconds(500))
+
+            let newStatus = await MainActor.run { locationManager.authorizationStatus }
+
+            if newStatus != .notDetermined {
+                await MainActor.run {
+                    currentAuthorizationStatus = newStatus
+                    delegateSubject.send(.didChangeAuthorization(newStatus))
+                }
+                return
+            }
         }
     }
 
