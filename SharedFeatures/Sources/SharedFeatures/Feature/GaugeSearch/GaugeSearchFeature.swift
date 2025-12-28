@@ -271,8 +271,8 @@ public struct GaugeSearchFeature: Sendable {
 
                     // Create a bounding box around the user's location (~100km radius)
                     // and trigger a query immediately instead of waiting for map region change
-                    let latDelta = 1.0  // ~111km
-                    let lonDelta = 1.0  // ~85-111km depending on latitude
+                    let latDelta = 1.0 // ~111km
+                    let lonDelta = 1.0 // ~85-111km depending on latitude
                     let boundingBox = BoundingBox(
                         minLatitude: location.latitude - latDelta,
                         maxLatitude: location.latitude + latDelta,
