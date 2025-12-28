@@ -103,7 +103,7 @@ public struct GaugeSearchFeature: Sendable {
         public var results: Loadable<[GaugeRef]> = .initial
         public var queryOptions = GaugeQueryOptions()
         public var initialized: Loadable<Bool> = .initial
-        @Shared(.appStorage(LocalStorageKey.currentLocation.rawValue)) public var currentLocation: CurrentLocation?
+        public var currentLocation: CurrentLocation?
         public var path = StackState<Path.State>()
 
         // Map region tracking for viewport-based queries
@@ -264,10 +264,31 @@ public struct GaugeSearchFeature: Sendable {
             case .setCurrentLocation(let newValue):
                 // Check if this is the first location update (previous was nil)
                 let isFirstLocation = state.currentLocation == nil && newValue != nil
-                state.$currentLocation.withLock { $0 = newValue }
-                // Auto-recenter map when we get location for the first time
-                if isFirstLocation {
+                state.currentLocation = newValue
+                // Auto-recenter map and trigger query when we get location for the first time
+                if isFirstLocation, let location = newValue {
                     state.shouldRecenterMap = true
+
+                    // Create a bounding box around the user's location (~100km radius)
+                    // and trigger a query immediately instead of waiting for map region change
+                    let latDelta = 1.0  // ~111km
+                    let lonDelta = 1.0  // ~85-111km depending on latitude
+                    let boundingBox = BoundingBox(
+                        minLatitude: location.latitude - latDelta,
+                        maxLatitude: location.latitude + latDelta,
+                        minLongitude: location.longitude - lonDelta,
+                        maxLongitude: location.longitude + lonDelta)
+
+                    var newOptions = GaugeQueryOptions()
+                    newOptions.boundingBox = boundingBox
+                    state.queryOptions = newOptions
+
+                    // Also set the map region to match so subsequent viewport queries work correctly
+                    state.mapRegion = MKCoordinateRegion(
+                        center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
+                        span: MKCoordinateSpan(latitudeDelta: latDelta * 2, longitudeDelta: lonDelta * 2))
+
+                    return .send(.query)
                 }
                 return .none
 
@@ -399,7 +420,8 @@ public struct GaugeSearchFeature: Sendable {
 
                             case .authorizedAlways, .authorizedWhenInUse:
                                 logger.info("Already authorized - fetching location")
-                                await locationService.requestLocation()
+                                // Use startUpdatingLocation instead of requestLocation - more reliable on macOS
+                                await locationService.startUpdatingLocation()
 
                             case .denied, .restricted:
                                 logger.warning("Location denied/restricted")
@@ -413,7 +435,8 @@ public struct GaugeSearchFeature: Sendable {
                             switch newStatus {
                             case .authorizedAlways, .authorizedWhenInUse:
                                 logger.info("Authorization granted - fetching location")
-                                await locationService.requestLocation()
+                                // Use startUpdatingLocation instead of requestLocation - more reliable on macOS
+                                await locationService.startUpdatingLocation()
 
                             case .denied, .restricted:
                                 logger.warning("Authorization denied")
@@ -428,6 +451,8 @@ public struct GaugeSearchFeature: Sendable {
 
                         case .didUpdateLocations(let locations):
                             guard let location = locations.last else { return }
+                            // Stop location updates - we only need one location
+                            await locationService.stopUpdatingLocation()
                             let currentLocation = CurrentLocation(
                                 latitude: location.coordinate.latitude,
                                 longitude: location.coordinate.longitude)

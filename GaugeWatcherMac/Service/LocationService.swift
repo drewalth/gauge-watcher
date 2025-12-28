@@ -52,6 +52,9 @@ final class LocationService: NSObject, LocationServiceProtocol {
 
     func initialize() {
         locationManager.delegate = self
+        // Configure accuracy and distance filter - required for macOS to deliver location updates
+        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+        locationManager.distanceFilter = kCLDistanceFilterNone
         currentAuthorizationStatus = locationManager.authorizationStatus
     }
 
@@ -156,6 +159,19 @@ extension LocationService {
 
     nonisolated public func startUpdatingLocation() async {
         await MainActor.run {
+            let servicesEnabled = CLLocationManager.locationServicesEnabled()
+            guard servicesEnabled else {
+                logger.error("Location services not enabled globally")
+                return
+            }
+
+            // If we have a cached location, emit it immediately
+            // This provides instant location on macOS where callbacks may be delayed
+            if let cached = locationManager.location {
+                self.currentLocation = cached
+                self.delegateSubject.send(.didUpdateLocations([cached]))
+            }
+
             logger.info("Starting continuous location updates")
             locationManager.startUpdatingLocation()
         }
