@@ -283,10 +283,9 @@ public struct GaugeSearchFeature: Sendable {
                     newOptions.boundingBox = boundingBox
                     state.queryOptions = newOptions
 
-                    // Also set the map region to match so subsequent viewport queries work correctly
-                    state.mapRegion = MKCoordinateRegion(
-                        center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
-                        span: MKCoordinateSpan(latitudeDelta: latDelta * 2, longitudeDelta: lonDelta * 2))
+                    // Note: Don't set mapRegion here synchronously - it causes reentrant layout issues
+                    // with NSHostingView/MKMapView. The view will handle recentering via shouldRecenterMap,
+                    // and mapRegionChanged will update mapRegion through the normal debounced flow.
 
                     return .send(.query)
                 }
