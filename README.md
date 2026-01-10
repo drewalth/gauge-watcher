@@ -4,10 +4,10 @@
 
 **Near-real-time river flow monitoring for iOS & macOS**
 
+[![App Store](https://img.shields.io/badge/App_Store-Download-0D96F6?logo=app-store&logoColor=white)](https://apple.co/4sGJ6Ir)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/Platform-iOS%2026%20%7C%20macOS%2026-blue.svg)](https://developer.apple.com)
 [![Swift](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
-[![TCA](https://img.shields.io/badge/Architecture-TCA-purple.svg)](https://github.com/pointfreeco/swift-composable-architecture)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/170c626fad7c4f3fa73734c24d60fb38)](https://app.codacy.com/gh/drewalth/gauge-watcher/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ![Gauge Watcher Hero Image](docs/gw@0.5x.png)
